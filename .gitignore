@@ -1,19 +1,17 @@
-# Credentials and Environment files
+# Credentials & private settings
 .env
 .env.*
 *.env
 credentials.json
 client_secret*.json
 
-# Python Virtual Environments
-venv/
-.venv/
-env/
-ENV/
-AI SERVICE/venv/
-AI SERVICE/.venv/
+# Python Virtual Environments (global)
+**/venv/
+**/.venv/
+**/env/
+**/ENV/
 
-# Python caching
+# Python compiled files / caching (global)
 **/__pycache__/
 **/*.pyc
 **/*.pyo
@@ -21,7 +19,10 @@ AI SERVICE/.venv/
 .pytest_cache/
 .ipynb_checkpoints/
 
-# IDE configurations
+# System Log files
+**/*.log
+
+# IDE & Editor configurations
 .idea/
 .vscode/
 *.iml
@@ -32,21 +33,18 @@ AI SERVICE/.venv/
 *.njsproj
 *.sln
 
-# Local file storage / output directories
-AI SERVICE/uploads/*
-!AI SERVICE/uploads/.gitkeep
-AI SERVICE/output/*
-!AI SERVICE/output/.gitkeep
-AI SERVICE/archive/*
-!AI SERVICE/archive/.gitkeep
-BACKEND/uploads/*
-!BACKEND/uploads/.gitkeep
+# Transient storage / output directories (global)
+**/uploads/*
+!**/uploads/.gitkeep
+**/output/*
+!**/output/.gitkeep
+**/archive/*
+!**/archive/.gitkeep
 
-# Java Build artifacts
-BACKEND/target/
-target/
-.mvn/wrapper/maven-wrapper.jar
+# Java / Maven Build outputs
+**/target/
 build/
+.mvn/wrapper/maven-wrapper.jar
 .sts4-cache/
 .apt_generated/
 .classpath
