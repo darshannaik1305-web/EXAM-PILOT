@@ -9,4 +9,7 @@ import java.util.List;
 public interface PracticeQuestionRepository extends JpaRepository<PracticeQuestion, Long> {
 
     List<PracticeQuestion> findByPracticeSession(PracticeSession practiceSession);
+
+    void deleteByPracticeSession(PracticeSession practiceSession);
 }
+

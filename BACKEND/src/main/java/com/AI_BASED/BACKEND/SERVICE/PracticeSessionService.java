@@ -26,7 +26,10 @@ public class PracticeSessionService {
     @Autowired
     private FastApiClient fastApiClient;
 
-    public ExtractionResponseDto createAndProcessSession(String title, UploadType uploadType, MultipartFile file) {
+    @Autowired
+    private PracticePersistenceService practicePersistenceService;
+
+    public PracticeSessionCreatedResponse createAndProcessSession(String title, UploadType uploadType, MultipartFile file) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
             throw new ExtractionException("User is not authenticated");
@@ -52,27 +55,37 @@ public class PracticeSessionService {
         session.setStatus(PracticeSessionStatus.EXTRACTING);
         session = practiceSessionRepository.save(session);
 
+        Long sessionId = session.getId();
+
         // 3. Process with FastAPI
         try {
             ExtractionResponseDto response = fastApiClient.uploadPdf(file, jobId);
 
             if (response != null && Boolean.TRUE.equals(response.getSuccess())) {
-                session.setStatus(PracticeSessionStatus.READY);
-                session.setTotalQuestions(response.getTotalQuestions());
-                session.setProcessingTimeSeconds(response.getProcessingTimeSeconds());
-                practiceSessionRepository.save(session);
-                return response;
+                // Save questions to database (Transaction 1)
+                practicePersistenceService.saveQuestions(sessionId, response.getQuestions());
+
+                // Update session state to READY (Transaction 2)
+                practicePersistenceService.updateSessionReady(sessionId, response.getTotalQuestions(), response.getProcessingTimeSeconds());
+
+                // Return lightweight response
+                PracticeSessionCreatedResponse createdResponse = new PracticeSessionCreatedResponse();
+                createdResponse.setSessionId(sessionId);
+                createdResponse.setTitle(title);
+                createdResponse.setTotalQuestions(response.getTotalQuestions());
+                createdResponse.setStatus(PracticeSessionStatus.READY);
+                createdResponse.setExtractionVerified(false);
+                return createdResponse;
             } else {
-                session.setStatus(PracticeSessionStatus.FAILED);
-                practiceSessionRepository.save(session);
+                practicePersistenceService.updateSessionFailed(sessionId);
                 throw new ExtractionException("FastAPI reported failure during question extraction.");
             }
         } catch (Exception e) {
-            session.setStatus(PracticeSessionStatus.FAILED);
-            practiceSessionRepository.save(session);
-            throw new ExtractionException("Failed to call FastAPI AI Service: " + e.getMessage(), e);
+            practicePersistenceService.updateSessionFailed(sessionId);
+            throw new ExtractionException("Failed during question extraction: " + e.getMessage(), e);
         }
     }
+
 
     public PracticeSessionCreateResponse createSession(String title, UploadType uploadType, MultipartFile file, User user) {
         throw new UnsupportedOperationException("Service method 'createSession' is not implemented yet.");

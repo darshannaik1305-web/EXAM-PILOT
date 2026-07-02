@@ -1,6 +1,6 @@
 package com.AI_BASED.BACKEND.CONTROLLER;
 
-import com.AI_BASED.BACKEND.DTO.ExtractionResponseDto;
+import com.AI_BASED.BACKEND.DTO.PracticeSessionCreatedResponse;
 import com.AI_BASED.BACKEND.ENTITY.UploadType;
 import com.AI_BASED.BACKEND.SERVICE.PracticeSessionService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -19,12 +19,13 @@ public class PracticeSessionController {
     private PracticeSessionService practiceSessionService;
 
     @PostMapping("/sessions")
-    public ResponseEntity<ExtractionResponseDto> createPracticeSession(
+    public ResponseEntity<PracticeSessionCreatedResponse> createPracticeSession(
             @RequestParam("file") MultipartFile file,
             @RequestParam("title") String title,
             @RequestParam("uploadType") UploadType uploadType
     ) {
-        ExtractionResponseDto response = practiceSessionService.createAndProcessSession(title, uploadType, file);
+        PracticeSessionCreatedResponse response = practiceSessionService.createAndProcessSession(title, uploadType, file);
         return ResponseEntity.ok(response);
     }
 }
+
