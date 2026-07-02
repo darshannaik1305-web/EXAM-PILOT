@@ -1,0 +1,258 @@
+[
+    {
+        "questionNumber": 1,
+        "questionText": "Let α, α + 2, α ∈ Z, be the roots of the quadratic equation x(x + 2)(x + 1)(x + 3) + (x + 2)(x + 4) + ... + (x + n − 1)(x + n + 1) = 4n for some n ∈ N. Then n + α is equal to :",
+        "optionA": "0",
+        "optionB": "1",
+        "optionC": "2",
+        "optionD": "3"
+    },
+    {
+        "questionNumber": 2,
+        "questionText": "Let x and y be real numbers such that 50 ( (2x)/(1 + 3i) - y/(1 - 2i) ) = 31 + 17i. Then the value of 10(x - 3y) is :",
+        "optionA": "20",
+        "optionB": "31",
+        "optionC": "35",
+        "optionD": "75"
+    },
+    {
+        "questionNumber": 3,
+        "questionText": "Let α, β ∈ R be such that the system of linear equations x + 2y + z = 5 2x + y + αz = 5 8x + 4y + βz = 18 has no solution. Then β/α is equal to :",
+        "optionA": "−4",
+        "optionB": "2",
+        "optionC": "8",
+        "optionD": "−8"
+    },
+    {
+        "questionNumber": 4,
+        "questionText": "Let A = [[1, 2], [1, α]] and B = [[3, 3], [β, 2]]. If A² − 4A + I = O and B² − 5B − 6I = O, then among the two statements : (S1): |(B − A)(B + A)ᵀ| = [[7, 13], [10, 15]] and (S2): det(adj(A + B)) = −5.",
+        "optionA": "(1) only (S1) is correct",
+        "optionB": "(2) (S1) and (S2) are correct",
+        "optionC": "(3) only (S2) is correct",
+        "optionD": "(4) both (S1) and (S2) are wrong"
+    },
+    {
+        "questionNumber": 5,
+        "questionText": "Let A be the set of first 101 terms of an A.P. whose first term is 1 and the common difference is 5 and let B be the set of first 71 terms of an A.P. whose first term is 9 and the common difference is 7. Then the number of elements in A ∩ B, which are divisible by 3, is :",
+        "optionA": "4",
+        "optionB": "5",
+        "optionC": "6",
+        "optionD": "7"
+    },
+    {
+        "questionNumber": 6,
+        "questionText": "The number of seven-digit numbers, that can be formed by using the digits 1, 2, 3, 5 and 7 such that each digit is used at least once, is :",
+        "optionA": "15400",
+        "optionB": "17800",
+        "optionC": "16800",
+        "optionD": "29400"
+    },
+    {
+        "questionNumber": 7,
+        "questionText": "The number of elements in the set S = { (r, k) : k ∈ Z and ⁹⁸Cr+1 = (⁶³C₃₈) / (k²−3) }, is :",
+        "optionA": "2",
+        "optionB": "4",
+        "optionC": "8",
+        "optionD": "16"
+    },
+    {
+        "questionNumber": 8,
+        "questionText": "If the mean of the data Class | 5 – 10 | 10 – 15 | 15 – 20 | 20 – 25 | 25 – 30 | 30 – 35 Frequency | 2 | k | 28 | 54 | k + 1 | 5 is 21, then k is one of the roots of the equation :",
+        "optionA": "(1) 2x² − 23x − 10 = 0",
+        "optionB": "(2) 2x² − 19x − 10 = 0",
+        "optionC": "(3) 2x² − 35x + 24 = 0",
+        "optionD": "(4) 2x² − 35x + 98 = 0"
+    },
+    {
+        "questionNumber": 9,
+        "questionText": "Let the mid points of the sides of a triangle ABC be (5/2, 7/2), (5/2, 3) and (4, 5). If its incentre is (h, k), then 3h + k is equal to :",
+        "optionA": "11",
+        "optionB": "12",
+        "optionC": "13",
+        "optionD": "14"
+    },
+    {
+        "questionNumber": 10,
+        "questionText": "Let an ellipse x²/a² + y²/b² = 1, a < b, pass through the point (4, 3) and have eccentricity √5/3. Then the length of its latus rectum is :",
+        "optionA": "4√5/3",
+        "optionB": "2√5",
+        "optionC": "7√5/3",
+        "optionD": "8√5/3"
+    },
+    {
+        "questionNumber": 11,
+        "questionText": "If sin ( (π)/(18) ) sin ( (5π)/(18) ) sin ( (7π)/(18) ) = K, then the value of sin ( (10Kπ)/(3) ) is :",
+        "optionA": "(√3+1)/(2√2)",
+        "optionB": "(√3−1)/(√2)",
+        "optionC": "√3/2",
+        "optionD": "1/2"
+    },
+    {
+        "questionNumber": 12,
+        "questionText": "Let S = {x ∈ [−π, π] : sin α(sin x + cos x) = α, α ∈ Z}. Then n(S) is equal to :",
+        "optionA": "(1) 3",
+        "optionB": "(2) 6",
+        "optionC": "(3) 7",
+        "optionD": "(4) 9"
+    },
+    {
+        "questionNumber": 13,
+        "questionText": "If the point of intersection of the lines x+1/3 = y+a/5 = z+b+1/7 and x-2/1 = y-b/2 = z-2a/7 lies on xy-plane, then the value of a + b is :",
+        "optionA": "(1) 2",
+        "optionB": "(2) 5",
+        "optionC": "(3) 7",
+        "optionD": "(4) 9"
+    },
+    {
+        "questionNumber": 14,
+        "questionText": "If a⃗ and b⃗ are two vectors such that |a⃗| = 2 and |b⃗| = 3, then the maximum value of 3(|a⃗ + b⃗|)2 + 4(|a⃗ - b⃗|)2 is :",
+        "optionA": "(1) 30",
+        "optionB": "(2) 36",
+        "optionC": "(3) 60",
+        "optionD": "(4) 72"
+    },
+    {
+        "questionNumber": 15,
+        "questionText": "Let a line L passing through the point (1, 1, 1) be perpendicular to both the vectors 2î + 2ĵ + k̂ and î + 2ĵ + 2k̂. If P(a, b, c) is the foot of perpendicular from the origin on the line L, then the value of 34(a + b + c) is :",
+        "optionA": "(1) 50",
+        "optionB": "(2) 80",
+        "optionC": "(3) 100",
+        "optionD": "(4) 120"
+    },
+    {
+        "questionNumber": 16,
+        "questionText": "If lim x→2 (sin(x^2 - 5x + 6) / (√x - 1 - 1)) = m, then a + b + m is equal to :",
+        "optionA": "(1) 5",
+        "optionB": "(2) 6",
+        "optionC": "(3) 8",
+        "optionD": "(4) 10"
+    },
+    {
+        "questionNumber": 17,
+        "questionText": "If the curve y = f(x) passes through the point (1, e) and satisfies the differential equation dy/dx = y(2 + log_e x), then x > 0, then f(e) is equal to :",
+        "optionA": "(1) e^6",
+        "optionB": "(2) e^2",
+        "optionC": "(3) e^(e^2)",
+        "optionD": "(4) e^(2e)"
+    },
+    {
+        "questionNumber": 18,
+        "questionText": "The number of critical points of the function f(x) = { sin x / x, x ≠ 0 ; 1, x = 0 } in the interval (−2π, 2π) is equal to :",
+        "optionA": "(1) 1",
+        "optionB": "(2) 3",
+        "optionC": "(3) 5",
+        "optionD": "(4) 7"
+    },
+    {
+        "questionNumber": 19,
+        "questionText": "Let [⋅] denote the greatest integer function. Then the value of ∫_0^3 ([e^x + e^(-x)] / x!) dx is :",
+        "optionA": "(1) e^2 + e^(-2) + 1/1! - 1/2!",
+        "optionB": "(2) 1/2 (e^2 + e^(-2) - 1/1! - 1/2!)",
+        "optionC": "(3) e^2 + e^(-2) - 1/(2e^2) - 1/(2e^3)",
+        "optionD": "(4) 1/2 (e^2 + e^(-2) - 1/e^2 - 1/e^3)"
+    },
+    {
+        "questionNumber": 20,
+        "questionText": "Let y = y(x) be the solution curve of the differential equation (1 + sin x) dy/dx + (y + 1) cos x = 0, y(0) = 0. If the curve y = y(x) passes through the point (α, -1/2), then a value of α is :",
+        "optionA": "(1) π/6",
+        "optionB": "(2) π/4",
+        "optionC": "(3) π/3",
+        "optionD": "(4) π/2"
+    },
+    {
+        "questionNumber": 21,
+        "questionText": "If the domain of the function f(x) = √(log_(0.6) ((2x - 5) / (x^2 - 4))) is (−∞, a) ∪ [b] ∪ (c, d) ∪ (e, ∞), then the value of a + b + c + d + e is _______.",
+        "optionA": "",
+        "optionB": "",
+        "optionC": "",
+        "optionD": ""
+    },
+    {
+        "questionNumber": 22,
+        "questionText": "If ∑_(k=1)^n a_k = 6n^2, then ∑_(k=1)^6 (a_k - a_k^2 / 36) is equal to _______.",
+        "optionA": "",
+        "optionB": "",
+        "optionC": "",
+        "optionD": ""
+    },
+    {
+        "questionNumber": 23,
+        "questionText": "Let a, b, c ∈ {1, 2, 3, 4}. If the probability that ax^2 + 2bx + c > 0 for all x ∈ R, is m/n, gcd(m, n) = 1, then m + n is equal to _______.",
+        "optionA": "",
+        "optionB": "",
+        "optionC": "",
+        "optionD": ""
+    },
+    {
+        "questionNumber": 24,
+        "questionText": "Let a circle C have its centre in the first quadrant, intersect the coordinate axes at exactly three points and cut off equal intercepts from the coordinate axes. If the length of the chord of C on the line x + y = 1 is √14, then the square of the radius of C is _______.",
+        "optionA": "",
+        "optionB": "",
+        "optionC": "",
+        "optionD": ""
+    },
+    {
+        "questionNumber": 25,
+        "questionText": "If α = ∫_0^(2√3) log_e(x^2 + 4) dx + ∫_2^(√2) √(2x - 4) dx, then α^2 is equal to _______.",
+        "optionA": "",
+        "optionB": "",
+        "optionC": "",
+        "optionD": ""
+    },
+    {
+        "questionNumber": 35,
+        "questionText": "The equation of a plane progressive wave is given by y = 5 cos π (200t - x/150) where x and y are in cm and t is in second. The velocity of the wave is ________ m/s.",
+        "optionA": "(1) 120",
+        "optionB": "(2) 150",
+        "optionC": "(3) 200",
+        "optionD": "(4) 300"
+    },
+    {
+        "questionNumber": 36,
+        "questionText": "Two short electric dipoles A and B having dipole moment p₁ and p₂ respectively are placed with their axis mutually perpendicular as shown in the figure. The resultant electric field at a point x is making an angle of 60° with the line joining points O and x. The ratio of the dipole moments p₂/p₁ is ________.\n\n[Image of dipoles and point x]",
+        "optionA": "(1) √3/2",
+        "optionB": "(2) 2√3",
+        "optionC": "(3) 1/√3",
+        "optionD": "(4) √3"
+    },
+    {
+        "questionNumber": 37,
+        "questionText": "For the given circuit (shown in part (A)) the time dependent input voltage vᵢₙ(t) and corresponding output vₒᵤₜ(t) are shown in part (B) and part (C), respectively. Identify the components that are used in the circuit between points X and Y.\n\n[Image of circuit and voltage graphs]",
+        "optionA": "(1)",
+        "optionB": "(2)",
+        "optionC": "(3)",
+        "optionD": "(4)"
+    },
+    {
+        "questionNumber": 38,
+        "questionText": "When a coil is placed in a time dependent magnetic field the power dissipated in it is P. The number of turns, area of the coil and radius of the coil wire are N, A and r respectively. For a second coils number of turns, area of the coil and radius of the coil wire are 2N, 2A and 3r respectively. When the first coil is replaced with second coil the power dissipated in it is √2 α P. The value of α is ________.",
+        "optionA": "(1) 36",
+        "optionB": "(2) 12√2",
+        "optionC": "(3) 16",
+        "optionD": "(4) 64"
+    },
+    {
+        "questionNumber": 39,
+        "questionText": "Two identical long current carrying wires are bent into the shapes shown in the following figures. If the magnitude of magnetic fields at the centres P and Q of a semicircular arc are B₁ and B₂ respectively, then the ratio B₁/B₂ is ________.\n\n[Image of two current carrying wires]",
+        "optionA": "(1) (2+π)/(1+π)",
+        "optionB": "(2) (1+π)/(1-π)",
+        "optionC": "(3) (2+π)/(1-π)",
+        "optionD": "(4) (1+π)/(2-π)"
+    },
+    {
+        "questionNumber": 40,
+        "questionText": "For a thin symmetric prism made of glass (refractive index 1.5), the ratio of incident angle and minimum deviation will be ________.",
+        "optionA": "(1) 3 : 4",
+        "optionB": "(2) 3 : 2",
+        "optionC": "(3) 2 : 1",
+        "optionD": "(4) 1 : 2"
+    },
+    {
+        "questionNumber": 41,
+        "questionText": "Refer the figure given below. μ₁ and μ₂ are refractive indices of air and lens material. The height of image will be ________ cm.\n\n[Image of a lens with object and image]",
+        "optionA": "(1) 1",
+        "optionB": "(2) 0.5",
+        "optionC": "(3) 1.2",
+        "optionD": "(4) 0.25"
+    }
+]

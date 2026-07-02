@@ -1,0 +1,550 @@
+[
+    {
+        "questionNumber": 1,
+        "questionText": "Let a, a + 2, a ∈ Z, be the roots of the quadratic equation x(x + 2) + (x + 1)(x + 3) + (x + 2)(x + 4) + ... + (x + n − 1)(x + n + 1) = 4n for some n ∈ N. Then n + a is equal to :",
+        "optionA": "(1) 0",
+        "optionB": "(2) 1",
+        "optionC": "(3) 2",
+        "optionD": "(4) 3"
+    },
+    {
+        "questionNumber": 2,
+        "questionText": "Let x and y be real numbers such that 50 ( 2x / (1+3i) - y / (1-2i) ) = 31 + 17i, i = √–1. Then the value of 10(x – 3y) is :",
+        "optionA": "(1) 20",
+        "optionB": "(2) 31",
+        "optionC": "(3) 35",
+        "optionD": "(4) 75"
+    },
+    {
+        "questionNumber": 3,
+        "questionText": "Let α, β ∈ R be such that the system of linear equations x + 2y + z = 5, 2x + y + az = 5, 8x + 4y + z = 18 has no solution. Then β/α is equal to :",
+        "optionA": "(1) -4",
+        "optionB": "(2) 4",
+        "optionC": "(3) 8",
+        "optionD": "(4)-8"
+    },
+    {
+        "questionNumber": 4,
+        "questionText": "Let A = [[1, 2], [1, α]] and B = [[3, 3], [β, 2]]. If A² – 4A + I = O and B² – 5B – 6I = O, then among the two statements : (S1): [(B – A)(B + A)]ᵀ = [[13, 15], [7, 10]] and (S2): det(adj(A + B)) = −5,",
+        "optionA": "(1) only (S1) is correct",
+        "optionB": "(2) only (S2) is correct",
+        "optionC": "(3) both (S1) and (S2) are correct",
+        "optionD": "(4) both (S1) and (S2) are wrong"
+    },
+    {
+        "questionNumber": 5,
+        "questionText": "Let A be the set of first 101 terms of an A.P., whose first term is 1 and the common difference is 5 and let B be the set of first 71 terms of an A.P., whose first term is 9 and the common difference is 7. Then the number of elements in A ∩ B, which are divisible by 3, is :",
+        "optionA": "(1) 4",
+        "optionB": "(2) 5",
+        "optionC": "(3) 6",
+        "optionD": "(4) 7"
+    },
+    {
+        "questionNumber": 6,
+        "questionText": "The number of seven-digit numbers, that can be formed by using the digits 1, 2, 3, 5 and 7 such that each digit is used at least once, is :",
+        "optionA": "(1) 15400",
+        "optionB": "(2) 17800",
+        "optionC": "(3) 16800",
+        "optionD": "(4) 29400"
+    },
+    {
+        "questionNumber": 7,
+        "questionText": "The number of elements in the set S = { (r, k) : k ∈ Z and C(36, r+1) / (6 * C(35, k)) = 6 / (k²-3) }, is :",
+        "optionA": "(1) 2",
+        "optionB": "(2) 4",
+        "optionC": "(3) 8",
+        "optionD": "(4) 16"
+    },
+    {
+        "questionNumber": 8,
+        "questionText": "If the mean of the data Class | 5-10 | 10-15 | 15-20 | 20-25 | 25-30 | 30-35 Frequency | 2 | k | 28 | 54 | k+1 | 5 is 21, then k is one of the roots of the equation :",
+        "optionA": "(1) 2x² – 23x − 10 = 0",
+        "optionB": "(2) 4x² – 35x + 24 = 0",
+        "optionC": "(3) 2x² - 19x – 10 = 0",
+        "optionD": "(4) 2x² - 35x + 98 = 0"
+    },
+    {
+        "questionNumber": 9,
+        "questionText": "Let the mid points of the sides of a triangle ABC be (5/2, 7), (5, 3) and (4, 5). If its incentre is (h, k), then 3h + k is equal to :",
+        "optionA": "(1) 11",
+        "optionB": "(2) 12",
+        "optionC": "(3) 13",
+        "optionD": "(4) 14"
+    },
+    {
+        "questionNumber": 10,
+        "questionText": "Let an ellipse x²/a² + y²/b² = 1, a < b, pass through the point (4, 3) and have eccentricity √5/3. Then the length of its latus rectum is :",
+        "optionA": "(1) 4√5 / 3",
+        "optionB": "(2) 2√5",
+        "optionC": "(3) 7√5 / 3",
+        "optionD": "(4) 8√5 / 3"
+    },
+    {
+        "questionNumber": 11,
+        "questionText": "If sin(π/18) sin(5π/18) sin(7π/18) = K, then the value of sin(10Kπ / 3) is :",
+        "optionA": "(1) √3+1 / 2√2",
+        "optionB": "(2) √3-1 / √2",
+        "optionC": "(3) √3 / 2",
+        "optionD": "(4) 1/2"
+    },
+    {
+        "questionNumber": 12,
+        "questionText": "Let S = {x ∈ [−π, π] : sin x(sin x + cos x) = a, a ∈ Z}. Then n(S) is equal to :",
+        "optionA": "(1) 3",
+        "optionB": "(2) 6",
+        "optionC": "(3) 7",
+        "optionD": "(4) 9"
+    },
+    {
+        "questionNumber": 13,
+        "questionText": "If the point of intersection of the lines x+1/3 = y+a/5 = z+b+1/7 and x-2/1 = y-b/4 = z-2a/7 lies on xy-plane, then the value of a + b is :",
+        "optionA": "(1) 2",
+        "optionB": "(2) 5",
+        "optionC": "(3) 7",
+        "optionD": "(4) 9"
+    },
+    {
+        "questionNumber": 14,
+        "questionText": "If a and b are two vectors such that |a| = 2 and |b| = 3, then the maximum value of 3 (|3a + 2b|) + 4 (|3b - 2a|) is :",
+        "optionA": "(1) 30",
+        "optionB": "(2) 36",
+        "optionC": "(3) 60",
+        "optionD": "(4) 72"
+    },
+    {
+        "questionNumber": 15,
+        "questionText": "Let a line L passing through the point (1, 1, 1) be perpendicular to both the vectors 2î + 2ĵ + k̂ and î + 2ĵ + 2k̂. If P(a, b, c) is the foot of perpendicular from the origin on the line L, then the value of 34(a + b + c) is :",
+        "optionA": "(1) 50",
+        "optionB": "(2) 80",
+        "optionC": "(3) 100",
+        "optionD": "(4) 120"
+    },
+    {
+        "questionNumber": 16,
+        "questionText": "If lim_{x→-2} (sin(x³ - 5x² + ax + b)) / ((x+2) (√(x-1) - 1) log_e(x - 1)) = m, then a + b + m is equal to :",
+        "optionA": "(1) 5",
+        "optionB": "(2) 6",
+        "optionC": "(3) 8",
+        "optionD": "(4) 10"
+    },
+    {
+        "questionNumber": 17,
+        "questionText": "If the curve y = f(x) passes through the point (1, e) and satisfies the differential equation dy = y(2 + log_e x) dx, x > 0, then f(e) is equal to :",
+        "optionA": "(1) e^(e^2)",
+        "optionB": "(2) e^2",
+        "optionC": "(3) e^(2e)",
+        "optionD": "(4) e^(2e)"
+    },
+    {
+        "questionNumber": 18,
+        "questionText": "The number of critical points of the function f(x) = { |sin x| / x, x ≠ 0 ; 1, x = 0 } in the interval (−2π, 2π) is equal to :",
+        "optionA": "(1) 1",
+        "optionB": "(2) 3",
+        "optionC": "(3) 5",
+        "optionD": "(4) 7"
+    },
+    {
+        "questionNumber": 19,
+        "questionText": "Let [·] denote the greatest integer function. Then the value of ∫₀³ (eˣ + e⁻ˣ) / ([x]!) dx is :",
+        "optionA": "(1) e² + e³ - 1/e³",
+        "optionB": "(2) 1/2 (e² + e³ - 1/e² - 1/e³)",
+        "optionC": "(3) e² + e³ - 1/(2e²) - 1/(2e³)",
+        "optionD": "(4) (e² + e³) (1/2 - 1/e² - 1/e³)"
+    },
+    {
+        "questionNumber": 20,
+        "questionText": "Let y = y(x) be the solution curve of the differential equation (1 + sin x) dy/dx + (y + 1) cos x = 0, y(0) = 0. If the curve y = y(x) passes through the point (α, -1/2), then a value of α is :",
+        "optionA": "(1) π/6",
+        "optionB": "(2) π/4",
+        "optionC": "(3) π/3",
+        "optionD": "(4) π/2"
+    },
+    {
+        "questionNumber": 21,
+        "questionText": "If the domain of the function f(x) = √log_{0.6}((2x-5)/(x²-4)) is (−∞, a] ∪ {b} ∪ [c, d) ∪ (e, ∞), then the value of a + b + c + d + e is ____."
+    },
+    {
+        "questionNumber": 22,
+        "questionText": "If Σ_{k=1}^n a_k = 6n³, then (Σ_{k=1}^6 (a_k+1)/36)² is equal to ____."
+    },
+    {
+        "questionNumber": 23,
+        "questionText": "Let a, b, c ∈ {1, 2, 3, 4}. If the probability, that ax² + 2√2bx + c > 0 for all x ∈ R, is m/n, gcd(m, n) = 1, then m + n is equal to ____."
+    },
+    {
+        "questionNumber": 24,
+        "questionText": "Let a circle C have its centre in the first quadrant, intersect the coordinate axes at exactly three points and cut off equal intercepts from the coordinate axes. If the length of the chord of C on the line x + y = 1 is √14, then the square of the radius of C is ____."
+    },
+    {
+        "questionNumber": 25,
+        "questionText": "If α = ∫₀² log₂(x² + 4) dx + ∫₂⁴ √(2x - 4) dx, then α² is equal to ____."
+    },
+    {
+        "questionNumber": 26,
+        "questionText": "The dimensional formula of 1/2 ε₀E² (ε₀ = permittivity of vacuum and E = electric field) is MᵃLᵇTᶜ. The value of 2a - b + c = ____.",
+        "optionA": "(1) 0",
+        "optionB": "(2) 1",
+        "optionC": "(3) -1",
+        "optionD": "(4) 2"
+    },
+    {
+        "questionNumber": 27,
+        "questionText": "The diameter of a wire measured by a screw gauge of least count 0.001 cm is 0.08 cm. The length measured by a scale of least count 0.1 cm is 150 cm. When a weight of 100 N is applied to the wire, the extension in length is 0.5 cm, measured by a micrometer of least count 0.001 cm. The error in the measured Young's modulus is α × 10⁹ N/m². The value of α is ____. (Ignore the contribution of the load to Young's modulus error calculation)",
+        "optionA": "(1) 1.3",
+        "optionB": "(2) 1.65",
+        "optionC": "(3) 0.13",
+        "optionD": "(4) 0.25"
+    },
+    {
+        "questionNumber": 28,
+        "questionText": "The velocity of a particle is given as v⃗ = -xî + 2yĵ – zk̂ m/s. The magnitude of acceleration at point (1, 2, 4) is ____ m/s².",
+        "optionA": "(1) √6",
+        "optionB": "(2) 9",
+        "optionC": "(3) √33",
+        "optionD": "(4) 0"
+    },
+    {
+        "questionNumber": 29,
+        "questionText": "The position of an object having mass 0.1 kg as a function of time t is given as r⃗ = (10t²î + 5t³ĵ) m. At t = 1 s, which of the following statements are correct? A. The linear momentum p⃗ = (2î + 1.5ĵ) kg·m/s. B. The force acting on the object F⃗ = (2î + 3ĵ) N. C. The angular momentum of the object about its origin L⃗ = 15k̂ J·s. D. The torque acting on the object about its origin τ⃗ = 20k̂ N·m. Choose the correct answer from the options given below :",
+        "optionA": "(1) A, B and C only",
+        "optionB": "(2) B, C and D only",
+        "optionC": "(3) A, C and D only",
+        "optionD": "(4) A, B and D only"
+    },
+    {
+        "questionNumber": 30,
+        "questionText": "A planet (P₁) is moving around the star of mass 2M in the orbit of radius R. Another planet (P₂) is moving around another star of mass 4M in a orbit of radius 2R. Ratio of time periods of revolution of P₂ and P₁ is ____.",
+        "optionA": "(1) 1/2",
+        "optionB": "(2) 2",
+        "optionC": "(3) 4",
+        "optionD": "(4) 1/4"
+    },
+    {
+        "questionNumber": 31,
+        "questionText": "A particle is rotating in a circular path and at any instant its motion can be described as θ = 5t⁴/40 - t³/3. The angular acceleration of the particle after 10 seconds is ____ rad/s².",
+        "optionA": "(1) 150",
+        "optionB": "(2) 120",
+        "optionC": "(3) 130",
+        "optionD": "(4) 170"
+    },
+    {
+        "questionNumber": 32,
+        "questionText": "A parallel plate air capacitor has a capacitance C. When it is half filled as show in figure with a dielectric constant K = 5, the percentage increase in the capacitance is ____ %.",
+        "optionA": "(1) 33.34",
+        "optionB": "(2) 66.67",
+        "optionC": "(3) 200",
+        "optionD": "(4) 400"
+    },
+    {
+        "questionNumber": 33,
+        "questionText": "Heat is supplied to a diatomic gas at constant pressure. Then the ratio of ΔQ : ΔU : ΔW is ____.",
+        "optionA": "(1) 2 : 3 : 5",
+        "optionB": "(2) 5 : 3 : 2",
+        "optionC": "(3) 2 : 5 : 7",
+        "optionD": "(4) 7 : 5 : 2"
+    },
+    {
+        "questionNumber": 34,
+        "questionText": "Two charged conducting spheres S₁ and S₂ of radii 8 cm and 18 cm are connected to each other by a wire. After equilibrium is established, the ratio of electric fields on S₁ and S₂ spheres are E_S₁ and E_S₂ respectively. The value of E_S₁ / E_S₂ is ____.",
+        "optionA": "(1) 8/3",
+        "optionB": "(2) 2/3",
+        "optionC": "(3) 4/9",
+        "optionD": "(4) 9/4"
+    },
+    {
+        "questionNumber": 35,
+        "questionText": "The equation of a plane progressive wave is given by y = 5 cos π (200t - x/150) where x and y are in cm and t is in second. The velocity of the wave is ____ m/s.",
+        "optionA": "(1) 120",
+        "optionB": "(2) 150",
+        "optionC": "(3) 200",
+        "optionD": "(4) 300"
+    },
+    {
+        "questionNumber": 36,
+        "questionText": "Two short electric dipoles A and B having dipole moment p₁ and p₂ respectively are placed with their axis mutually perpendicular as shown in the figure. The resultant electric field at a point x is making an angle of 60° with the line joining points O and x. The ratio of the dipole moments p₂/p₁ is ____.",
+        "optionA": "(1) √3/2",
+        "optionB": "(2) 2√3",
+        "optionC": "(3) 1/√3",
+        "optionD": "(4) √3"
+    },
+    {
+        "questionNumber": 37,
+        "questionText": "For the given circuit (shown in part (A)) the time dependent input voltage V_in(t) and corresponding output V_o(t) are shown in part (B) and part (C), respectively. Identify the components that are used in the circuit between points X and Y.",
+        "optionA": "(1) [Diagram with resistor]",
+        "optionB": "(2) [Diagram with diode in series with X]",
+        "optionC": "(3) [Diagram with two diodes in parallel]",
+        "optionD": "(4) [Diagram with Zener diode and diode]"
+    },
+    {
+        "questionNumber": 38,
+        "questionText": "When a coil is placed in a time dependent magnetic field the power dissipated in it is P. The number of turns, area of the coil and radius of the coil wire are N, A and r respectively. For a second coils number of turns, area of the coil and radius of the coil wire are 2N, 2A and 3r respectively. When the first coil is replaced with second coil the power dissipated in it is √2αP. The value of α is ____.",
+        "optionA": "(1) 36",
+        "optionB": "(2) 128√2",
+        "optionC": "(3) 16",
+        "optionD": "(4) 64"
+    },
+    {
+        "questionNumber": 42,
+        "questionText": "For a certain metal, when monochromatic light of wavelength λ is incident, the stopping potential for photoelectrons is 3V₀. When the same metal is illuminated by light of wavelength 2λ, then the stopping potential becomes V₀. The threshold wavelength for photoelectric emission for the given metal is αλ. The value of α is ____.",
+        "optionA": "(1) 1",
+        "optionB": "(2) 4",
+        "optionC": "(3) 2",
+        "optionD": "(4) 3"
+    },
+    {
+        "questionNumber": 43,
+        "questionText": "An electromagnetic wave travelling in x-direction is described by field equation E_y = 300 sin ω(t - x/c). If the electron is restricted to move in y-direction only with speed of 1.5 × 10⁶ m/s then ratio of maximum electric and magnetic forces acting on the electron is ____.",
+        "optionA": "(1) 200",
+        "optionB": "(2) 150",
+        "optionC": "(3) 400",
+        "optionD": "(4) 300"
+    },
+    {
+        "questionNumber": 44,
+        "questionText": "Angular momentum of an electron in a hydrogen atom is 3h/π, then the energy of the electron is ____ eV.",
+        "optionA": "(1) -1.51",
+        "optionB": "(2) -0.85",
+        "optionC": "(3) -0.38",
+        "optionD": "(4) -0.28"
+    },
+    {
+        "questionNumber": 45,
+        "questionText": "A liquid drop of diameter 2 mm breaks into 512 droplets. The change in surface energy is α × 10⁻⁶ J. The value of α is ____. (Take surface tension of liquid = 0.08 N/m)",
+        "optionA": "(1) 10",
+        "optionB": "(2) 7",
+        "optionC": "(3) 8",
+        "optionD": "(4) 11"
+    },
+    {
+        "questionNumber": 46,
+        "questionText": "In single slit diffraction pattern, the wavelength of light used is 628 nm and slit width is 0.2 mm, the angular width of central maximum is α × 10⁻² degrees. The value of α is ____.",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 47,
+        "questionText": "A vessel contains 0.15 m³ of a gas at pressure 8 bar and temperature 140°C with c_p = 3R and c_v = 2R. It is expanded adiabatically till pressure falls to 1 bar. The work done during this process is ____ kJ. (R is gas constant)",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 48,
+        "questionText": "1 µC charge moving with velocity v⃗ = (î - 2ĵ + 3k̂) m/s in the region of magnetic field B⃗ = (2î + 3ĵ – 5k̂) T. The magnitude of force acting on it is √α × 10⁻⁶ N. The value of α is ____.",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 49,
+        "questionText": "A uniform wire of length l of weight w is suspended from the roof with a weight of W at the other end. The stress in the wire at l/3 distance from the top is (w/(3A) + W/A) where, A is the cross sectional area of the wire. The value of γ is ________.",
+        "optionA": "(1) 1",
+        "optionB": "(2) 2",
+        "optionC": "(3) 3",
+        "optionD": "(4) 4"
+    },
+    {
+        "questionNumber": 50,
+        "questionText": "A tub is filled with water and a wooden cube 10 cm × 10 cm × 10 cm is placed in the water. The wooden cube is found to float on the water with a part of it submerged in water. When a metal coin is placed on the wooden cube, the submerged part is increased by 3.87 cm. The mass of the metal coin is ____ gram. (Take water density as 1 g/cm³ and density of wood as 0.4 g/cm³)",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 51,
+        "questionText": "The mass of iron converted into Fe₃O₄ by the action of 18 g of steam is : (Given : Molar mass of H, O and Fe are 1, 16 and 56 g mol⁻¹ respectively) Assume iron is present in excess :",
+        "optionA": "(1) 2.1 g",
+        "optionB": "(2) 4.2 g",
+        "optionC": "(3) 21 g",
+        "optionD": "(4) 42 g"
+    },
+    {
+        "questionNumber": 52,
+        "questionText": "What is the energy (in J atom⁻¹) required for the following process? Li²⁺(g) → Li³⁺(g) + e⁻ (Take the ionization energy for the H atom in the ground state as 2.18 × 10⁻¹⁸ J atom⁻¹)",
+        "optionA": "(1) 8.72 × 10⁻¹⁸",
+        "optionB": "(2) 1.962 × 10⁻¹⁸",
+        "optionC": "(3) 1.962 × 10⁻¹⁷",
+        "optionD": "(4) 6.54 × 10⁻¹⁷"
+    },
+    {
+        "questionNumber": 53,
+        "questionText": "Given below are two statements : Statement (I) : The correct sequence of bond lengths in the following species is : O₂⁺ < O₂ < O₂⁻ < O₂²⁻ Statement (II) : The correct sequence of number of unpaired electrons in the following species is : O₂ > O₂⁺ > O₂⁻ > O₂²⁻ In the light of the above statements, choose the correct answer from the options given below :",
+        "optionA": "(1) Both Statement I and Statement II are true",
+        "optionB": "(2) Both Statement I and Statement II are false",
+        "optionC": "(3) Statement I is true but Statement II is false",
+        "optionD": "(4) Statement I is false but Statement II is true"
+    },
+    {
+        "questionNumber": 54,
+        "questionText": "Consider the following data. (i) 2Al(s) + 6HCl(aq) → Al₂Cl₆(aq) + 3H₂(g) + 1200 kJ/mol (ii) H₂(g) + Cl₂(g) → 2HCl(g) + 164 kJ/mol (iii) HCl(g) + aq → HCl(aq) + 83 kJ/mol (iv) Al₂Cl₆(s) + aq → Al₂Cl₆(aq) + 663 kJ/mol The enthalpy of formation of anhydrous solid Al₂Cl₆ is :",
+        "optionA": "(1) -648 kJ mol⁻¹",
+        "optionB": "(2) -1350 kJ mol⁻¹",
+        "optionC": "(3) -2002 kJ mol⁻¹",
+        "optionD": "(4) -1527 kJ mol⁻¹"
+    },
+    {
+        "questionNumber": 55,
+        "questionText": "19.5 g of fluoro acetic acid (molar mass = 78 g mol⁻¹) is dissolved in 500 g of water at 298 K. The depression in the freezing point of water was 1°C. What is K_a of fluoro acetic acid? (For water, K_f = 1.86 K kg mol⁻¹). Assume molarity and molality to have same values.",
+        "optionA": "(1) 10⁻⁶",
+        "optionB": "(2) 4 × 10⁻⁴",
+        "optionC": "(3) 3 × 10⁻⁵",
+        "optionD": "(4) 3 × 10⁻³"
+    },
+    {
+        "questionNumber": 56,
+        "questionText": "The solubility product constants of Ag₂CrO₄ and AgBr are 32x and 4y respectively at 298 K. The value of (molarity of Ag₂CrO₄) / (molarity of AgBr) can be expressed as :",
+        "optionA": "(1) 2x/y",
+        "optionB": "(2) 2√(x/y)",
+        "optionC": "(3) x/y",
+        "optionD": "(4) √(x/y)"
+    },
+    {
+        "questionNumber": 57,
+        "questionText": "An electrochemical cell is constructed using half cells in the direction of spontaneous change Fe(OH)₂(s) + 2e⁻ → Fe(s) + 2OH⁻(aq) E° = -0.88 V and AgBr(s) + e⁻ → Ag(s) + Br⁻(aq) E° = +0.07 V Which of the following option is correct?",
+        "optionA": "(1) Overall reaction Fe(s) + 2OH⁻(aq) + 2AgBr(s) ⇌ Fe(OH)₂(s) + 2Ag(s) + 2Br⁻(aq)",
+        "optionB": "(2) E°_cell = -0.95 V",
+        "optionC": "(3) Fe is reduced in the electrochemical cell",
+        "optionD": "(4) E°_cell is an extensive property"
+    },
+    {
+        "questionNumber": 58,
+        "questionText": "t_100% is the time required for the 100% completion of the reaction while t_1/2 is the time required for 50% of the reaction to be completed. Which of the following option correctly represents the relation between t_100% and t_1/2 for zero and first order reactions respectively?",
+        "optionA": "(1) t_100% = (t_1/2)² and t_100% = (t_1/2)⁻∞",
+        "optionB": "(2) t_100% = 2t_1/2 and t_100% = (t_1/2)⁻∞",
+        "optionC": "(3) t_100% = 2t_1/2 and t_100% = (2t_1/2)²",
+        "optionD": "(4) t_100% = (t_1/2)⁻∞ and t_100% = 2t_1/2"
+    },
+    {
+        "questionNumber": 59,
+        "questionText": "Given below are two statements : Statement (I) : The first ionisation enthalpy of the elements Na, Mg, Cl and Ar follows the order Na > Mg > Cl > Ar. Statement (II) : Among Ca, Al, Fe and B, the third ionisation enthalpy is very high for Ca. In the light of the above statements, choose the correct answer from the options given below :",
+        "optionA": "(1) Both Statement I and Statement II are true",
+        "optionB": "(2) Both Statement I and Statement II are false",
+        "optionC": "(3) Statement I is true but Statement II is false",
+        "optionD": "(4) Statement I is false but Statement II is true"
+    },
+    {
+        "questionNumber": 60,
+        "questionText": "Given below are two statements : Statement (I) : Oxidising power of halogens decreases in the order F₂ > Cl₂ > Br₂ > I₂, which is the basis of \"Layer test\". Statement (II) : \"Layer test\" to identify Br₂ and I₂ in aqueous solution involves the oxidation of bromide or iodide into Br₂ or I₂ respectively with Cl₂, which is a type of displacement redox reaction. In the light of the above statements, choose the correct answer from the options given below :",
+        "optionA": "(1) Both Statement I and Statement II are true",
+        "optionB": "(2) Both Statement I and Statement II are false",
+        "optionC": "(3) Statement I is true but Statement II is false",
+        "optionD": "(4) Statement I is false but Statement II is true"
+    },
+    {
+        "questionNumber": 61,
+        "questionText": "Which of the following sets includes all the species that will change the orange colour of K₂Cr₂O₇ in acidic medium?",
+        "optionA": "(1) Fe²⁺, Sn²⁺, I⁻, S²⁻",
+        "optionB": "(2) S²⁻, Fe³⁺, I⁻, C₂O₄²⁻",
+        "optionC": "(3) Fe²⁺, NO₂⁻, SO₃²⁻, Sn⁴⁺",
+        "optionD": "(4) Fe³⁺, SO₄²⁻, S²⁻, Sn⁴⁺"
+    },
+    {
+        "questionNumber": 62,
+        "questionText": "Match List - I with List - II. List - I (Chromium (III) Complexes (en = ethylene diamine)) List - II (Δ₀ (cm⁻¹)) A. [Cr(CN)₆]³⁻ I. 15,060 B. [CrF₆]³⁻ II. 17,400 C. [Cr(H₂O)₆]³⁺ III. 22,300 D. [Cr(en)₃]³⁺ IV. 26,600 Choose the correct answer from the options given below :",
+        "optionA": "(1) A-I, B-II, C-III, D-IV",
+        "optionB": "(2) A-II, B-III, C-IV, D-I",
+        "optionC": "(3) A-III, B-IV, C-I, D-II",
+        "optionD": "(4) A-IV, B-I, C-II, D-III"
+    },
+    {
+        "questionNumber": 63,
+        "questionText": "Given below are two statements : Statement (I) : 1,2,3-Trihydroxypropane can be separated from water by simple distillation. Statement (II) : An azeotropic mixture cannot be separated by fractional distillation. In the light of the above statements, choose the correct answer from the options given below :",
+        "optionA": "(1) Both Statement I and Statement II are true",
+        "optionB": "(2) Both Statement I and Statement II are false",
+        "optionC": "(3) Statement I is true but Statement II is false",
+        "optionD": "(4) Statement I is false but Statement II is true"
+    },
+    {
+        "questionNumber": 64,
+        "questionText": "Given below are two statements : Statement (I) : Benzyl chloride reacts faster in S_N1 mechanism than ethyl chloride. Statement (II) : Ethyl carbocation intermediate is less stabilized by hyperconjugation than benzyl carbocation by resonance. In the light of the above statements, choose the correct answer from the options given below :",
+        "optionA": "(1) Both Statement I and Statement II are true",
+        "optionB": "(2) Both Statement I and Statement II are false",
+        "optionC": "(3) Statement I is true but Statement II is false",
+        "optionD": "(4) Statement I is false but Statement II is true"
+    },
+    {
+        "questionNumber": 65,
+        "questionText": "In IUPAC nomenclature, the correct order of decreasing priority of functional group is :",
+        "optionA": "(1) −CONH₂, > C = O, −CHO, –NH₂, -C ≡ C-",
+        "optionB": "(2) −CONH₂, −COOCH₃, −CHO, -NH₂, −OH",
+        "optionC": "(3) −CONH₂, −CHO, > C = O, -NH₂, -C ≡ C-",
+        "optionD": "(4) −CONH₂, −CHO, –CN, -NH₂, -C ≡ C-"
+    },
+    {
+        "questionNumber": 66,
+        "questionText": "For the given molecule, \"x\", the preferred site for the attack of the electrophile is :",
+        "optionA": "(1) Predominantly at \"r\"",
+        "optionB": "(2) \"r\" and \"u\"",
+        "optionC": "(3) \"p\" and \"s\"",
+        "optionD": "(4) Predominantly at \"u\""
+    },
+    {
+        "questionNumber": 67,
+        "questionText": "Match List - I with List - II. List - I (Mixture of Compounds) List - II (Reagent used to distinguish) A. Diethyl amine + Ethyl amine I. Bromine water B. Acetaldehyde + Acetone II. CHCl₃ + KOH, Δ C. Ethanol + Phenol III. Neutral FeCl₃ D. Benzoic acid + Cinnamic acid IV. Ammonical silver nitrate Choose the correct answer from the options given below :",
+        "optionA": "(1) A-IV, B-II, C-I, D-III",
+        "optionB": "(2) A-IV, B-II, C-III, D-I",
+        "optionC": "(3) A-II, B-IV, C-I, D-III",
+        "optionD": "(4) A-II, B-IV, C-III, D-I"
+    },
+    {
+        "questionNumber": 69,
+        "questionText": "Match List - I with List - II. List - I (Vitamin) List - II (Name) A. Vitamin B₁ I. Pyridoxine B. Vitamin B₂ II. Ascorbic acid C. Vitamin B₆ III. Thiamine D. Vitamin C IV. Riboflavin Choose the correct answer from the options given below :",
+        "optionA": "(1) A-II, B-I, C-III, D-IV",
+        "optionB": "(2) A-IV, B-III, C-II, D-I",
+        "optionC": "(3) A-III, B-IV, C-I, D-II",
+        "optionD": "(4) A-I, B-III, C-II, D-IV"
+    },
+    {
+        "questionNumber": 70,
+        "questionText": "A salt with few drops of conc. HCl gives apple green colour in flame test. The group precipitate of the salt is dissolved in acetic acid and treated with K₂CrO₄ to give yellow precipitate. When the sodium carbonate extract of the salt solution is heated with conc. HNO₃ and ammonium molybdate, it resulted a canary yellow precipitate. The cation and anion present in the salt are respectively,",
+        "optionA": "(1) Ca²⁺ and SO₄²⁻",
+        "optionB": "(2) Ba²⁺ and PO₄³⁻",
+        "optionC": "(3) Mn²⁺ and PO₄³⁻",
+        "optionD": "(4) Ba²⁺ and SO₄²⁻"
+    },
+    {
+        "questionNumber": 71,
+        "questionText": "5.33 g of CrCl₃ · 6H₂O, which is a 1 : 3 electrolyte, is dissolved in water and is passed through a cation exchanger. The chloride ions in the eluted solution, on treatment with AgNO₃ results in 8.61 g of AgCl. The ratio of moles of complex reacted and moles of AgCl formed is ____ × 10⁻² (Nearest integer) [Molar mass in g mol⁻¹ Cr : 52, Ag : 108, Cl : 35.5, H : 1, O : 16]",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 72,
+        "questionText": "Consider the isomers of hydrocarbon with molecular formula C₅H₁₀. These isomers do not decolourise KMnO₄ solution. These isomers are subjected to chlorination with chlorine in presence of light to give monochloro compounds. The total number of monochloro compounds (structural isomers only) formed is ____.",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 73,
+        "questionText": "One mole of an alkane (x) requires 8 mole oxygen for complete combustion. Sum of number of carbon and hydrogen atoms in the alkane (x) is ____.",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 74,
+        "questionText": "For reaction A → P, rate constant k = 1.5 × 10³ s⁻¹ at 27°C. If activation energy for the above reaction is 60 kJ mol⁻¹, then the temperature (in °C) at which rate constant, k = 4.5 × 10³ s⁻¹ is ____ (Nearest integer) Given : log 2 = 0.30, log 3 = 0.48, R = 8.3 J K⁻¹ mol⁻¹, ln 10 = 2.3",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    },
+    {
+        "questionNumber": 75,
+        "questionText": "At the transition temperature T, A = B and ΔG° = 105 - 35 log T where A and B are two states of substance X. The transition temperature in °C when pressure is 1 atm is ____ (Nearest integer)",
+        "optionA": null,
+        "optionB": null,
+        "optionC": null,
+        "optionD": null
+    }
+]
