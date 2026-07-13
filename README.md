@@ -21,6 +21,7 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 ## 🛠️ Key Features
 
 ### ✅ Current Features (Implemented)
+- **Interactive React Frontend**: Modern single-page web client for practicing tests, monitoring state machine processing, and uploading practice PDFs.
 - **Multipart Document Intake**: Handles multipart uploads of exam PDFs with custom titles and practice configurations.
 - **State-Machine Lifecycle Tracking**: Practice sessions undergo atomic state progressions: `UPLOADING` ➔ `EXTRACTING` ➔ `READY` (or `FAILED` upon errors).
 - **Synchronous Microservice Client**: Spring Boot bridges to the FastAPI microservice via a synchronous HTTP `RestClient` configured with strict timeouts.
@@ -41,6 +42,15 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 
 ## 💻 Technology Stack
 
+### Frontend (User Interface)
+- **Language**: JavaScript (ES6+)
+- **Framework**: React 19 + Vite 8
+- **Styling**: Tailwind CSS v4
+- **Routing**: React Router v7
+- **HTTP Client**: Axios
+- **Icons**: Lucide React
+- **Notifications**: React Hot Toast
+
 ### Backend (Core Logic & Security)
 - **Language**: Java 17
 - **Framework**: Spring Boot 3.2.5 (Starter Web, Starter Security, Starter Data JPA)
@@ -59,7 +69,7 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 - **Engine**: MySQL 8.0 (Schema `MOCK_TESTER`)
 
 ### Authentication
-- **Mechanism**: JSON Web Token (JWT) stateless authorization header
+- **Mechanism**: JSON Web Token (JWT) stateless authorization header / local storage storage
 
 ---
 
@@ -68,12 +78,14 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 ```mermaid
 sequenceDiagram
     actor Student as Student
+    participant FE as React Frontend
     participant SB as Spring Boot Backend
     participant FA as FastAPI AI Service
     participant Gemini as Google Gemini API
     database DB as MySQL Database
 
-    Student->>SB: POST /api/practice/sessions (PDF + Auth Header)
+    Student->>FE: Interacts with UI & Uploads PDF
+    FE->>SB: POST /api/practice/sessions (PDF + Auth Header)
     Note over SB: Validate JWT & User context
     SB->>DB: INSERT PracticeSession (Status: UPLOADING)
     SB->>DB: UPDATE PracticeSession (Status: EXTRACTING)
@@ -86,7 +98,8 @@ sequenceDiagram
     
     Note over SB: Parse questions & save
     SB->>DB: UPDATE PracticeSession (Status: READY, questions count)
-    SB-->>Student: 200 OK (PracticeSessionCreateResponse)
+    SB-->>FE: 200 OK (PracticeSessionCreateResponse)
+    FE-->>Student: Renders Interactive Practice Dashboard & Questions
 ```
 
 For a detailed review of the microservices design, check out [MICROSERVICE_ARCHITECTURE.md](file:///e:/ExamPilot/docs/MICROSERVICE_ARCHITECTURE.md).
@@ -97,6 +110,7 @@ For a detailed review of the microservices design, check out [MICROSERVICE_ARCHI
 ```text
 ExamPilot/
 │
+├── FRONTEND/            # React + Vite Production Frontend Client
 ├── BACKEND/             # Spring Boot Production Backend (REST API, JWT, DB layer)
 ├── AI SERVICE/          # FastAPI Production AI Microservice (Gemini wrapper)
 ├── research/            # Research prototypes & historical experiments
@@ -116,10 +130,29 @@ ExamPilot/
 ## 🚀 Installation & Running Guide
 
 ### 📋 Prerequisites
+- **Node.js**: Node 18+ and npm installed (for React Frontend).
 - **Java**: JDK 17 installed and mapped to `JAVA_HOME`.
 - **Python**: Python 3.10+ installed with `pip`.
 - **Database**: Running MySQL 8.0 instance with a database named `MOCK_TESTER`.
 - **API Keys**: Active Google Gemini API Key.
+
+---
+
+### How to Run React Frontend
+
+1. Navigate to the `FRONTEND` directory:
+   ```bash
+   cd FRONTEND
+   ```
+2. Install dependencies:
+   ```bash
+   npm install
+   ```
+3. Start the Vite development server:
+   ```bash
+   npm run dev
+   ```
+   *The frontend client will run on port `5173` (e.g., http://localhost:5173).*
 
 ---
 
@@ -186,6 +219,10 @@ ExamPilot/
 | **Spring Boot** | `POST` | `/api/auth/register` | Register a new user | No |
 | **Spring Boot** | `POST` | `/api/auth/login` | Login and obtain JWT token | No |
 | **Spring Boot** | `POST` | `/api/practice/sessions` | Create practice session & upload PDF | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/practice/sessions` | List user's practice sessions (paginated) | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/practice/sessions/{id}` | Get specific practice session details | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/practice/sessions/{id}/questions` | Get questions for a session | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/practice/sessions/{id}/summary` | Get session extraction summary | Yes (Bearer JWT) |
 | **FastAPI** | `GET` | `/health` | Check microservice health status | No |
 | **FastAPI** | `POST` | `/upload` | Extract questions directly from PDF | No (Internal) |
 

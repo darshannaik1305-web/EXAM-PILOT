@@ -52,3 +52,20 @@ build/
 .project
 .settings/
 .springBeans
+
+# Node/JavaScript & Vite Build outputs
+**/node_modules/
+**/dist/
+**/dist-ssr/
+**/*.local
+**/npm-debug.log*
+**/yarn-debug.log*
+**/yarn-error.log*
+**/pnpm-debug.log*
+**/.eslintcache
+
+# Operating System files
+**/.DS_Store
+**/Thumbs.db
+**/desktop.ini
+
