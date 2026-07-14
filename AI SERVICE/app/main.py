@@ -5,6 +5,7 @@ from contextlib import asynccontextmanager
 from app.utils.config import get_settings
 from app.api.health import router as health_router
 from app.api.upload import router as upload_router
+from app.api.mentor import router as mentor_router
 
 
 @asynccontextmanager
@@ -37,6 +38,7 @@ app.add_middleware(
 # Include API Routers
 app.include_router(health_router, tags=["Health"])
 app.include_router(upload_router, tags=["Upload"])
+app.include_router(mentor_router, tags=["Mentor"])
 
 
 if __name__ == "__main__":

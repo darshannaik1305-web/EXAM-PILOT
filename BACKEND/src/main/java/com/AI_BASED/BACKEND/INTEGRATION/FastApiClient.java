@@ -56,6 +56,15 @@ public class FastApiClient {
                 .body(ExtractionResponseDto.class);
     }
 
+    public com.AI_BASED.BACKEND.DTO.MentorChatResponseDto chatWithMentor(com.AI_BASED.BACKEND.DTO.MentorChatRequestDto request) {
+        return restClient.post()
+                .uri("/mentor/chat")
+                .contentType(MediaType.APPLICATION_JSON)
+                .body(request)
+                .retrieve()
+                .body(com.AI_BASED.BACKEND.DTO.MentorChatResponseDto.class);
+    }
+
     public boolean isFastApiAvailable() {
         try {
             ResponseEntity<Void> response = restClient.get()

@@ -33,3 +33,35 @@ export async function getSummary(id) {
   const response = await api.get(`/api/practice/sessions/${id}/summary`);
   return response.data;
 }
+
+// Mock Test Engine Endpoints
+export async function startOrResumeTest(sessionId) {
+  const response = await api.post(`/api/practice/${sessionId}/test/start`);
+  return response.data;
+}
+
+export async function getTestSession(testSessionId) {
+  const response = await api.get(`/api/practice/test-sessions/${testSessionId}`);
+  return response.data;
+}
+
+export async function getTestQuestion(testSessionId, questionNumber) {
+  const response = await api.get(`/api/practice/test-sessions/${testSessionId}/questions/${questionNumber}`);
+  return response.data;
+}
+
+export async function saveTestAnswer(testSessionId, questionNumber, requestBody) {
+  const response = await api.post(`/api/practice/test-sessions/${testSessionId}/answers/${questionNumber}`, requestBody);
+  return response.data;
+}
+
+export async function getTestPalette(testSessionId) {
+  const response = await api.get(`/api/practice/test-sessions/${testSessionId}/palette`);
+  return response.data;
+}
+
+export async function submitTest(testSessionId) {
+  const response = await api.post(`/api/practice/test-sessions/${testSessionId}/submit`);
+  return response.data;
+}
+

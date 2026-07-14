@@ -45,12 +45,20 @@ function SessionTable({ sessions = [] }) {
                 </td>
                 <td className="py-4 px-6 text-right">
                   {isReady ? (
-                    <Link to={`/student/practice/${session.id}`}>
-                      <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5 cursor-pointer">
-                        <Play size={11} fill="currentColor" />
-                        <span>Practice</span>
-                      </Button>
-                    </Link>
+                    <div className="flex items-center justify-end space-x-2.5">
+                      <Link to={`/student/practice/${session.id}`}>
+                        <Button variant="primary" size="sm" className="inline-flex items-center gap-1.5 cursor-pointer text-xs py-1.5 px-3">
+                          <Play size={11} fill="currentColor" />
+                          <span>Take Test</span>
+                        </Button>
+                      </Link>
+                      <Link to={`/student/practice/${session.id}/review`}>
+                        <Button variant="outline" size="sm" className="inline-flex items-center gap-1.5 cursor-pointer text-xs py-1.5 px-3 border-border hover:bg-slate-800">
+                          <FileText size={12} />
+                          <span>Review</span>
+                        </Button>
+                      </Link>
+                    </div>
                   ) : isFailed ? (
                     <div className="inline-flex items-center text-danger gap-1.5 text-xs font-semibold select-none">
                       <AlertCircle size={14} />
