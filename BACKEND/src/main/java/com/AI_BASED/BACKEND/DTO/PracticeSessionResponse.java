@@ -38,4 +38,24 @@ public class PracticeSessionResponse {
     private LocalDateTime createdAt;
 
     private LocalDateTime updatedAt;
+
+    // Attempt Details (Sprint 2)
+    private String latestTestStatus;
+    private Long latestTestSessionId;
+    private Double latestScore;
+    private Double bestScore;
+    private Double bestAccuracy;
+    private Integer totalAttempts;
+    private String lastAttemptDate;
+
+    // Exam Config details (Sprint 2)
+    private Integer examDurationSeconds;
+    private Double positiveMarks;
+    private Double negativeMarks;
+    private String examStructure;
+    private String examName;
+
+    // Sprint 3.2 additions
+    private String subject;
+    private Double latestAccuracy;
 }

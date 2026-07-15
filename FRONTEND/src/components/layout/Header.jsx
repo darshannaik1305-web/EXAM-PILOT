@@ -1,9 +1,24 @@
-import { useContext } from "react";
+import { useContext, useState, useEffect } from "react";
 import { AuthContext } from "../../context/AuthContext";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { Bell, Search, Menu, Target, Sparkles, Activity } from "lucide-react";
 
 function Header({ setIsMobileOpen }) {
   const { user } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [searchParams] = useSearchParams();
+  const [searchValue, setSearchValue] = useState(searchParams.get("search") || "");
+
+  // Sync state if URL changes
+  useEffect(() => {
+    setSearchValue(searchParams.get("search") || "");
+  }, [searchParams]);
+
+  const handleSearchSubmit = (e) => {
+    if (e.key === "Enter") {
+      navigate(`/student/workspace?search=${encodeURIComponent(searchValue)}`);
+    }
+  };
 
   // Derive initials from user email/details
   const displayName = user?.email || "Student";
@@ -23,12 +38,14 @@ function Header({ setIsMobileOpen }) {
 
         {/* Workspace Search shortcut */}
         <div className="relative max-w-xs w-full hidden sm:block">
-          <Search size={14} className="absolute left-3 top-3.5 text-muted" />
+          <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-muted" />
           <input
             type="text"
-            placeholder="Search workspace... (Ctrl + K)"
-            disabled
-            className="w-full pl-9 pr-4 py-2 text-xs border border-border bg-slate-900/60 rounded-xl text-muted cursor-not-allowed"
+            placeholder="Search workspace..."
+            value={searchValue}
+            onChange={(e) => setSearchValue(e.target.value)}
+            onKeyDown={handleSearchSubmit}
+            className="w-full pl-9 pr-4 py-2 text-xs border border-border bg-slate-900/60 rounded-xl text-text focus:outline-none focus:border-primary focus:ring-2 focus:ring-primary/20 transition-all placeholder-muted cursor-text"
           />
         </div>
       </div>

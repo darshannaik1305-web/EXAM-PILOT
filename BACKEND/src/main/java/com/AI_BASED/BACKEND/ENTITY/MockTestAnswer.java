@@ -8,7 +8,11 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "mock_test_answers")
+@Table(name = "mock_test_answers", uniqueConstraints = {
+    @UniqueConstraint(columnNames = {"mock_test_session_id", "practice_question_id"})
+}, indexes = {
+    @Index(name = "idx_mta_session", columnList = "mock_test_session_id")
+})
 public class MockTestAnswer {
 
     @Id

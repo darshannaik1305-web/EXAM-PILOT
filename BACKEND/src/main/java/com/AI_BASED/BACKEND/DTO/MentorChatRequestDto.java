@@ -18,6 +18,26 @@ public class MentorChatRequestDto {
     private List<String> weakSubjects;
     private List<String> strongSubjects;
 
+    private Double latestScore;
+    private Double latestAccuracy;
+    private Double bestScore;
+    private Double bestAccuracy;
+    private Integer totalAttempts;
+    private Integer totalQuestionsAttempted;
+    private List<SubjectStatsDto> subjectBreakdown;
+
+    @Data
+    @NoArgsConstructor
+    @AllArgsConstructor
+    public static class SubjectStatsDto {
+        private String subject;
+        private int correctAnswers;
+        private int wrongAnswers;
+        private int skippedQuestions;
+        private double averageScore;
+        private double accuracy;
+    }
+
     @Data
     @NoArgsConstructor
     @AllArgsConstructor

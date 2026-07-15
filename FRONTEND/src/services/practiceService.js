@@ -1,12 +1,30 @@
 import api from "./api";
 
-export async function uploadPractice(title, uploadType, file) {
+export async function uploadPractice(title, uploadType, file, config = {}) {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("title", title);
   formData.append("uploadType", uploadType);
+  if (config.examDurationSeconds !== undefined) formData.append("examDurationSeconds", config.examDurationSeconds);
+  if (config.positiveMarks !== undefined) formData.append("positiveMarks", config.positiveMarks);
+  if (config.negativeMarks !== undefined) formData.append("negativeMarks", config.negativeMarks);
+  if (config.examName) formData.append("examName", config.examName);
+  if (config.examStructure) formData.append("examStructure", config.examStructure);
+  if (config.subject) formData.append("subject", config.subject);
 
   const response = await api.post("/api/practice/sessions", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+  return response.data;
+}
+
+export async function uploadAnswerKey(sessionId, file) {
+  const formData = new FormData();
+  formData.append("file", file);
+
+  const response = await api.post(`/api/practice/sessions/${sessionId}/answer-key`, formData, {
     headers: {
       "Content-Type": "multipart/form-data",
     },
@@ -62,6 +80,21 @@ export async function getTestPalette(testSessionId) {
 
 export async function submitTest(testSessionId) {
   const response = await api.post(`/api/practice/test-sessions/${testSessionId}/submit`);
+  return response.data;
+}
+
+export async function retakeTest(sessionId) {
+  const response = await api.post(`/api/practice/${sessionId}/test/retake`);
+  return response.data;
+}
+
+export async function getAttemptHistory(sessionId) {
+  const response = await api.get(`/api/practice/${sessionId}/attempts`);
+  return response.data;
+}
+
+export async function getReviewData(testSessionId) {
+  const response = await api.get(`/api/practice/test-sessions/${testSessionId}/review`);
   return response.data;
 }
 

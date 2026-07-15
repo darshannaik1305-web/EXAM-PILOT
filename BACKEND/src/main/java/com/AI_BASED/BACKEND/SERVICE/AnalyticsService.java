@@ -30,7 +30,7 @@ public class AnalyticsService {
     @Transactional(readOnly = true)
     public AnalyticsResponse getStudentAnalytics(User user) {
         List<MockTestSession> allSessions = sessionRepository.findByUserOrderByStartedAtDesc(user);
-        
+
         List<MockTestSession> completedSessions = allSessions.stream()
                 .filter(s -> s.getStatus() == MockTestStatus.COMPLETED)
                 .collect(Collectors.toList());
@@ -49,15 +49,10 @@ public class AnalyticsService {
             );
         }
 
+        // 1. Bulk Fetch Overall Results
+        List<MockTestResult> results = resultRepository.findByMockTestSessionIn(completedSessions);
         double totalScore = 0.0;
         double totalAccuracy = 0.0;
-        
-        List<MockTestResult> results = new ArrayList<>();
-        for (MockTestSession session : completedSessions) {
-            resultRepository.findByMockTestSession(session).ifPresent(res -> {
-                results.add(res);
-            });
-        }
 
         for (MockTestResult res : results) {
             totalScore += res.getScore();
@@ -67,14 +62,10 @@ public class AnalyticsService {
         double averageScore = totalScore / totalTests;
         double averageAccuracy = results.isEmpty() ? 0.0 : totalAccuracy / results.size();
 
-        // 1. Subject aggregates
-        Map<String, List<MockTestSubjectResult>> subjectMap = new HashMap<>();
-        for (MockTestSession session : completedSessions) {
-            List<MockTestSubjectResult> subList = subjectResultRepository.findByMockTestSession(session);
-            for (MockTestSubjectResult sRes : subList) {
-                subjectMap.computeIfAbsent(sRes.getSubject(), k -> new ArrayList<>()).add(sRes);
-            }
-        }
+        // 2. Bulk Fetch Subject aggregates
+        List<MockTestSubjectResult> allSubjectResults = subjectResultRepository.findByMockTestSessionIn(completedSessions);
+        Map<String, List<MockTestSubjectResult>> subjectMap = allSubjectResults.stream()
+                .collect(Collectors.groupingBy(MockTestSubjectResult::getSubject));
 
         List<AnalyticsResponse.SubjectAnalytics> subjectBreakdowns = new ArrayList<>();
         List<String> weakSubjects = new ArrayList<>();
@@ -96,10 +87,10 @@ public class AnalyticsService {
                 scoreSum += r.getScore();
             }
 
-            int totalQ = correct + wrong + skipped;
             int totalAns = correct + wrong;
             double accuracy = totalAns > 0 ? ((double) correct / totalAns) * 100.0 : 0.0;
-            double avgSubScore = scoreSum / completedSessions.size();
+            // Fix: divide scoreSum by sResults.size() instead of completedSessions.size()
+            double avgSubScore = sResults.isEmpty() ? 0.0 : scoreSum / sResults.size();
 
             subjectBreakdowns.add(new AnalyticsResponse.SubjectAnalytics(
                     subject, correct, wrong, skipped, avgSubScore, accuracy
@@ -112,14 +103,10 @@ public class AnalyticsService {
             }
         }
 
-        // 2. Difficulty aggregates
-        Map<String, List<MockTestDifficultyResult>> diffMap = new HashMap<>();
-        for (MockTestSession session : completedSessions) {
-            List<MockTestDifficultyResult> diffList = difficultyResultRepository.findByMockTestSession(session);
-            for (MockTestDifficultyResult dRes : diffList) {
-                diffMap.computeIfAbsent(dRes.getDifficultyLevel(), k -> new ArrayList<>()).add(dRes);
-            }
-        }
+        // 3. Bulk Fetch Difficulty aggregates
+        List<MockTestDifficultyResult> allDiffResults = difficultyResultRepository.findByMockTestSessionIn(completedSessions);
+        Map<String, List<MockTestDifficultyResult>> diffMap = allDiffResults.stream()
+                .collect(Collectors.groupingBy(MockTestDifficultyResult::getDifficultyLevel));
 
         List<AnalyticsResponse.DifficultyAnalytics> difficultyBreakdowns = new ArrayList<>();
         for (Map.Entry<String, List<MockTestDifficultyResult>> entry : diffMap.entrySet()) {
@@ -144,10 +131,10 @@ public class AnalyticsService {
             ));
         }
 
-        // 3. History list (Limit to last 10 completed sessions)
+        // 4. History list (Limit to last 10 completed sessions)
         List<AnalyticsResponse.HistoryItem> history = new ArrayList<>();
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
-        
+
         for (MockTestSession session : completedSessions) {
             final MockTestSession fSession = session;
             Optional<MockTestResult> resOpt = results.stream()
@@ -158,10 +145,16 @@ public class AnalyticsService {
             int correct = resOpt.map(MockTestResult::getCorrectAnswers).orElse(0);
             int wrong = resOpt.map(MockTestResult::getWrongAnswers).orElse(0);
             double accuracy = resOpt.map(MockTestResult::getAccuracy).orElse(0.0);
+            double percentage = resOpt.map(MockTestResult::getPercentage).orElse(0.0);
+            int timeTaken = resOpt.map(r -> (int) r.getTimeTakenSeconds()).orElse(0);
             String dateText = session.getCompletedAt() != null ? session.getCompletedAt().format(formatter) : "";
 
             history.add(new AnalyticsResponse.HistoryItem(
                     session.getId(),
+                    session.getPracticeSession().getId(),
+                    session.getAttemptNumber() != null ? session.getAttemptNumber() : 1,
+                    percentage,
+                    timeTaken,
                     session.getPracticeSession().getTitle(),
                     dateText,
                     score,

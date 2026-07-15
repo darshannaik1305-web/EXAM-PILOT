@@ -27,15 +27,12 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 - **Synchronous Microservice Client**: Spring Boot bridges to the FastAPI microservice via a synchronous HTTP `RestClient` configured with strict timeouts.
 - **LLM Question Extraction**: FastAPI uses Google Gemini 2.5 Flash to structurally dissect PDF pages into clean JSON question blocks (questions, option arrays, correct answers, and explanations).
 - **Unified Security Filter**: Validates stateless requests via a custom JWT-based authentication filter.
-- **Structured Error Handling**: Traps remote API gateway issues and maps them to clean client DTOs.
+- **Mock Test Simulation Engine**: Real-time timer-based interface for taking simulated exams, saving progress, and managing attempts lifecycle (`NOT_STARTED` ➔ `ACTIVE` ➔ `COMPLETED`).
+- **Interactive Review & Grading**: side-by-side performance review showing scores, correct/incorrect badges, time taken, and step-by-step LaTeX math notation answers.
+- **Subject-wise Analytics**: Dynamic analytics tracker calculating overall test accuracy, streak timelines, and subject-level mastery without hardcoded exam parameters.
+- **AI Guidance Mentor**: Contextual chatbot that analyzes student learning metrics and detailed subject accuracy to deliver structured study planning.
 
-### 🚧 In Progress
-- **Question Database Persistence**: Spring Boot schema tables to map and persist extracted questions for future mock session generation.
-
-### 🔮 Upcoming Features
-- **Interactive Mock Test Engine**: Live timer-based mock exam interface with option selectors.
-- **Comprehensive Review Screen**: Side-by-side comparison of student answers against extracted keys and AI-generated explanations.
-- **Performance Analytics**: Diagnostic reports highlighting weak topics, subjects, and time spent per question.
+### 🔮 Future Roadmap
 - **Adaptive AI Prep**: Recommends personalized mini-tests based on diagnosed weaknesses.
 
 ---
@@ -223,6 +220,12 @@ ExamPilot/
 | **Spring Boot** | `GET` | `/api/practice/sessions/{id}` | Get specific practice session details | Yes (Bearer JWT) |
 | **Spring Boot** | `GET` | `/api/practice/sessions/{id}/questions` | Get questions for a session | Yes (Bearer JWT) |
 | **Spring Boot** | `GET` | `/api/practice/sessions/{id}/summary` | Get session extraction summary | Yes (Bearer JWT) |
+| **Spring Boot** | `POST` | `/api/practice/{sessionId}/test/start` | Start or resume a mock test attempt | Yes (Bearer JWT) |
+| **Spring Boot** | `POST` | `/api/practice/test-sessions/{testSessionId}/submit` | Submit mock test responses for grading | Yes (Bearer JWT) |
+| **Spring Boot** | `POST` | `/api/practice/{sessionId}/test/retake` | Create a new mock test attempt | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/practice/test-sessions/{testSessionId}/review` | Fetch questions and graded answers for review | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/dashboard/stats` | Retrieve generalized study statistics | Yes (Bearer JWT) |
+| **Spring Boot** | `POST` | `/api/mentor/chat` | Chat with the dynamic AI Guidance Mentor | Yes (Bearer JWT) |
 | **FastAPI** | `GET` | `/health` | Check microservice health status | No |
 | **FastAPI** | `POST` | `/upload` | Extract questions directly from PDF | No (Internal) |
 

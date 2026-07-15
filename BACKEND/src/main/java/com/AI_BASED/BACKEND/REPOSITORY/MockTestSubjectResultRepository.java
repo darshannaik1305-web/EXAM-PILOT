@@ -11,4 +11,6 @@ import java.util.List;
 public interface MockTestSubjectResultRepository extends JpaRepository<MockTestSubjectResult, Long> {
 
     List<MockTestSubjectResult> findByMockTestSession(MockTestSession mockTestSession);
+
+    List<MockTestSubjectResult> findByMockTestSessionIn(List<MockTestSession> sessions);
 }

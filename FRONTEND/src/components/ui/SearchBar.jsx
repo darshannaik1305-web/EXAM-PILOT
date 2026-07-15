@@ -3,7 +3,7 @@ import { Search } from "lucide-react";
 function SearchBar({ className = "", value, onChange, placeholder = "Search...", ...props }) {
   return (
     <div className="relative w-full">
-      <Search size={16} className="absolute left-3.5 top-3.5 text-muted" />
+      <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted" />
       <input
         type="text"
         placeholder={placeholder}

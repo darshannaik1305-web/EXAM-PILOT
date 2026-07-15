@@ -257,7 +257,7 @@ function Analytics() {
                   </td>
                   <td className="py-3 px-2 text-center font-mono font-bold text-success">{item.accuracy.toFixed(1)}%</td>
                   <td className="py-3 px-2 text-right">
-                    <Link to={`/student/practice/${item.id}/review`}>
+                    <Link to={`/student/practice/${item.practiceSessionId}/review?testSessionId=${item.id}`}>
                       <Button variant="outline" size="sm" className="inline-flex items-center gap-1 px-2.5 py-1 text-xs border-border hover:bg-slate-800">
                         <span>Review</span>
                         <ArrowRight size={11} />

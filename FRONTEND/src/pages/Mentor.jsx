@@ -10,7 +10,8 @@ import {
   Activity,
   Award,
   BookOpen,
-  HelpCircle
+  HelpCircle,
+  AlertTriangle
 } from "lucide-react";
 import Card from "../components/ui/Card";
 import Button from "../components/ui/Button";
@@ -24,7 +25,7 @@ function Mentor() {
   const [messages, setMessages] = useState([
     {
       role: "model",
-      content: "Hello! I am your AI Mentor. I've reviewed your ExamPilot study history and JEE analytics profile. How can I help you optimize your study strategies or resolve doubt topics today?"
+      content: "Hello! I am your AI Mentor. I've reviewed your ExamPilot study history and analytics profile. How can I help you optimize your study strategies or resolve doubt topics today?"
     }
   ]);
   const [inputValue, setInputValue] = useState("");
@@ -46,6 +47,56 @@ function Mentor() {
     }
     loadStats();
   }, []);
+
+  // Basic markdown formatter to render list bullets and bold text cleanly
+  function formatMessage(content) {
+    if (!content) return "";
+    
+    const lines = content.split("\n");
+    return lines.map((line, lineIdx) => {
+      const isBullet = line.trim().startsWith("* ") || line.trim().startsWith("- ");
+      let cleanLine = isBullet ? line.trim().substring(2) : line;
+      
+      const parts = [];
+      let lastIdx = 0;
+      const regex = /\*\*(.*?)\*\*/g;
+      let match;
+      
+      while ((match = regex.exec(cleanLine)) !== null) {
+        if (match.index > lastIdx) {
+          parts.push(cleanLine.substring(lastIdx, match.index));
+        }
+        parts.push(
+          <strong key={match.index} className="font-extrabold text-white">
+            {match[1]}
+          </strong>
+        );
+        lastIdx = regex.lastIndex;
+      }
+      
+      if (lastIdx < cleanLine.length) {
+        parts.push(cleanLine.substring(lastIdx));
+      }
+      
+      if (isBullet) {
+        return (
+          <li key={lineIdx} className="ml-4 list-disc mb-1 pl-1 text-slate-200">
+            {parts}
+          </li>
+        );
+      }
+      
+      if (line.trim() === "") {
+        return <div key={lineIdx} className="h-2" />;
+      }
+      
+      return (
+        <p key={lineIdx} className="text-slate-200">
+          {parts}
+        </p>
+      );
+    });
+  }
 
   // Scroll to bottom when messages update
   useEffect(() => {
@@ -121,12 +172,16 @@ function Mentor() {
                 </div>
 
                 {/* Message Bubble */}
-                <div className={`p-4 rounded-2xl text-sm leading-relaxed whitespace-pre-wrap border ${
+                <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${
                   isModel
                     ? "bg-card/65 border-border/80 text-slate-100"
                     : "bg-primary/10 border-primary/20 text-slate-100 shadow-lg shadow-primary/5"
                 }`}>
-                  {msg.content}
+                  {isModel ? (
+                    <div className="space-y-2.5">{formatMessage(msg.content)}</div>
+                  ) : (
+                    <div className="whitespace-pre-wrap">{msg.content}</div>
+                  )}
                 </div>
               </div>
             );

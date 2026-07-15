@@ -47,7 +47,11 @@ public class AnalyticsResponse {
     @NoArgsConstructor
     @AllArgsConstructor
     public static class HistoryItem {
-        private Long id;
+        private Long id; // testSessionId
+        private Long practiceSessionId;
+        private int attemptNumber;
+        private double percentage;
+        private int timeTakenSeconds;
         private String title;
         private String date;
         private double score;

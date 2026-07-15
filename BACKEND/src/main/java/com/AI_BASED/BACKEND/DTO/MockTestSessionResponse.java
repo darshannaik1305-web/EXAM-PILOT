@@ -20,4 +20,7 @@ public class MockTestSessionResponse {
     private MockTestStatus status;
     private Integer totalQuestions;
     private Double score;
+    private String displayStatus;
+    private Integer remainingSeconds;
+    private Integer attemptNumber;
 }

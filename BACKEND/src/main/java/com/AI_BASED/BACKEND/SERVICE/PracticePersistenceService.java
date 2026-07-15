@@ -4,6 +4,7 @@ import com.AI_BASED.BACKEND.DTO.QuestionDto;
 import com.AI_BASED.BACKEND.ENTITY.PracticeQuestion;
 import com.AI_BASED.BACKEND.ENTITY.PracticeSession;
 import com.AI_BASED.BACKEND.ENTITY.PracticeSessionStatus;
+import com.AI_BASED.BACKEND.ENTITY.UploadType;
 import com.AI_BASED.BACKEND.EXCEPTION.ExtractionException;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeQuestionRepository;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeSessionRepository;
@@ -44,6 +45,13 @@ public class PracticePersistenceService {
             q.setOptionD(qDto.getOptionD());
             q.setCorrectAnswer(qDto.getCorrectAnswer());
             q.setExplanation(qDto.getExplanation());
+            if (session.getSubject() != null && !session.getSubject().trim().isEmpty()) {
+                q.setSubject(session.getSubject().trim());
+            } else {
+                q.setSubject(qDto.getSubject());
+            }
+            q.setDifficulty(qDto.getDifficulty());
+            q.setSolution(qDto.getSolution());
             return q;
         }).collect(Collectors.toList());
 
@@ -56,7 +64,11 @@ public class PracticePersistenceService {
         PracticeSession session = practiceSessionRepository.findById(sessionId)
                 .orElseThrow(() -> new ExtractionException("Practice session not found: " + sessionId));
 
-        session.setStatus(PracticeSessionStatus.READY);
+        if (session.getUploadType() == UploadType.QUESTION_AND_SEPARATE_ANSWER_KEY) {
+            session.setStatus(PracticeSessionStatus.IN_PROGRESS);
+        } else {
+            session.setStatus(PracticeSessionStatus.READY);
+        }
         session.setTotalQuestions(totalQuestions);
         session.setProcessingTimeSeconds(processingTimeSeconds);
         session.setExtractionVerified(false);

@@ -26,6 +26,28 @@ public class ExtractionExceptionHandler {
         return new ResponseEntity<>(errorDto, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
+    @ExceptionHandler(com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException.class)
+    public ResponseEntity<ExtractionErrorResponseDto> handleAccessDeniedException(com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException ex) {
+        ExtractionErrorResponseDto errorDto = new ExtractionErrorResponseDto(
+                HttpStatus.FORBIDDEN.value(),
+                "ACCESS_DENIED",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDto, HttpStatus.FORBIDDEN);
+    }
+
+    @ExceptionHandler(com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException.class)
+    public ResponseEntity<ExtractionErrorResponseDto> handleResourceNotFoundException(com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException ex) {
+        ExtractionErrorResponseDto errorDto = new ExtractionErrorResponseDto(
+                HttpStatus.NOT_FOUND.value(),
+                "RESOURCE_NOT_FOUND",
+                ex.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorDto, HttpStatus.NOT_FOUND);
+    }
+
     @ExceptionHandler(IllegalArgumentException.class)
     public ResponseEntity<ExtractionErrorResponseDto> handleIllegalArgumentException(IllegalArgumentException ex) {
         ExtractionErrorResponseDto errorDto = new ExtractionErrorResponseDto(

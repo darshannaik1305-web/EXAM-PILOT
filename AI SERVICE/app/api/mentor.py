@@ -12,6 +12,14 @@ from app.core.logger import logger
 
 router = APIRouter()
 
+class SubjectStats(BaseModel):
+    subject: str
+    correctAnswers: int
+    wrongAnswers: int
+    skippedQuestions: int
+    averageScore: float
+    accuracy: float
+
 class ChatMessage(BaseModel):
     role: str  # 'user' or 'model'
     content: str
@@ -24,6 +32,13 @@ class MentorChatRequest(BaseModel):
     studyStreak: int
     weakSubjects: List[str]
     strongSubjects: List[str]
+    latestScore: float | None = None
+    latestAccuracy: float | None = None
+    bestScore: float | None = None
+    bestAccuracy: float | None = None
+    totalAttempts: int | None = None
+    totalQuestionsAttempted: int | None = None
+    subjectBreakdown: List[SubjectStats] = []
 
 class MentorChatResponse(BaseModel):
     reply: str
@@ -53,7 +68,14 @@ async def chat_with_mentor(
     weak_sub_text = ", ".join(request.weakSubjects) if request.weakSubjects else "None"
     strong_sub_text = ", ".join(request.strongSubjects) if request.strongSubjects else "None"
 
-    system_instruction = f"""You are the AI Mentor for ExamPilot, an advanced AI-based study simulator and mentor for JEE (Joint Entrance Examination) prep.
+    subject_stats_text = ""
+    if request.subjectBreakdown:
+        for s in request.subjectBreakdown:
+            subject_stats_text += f"- **{s.subject}**: {s.accuracy:.1f}% accuracy ({s.correctAnswers} Correct, {s.wrongAnswers} Wrong, {s.skippedQuestions} Skipped)\n"
+    else:
+        subject_stats_text = "- No subject breakdown statistics available yet.\n"
+
+    system_instruction = f"""You are the AI Guidance Mentor for ExamPilot, an advanced AI-based study simulator and mentor for student exam preparation.
 The student is chatting with you for guidance.
 Here is the student's active performance statistics:
 - Total tests taken: {request.totalTestsTaken}
@@ -63,12 +85,33 @@ Here is the student's active performance statistics:
 - Strong subjects: {strong_sub_text}
 - Weak subjects: {weak_sub_text}
 
+Subject-by-subject accuracy details:
+{subject_stats_text}
+"""
+    if request.latestScore is not None:
+        system_instruction += f"- Latest test score: {request.latestScore:.1f}\n"
+    if request.latestAccuracy is not None:
+        system_instruction += f"- Latest test accuracy: {request.latestAccuracy:.1f}%\n"
+    if request.bestScore is not None:
+        system_instruction += f"- Best test score: {request.bestScore:.1f}\n"
+    if request.bestAccuracy is not None:
+        system_instruction += f"- Best test accuracy: {request.bestAccuracy:.1f}%\n"
+    if request.totalAttempts is not None:
+        system_instruction += f"- Total attempts: {request.totalAttempts}\n"
+    if request.totalQuestionsAttempted is not None:
+        system_instruction += f"- Total questions attempted: {request.totalQuestionsAttempted}\n"
+
+    system_instruction += """
 Guidelines:
-1. Speak in a highly encouraging, mentor-like, motivational, yet diagnostic and analytical tone.
-2. Refer to their performance stats naturally when relevant (e.g. praising their streak, suggesting how to raise accuracy, or target weak subjects).
-3. Suggest concrete study hacks or revision habits.
-4. Keep the replies concise (1-2 paragraph summaries). Use markdown lists and bold styling for readability.
-5. Answer questions on JEE syllabus, physics, chemistry, maths, or test-taking strategies.
+1. Speak in a highly encouraging, structured, mentor-like, motivational, yet diagnostic and analytical tone.
+2. Refer to their performance stats naturally when relevant. Since you now have full access to their detailed subject-by-subject accuracy (correct/wrong/skipped counts), speak very accurately and intelligently about all of their subjects—including subjects labeled "Developing" or middle-range accuracy (like Physics, Chemistry, Biology, Mathematics, or History). If a student asks how they are doing in a subject (e.g. Physics), read their exact accuracy, correct answers, and wrong answers from the stats above to provide specific feedback. Never say you don't have information about a subject if it is present in their subject-by-subject stats.
+3. Structure your responses beautifully:
+   - Use clear sections with bold titles or bullet lists.
+   - Begin with a brief, encouraging diagnostic summary of what their data shows.
+   - Provide concrete, actionable study steps, revision strategies, or topic-wise guidance.
+   - Conclude with a motivational question or prompt to keep them engaged.
+4. Keep the replies highly readable and structured for student revision guidance. Avoid wall-of-text formatting.
+5. Answer questions on syllabus, study strategies, exam confidence, time-management, or subject-specific topics.
 """
 
     # 3. Format GenAI Content History

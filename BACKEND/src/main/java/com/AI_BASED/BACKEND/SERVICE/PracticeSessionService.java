@@ -6,6 +6,10 @@ import com.AI_BASED.BACKEND.ENTITY.PracticeQuestion;
 import com.AI_BASED.BACKEND.ENTITY.PracticeSessionStatus;
 import com.AI_BASED.BACKEND.ENTITY.UploadType;
 import com.AI_BASED.BACKEND.ENTITY.User;
+import com.AI_BASED.BACKEND.ENTITY.MockTestSession;
+import com.AI_BASED.BACKEND.ENTITY.MockTestStatus;
+import com.AI_BASED.BACKEND.ENTITY.MockTestResult;
+import com.AI_BASED.BACKEND.REPOSITORY.MockTestSessionRepository;
 import com.AI_BASED.BACKEND.INTEGRATION.FastApiClient;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeSessionRepository;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeQuestionRepository;
@@ -18,15 +22,20 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 import java.util.UUID;
+import java.io.IOException;
 
 @Service
 public class PracticeSessionService {
 
     @Autowired
     private PracticeSessionRepository practiceSessionRepository;
+
+    @Autowired
+    private MockTestSessionRepository sessionRepository;
 
     @Autowired
     private FastApiClient fastApiClient;
@@ -37,13 +46,14 @@ public class PracticeSessionService {
     @Autowired
     private PracticeQuestionRepository practiceQuestionRepository;
 
-    public PracticeSessionCreatedResponse createAndProcessSession(String title, UploadType uploadType, MultipartFile file) {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication == null || !(authentication.getPrincipal() instanceof User)) {
-            throw new ExtractionException("User is not authenticated");
-        }
-        User user = (User) authentication.getPrincipal();
+    @Autowired
+    private com.AI_BASED.BACKEND.REPOSITORY.MockTestResultRepository mockTestResultRepository;
 
+    public PracticeSessionCreatedResponse createAndProcessSession(
+            String title, UploadType uploadType, MultipartFile file, User user,
+            Integer examDurationSeconds, Double positiveMarks, Double negativeMarks,
+            String examName, String examStructure, String subject
+    ) {
         String jobId = UUID.randomUUID().toString();
 
         // 1. UPLOADING stage
@@ -56,6 +66,13 @@ public class PracticeSessionService {
         session.setFileSizeInBytes(file.getSize());
         session.setProcessingJobId(jobId);
         session.setExtractionVerified(false);
+
+        session.setExamDurationSeconds(examDurationSeconds);
+        session.setPositiveMarks(positiveMarks);
+        session.setNegativeMarks(negativeMarks);
+        session.setExamName(examName);
+        session.setExamStructure(examStructure);
+        session.setSubject(subject);
 
         session = practiceSessionRepository.save(session);
 
@@ -94,59 +111,54 @@ public class PracticeSessionService {
         }
     }
 
-
-    public PracticeSessionCreateResponse createSession(String title, UploadType uploadType, MultipartFile file, User user) {
-        String jobId = UUID.randomUUID().toString();
-        PracticeSession session = new PracticeSession();
-        session.setTitle(title);
-        session.setUploadType(uploadType);
-        session.setUser(user);
-        session.setStatus(PracticeSessionStatus.UPLOADING);
-        session.setOriginalPdfName(file.getOriginalFilename());
-        session.setFileSizeInBytes(file.getSize());
-        session.setProcessingJobId(jobId);
-        session.setExtractionVerified(false);
-        session = practiceSessionRepository.save(session);
-
-        return new PracticeSessionCreateResponse(
-            session.getId(),
-            session.getTitle(),
-            session.getUploadType(),
-            session.getStatus()
-        );
-    }
-
     public PracticeSessionResponse getSessionById(Long id) {
         PracticeSession session = practiceSessionRepository.findById(id)
-                .orElseThrow(() -> new ExtractionException("Practice session not found"));
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found"));
 
         // Validate user ownership
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        User currentUser = null;
         if (authentication != null && authentication.getPrincipal() instanceof User) {
-            User currentUser = (User) authentication.getPrincipal();
+            currentUser = (User) authentication.getPrincipal();
             if (!session.getUser().getId().equals(currentUser.getId())) {
-                throw new ExtractionException("Access denied: You do not own this practice session");
+                throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this practice session");
             }
         }
-        return convertToResponse(session);
+
+        List<MockTestSession> attempts = currentUser != null
+                ? sessionRepository.findByPracticeSessionAndUserOrderByStartedAtDesc(session, currentUser)
+                : java.util.Collections.emptyList();
+
+        return convertToResponse(session, attempts);
     }
 
     public Page<PracticeSessionResponse> getSessionsByUser(User user, int page, int size) {
         Pageable pageable = PageRequest.of(page, size);
-        return practiceSessionRepository.findByUserOrderByCreatedAtDesc(user, pageable)
-                .map(this::convertToResponse);
+        Page<PracticeSession> sessionsPage = practiceSessionRepository.findByUserOrderByCreatedAtDesc(user, pageable);
+        List<PracticeSession> sessions = sessionsPage.getContent();
+
+        // Bulk fetch all mock test sessions for these practice sessions and the user
+        List<MockTestSession> attempts = sessions.isEmpty()
+                ? java.util.Collections.emptyList()
+                : sessionRepository.findByUserAndPracticeSessionInOrderByStartedAtDesc(user, sessions);
+
+        // Group attempts by practice session ID
+        java.util.Map<Long, List<MockTestSession>> attemptsMap = attempts.stream()
+                .collect(java.util.stream.Collectors.groupingBy(a -> a.getPracticeSession().getId()));
+
+        return sessionsPage.map(s -> convertToResponse(s, attemptsMap.getOrDefault(s.getId(), java.util.Collections.emptyList())));
     }
 
     public List<PracticeQuestionResponse> getQuestionsBySessionId(Long sessionId) {
         PracticeSession session = practiceSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ExtractionException("Practice session not found"));
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found"));
 
         // Validate user ownership
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             User currentUser = (User) authentication.getPrincipal();
             if (!session.getUser().getId().equals(currentUser.getId())) {
-                throw new ExtractionException("Access denied");
+                throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this practice session");
             }
         }
 
@@ -169,14 +181,14 @@ public class PracticeSessionService {
 
     public ExtractionSummaryResponse getExtractionSummary(Long sessionId) {
         PracticeSession session = practiceSessionRepository.findById(sessionId)
-                .orElseThrow(() -> new ExtractionException("Practice session not found"));
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found"));
 
         // Validate user ownership
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         if (authentication != null && authentication.getPrincipal() instanceof User) {
             User currentUser = (User) authentication.getPrincipal();
             if (!session.getUser().getId().equals(currentUser.getId())) {
-                throw new ExtractionException("Access denied");
+                throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this practice session");
             }
         }
 
@@ -188,21 +200,125 @@ public class PracticeSessionService {
         );
     }
 
-    private PracticeSessionResponse convertToResponse(PracticeSession session) {
-        return new PracticeSessionResponse(
-                session.getId(),
-                session.getTitle(),
-                session.getUser().getId(),
-                session.getUploadType(),
-                session.getStatus(),
-                session.getTotalQuestions(),
-                session.getProcessingTimeSeconds(),
-                session.getOriginalPdfName(),
-                session.getProcessingJobId(),
-                session.getFileSizeInBytes(),
-                session.getExtractionVerified(),
-                session.getCreatedAt(),
-                session.getUpdatedAt()
-        );
+    private PracticeSessionResponse convertToResponse(PracticeSession session, List<MockTestSession> attempts) {
+        PracticeSessionResponse resp = new PracticeSessionResponse();
+        resp.setId(session.getId());
+        resp.setTitle(session.getTitle());
+        resp.setUserId(session.getUser().getId());
+        resp.setUploadType(session.getUploadType());
+        resp.setStatus(session.getStatus());
+        resp.setTotalQuestions(session.getTotalQuestions());
+        resp.setProcessingTimeSeconds(session.getProcessingTimeSeconds());
+        resp.setOriginalPdfName(session.getOriginalPdfName());
+        resp.setProcessingJobId(session.getProcessingJobId());
+        resp.setFileSizeInBytes(session.getFileSizeInBytes());
+        resp.setExtractionVerified(session.getExtractionVerified());
+        resp.setCreatedAt(session.getCreatedAt());
+        resp.setUpdatedAt(session.getUpdatedAt());
+        resp.setSubject(session.getSubject());
+
+        if (!attempts.isEmpty()) {
+            MockTestSession latest = attempts.get(0);
+            resp.setLatestTestSessionId(latest.getId());
+            if (latest.getStatus() == MockTestStatus.ACTIVE) {
+                resp.setLatestTestStatus("ACTIVE");
+            } else if (latest.getStatus() == MockTestStatus.COMPLETED) {
+                resp.setLatestTestStatus("COMPLETED");
+            } else {
+                resp.setLatestTestStatus("NOT_STARTED");
+            }
+            resp.setLatestScore(latest.getScore());
+            
+            // Count unique attempts by grouping by attempt_number (treating null as separate)
+            java.util.Set<Integer> uniqueAttemptNumbers = new java.util.HashSet<>();
+            int nullAttemptsCount = 0;
+            for (MockTestSession att : attempts) {
+                if (att.getAttemptNumber() != null) {
+                    uniqueAttemptNumbers.add(att.getAttemptNumber());
+                } else {
+                    nullAttemptsCount++;
+                }
+            }
+            resp.setTotalAttempts(uniqueAttemptNumbers.size() + nullAttemptsCount);
+
+            double bestScore = -9999.0;
+            for (MockTestSession att : attempts) {
+                if (att.getScore() != null && att.getScore() > bestScore) {
+                    bestScore = att.getScore();
+                }
+            }
+            resp.setBestScore(bestScore == -9999.0 ? 0.0 : bestScore);
+
+            List<MockTestResult> results = mockTestResultRepository.findByMockTestSessionIn(attempts);
+            double bestAccuracy = 0.0;
+            Double latestAccuracy = null;
+            for (MockTestResult r : results) {
+                if (r.getMockTestSession().getId().equals(latest.getId())) {
+                    latestAccuracy = r.getAccuracy();
+                }
+                if (r.getAccuracy() > bestAccuracy) {
+                    bestAccuracy = r.getAccuracy();
+                }
+            }
+            resp.setLatestAccuracy(latestAccuracy);
+            resp.setBestAccuracy(bestAccuracy);
+
+            java.time.LocalDateTime lastDate = latest.getCompletedAt() != null ? latest.getCompletedAt() : latest.getStartedAt();
+            if (lastDate != null) {
+                resp.setLastAttemptDate(lastDate.format(java.time.format.DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")));
+            }
+        } else {
+            resp.setLatestTestSessionId(null);
+            resp.setLatestTestStatus("NOT_STARTED");
+            resp.setLatestScore(null);
+            resp.setBestScore(0.0);
+            resp.setBestAccuracy(0.0);
+            resp.setLatestAccuracy(null);
+            resp.setTotalAttempts(0);
+            resp.setLastAttemptDate(null);
+        }
+
+        resp.setExamDurationSeconds(session.getExamDurationSeconds());
+        resp.setPositiveMarks(session.getPositiveMarks());
+        resp.setNegativeMarks(session.getNegativeMarks());
+        resp.setExamStructure(session.getExamStructure());
+        resp.setExamName(session.getExamName());
+
+        return resp;
+    }
+
+    public void mergeAnswerKey(Long sessionId, MultipartFile file, User user) {
+        PracticeSession session = practiceSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found"));
+
+        if (!session.getUser().getId().equals(user.getId())) {
+            throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this practice session");
+        }
+
+        try {
+            java.util.Map<String, String> answers = fastApiClient.uploadAnswerKeyPdf(file, session.getTotalQuestions());
+            saveMergedAnswers(sessionId, answers);
+        } catch (IOException e) {
+            throw new com.AI_BASED.BACKEND.EXCEPTION.ExtractionException("Failed to upload/read separate answer key file", e);
+        }
+    }
+
+    @Transactional
+    public void saveMergedAnswers(Long sessionId, java.util.Map<String, String> answers) {
+        PracticeSession practiceSession = practiceSessionRepository.findById(sessionId)
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found"));
+
+        List<PracticeQuestion> questions = practiceQuestionRepository.findByPracticeSession(practiceSession);
+        for (PracticeQuestion q : questions) {
+            String qNumStr = String.valueOf(q.getQuestionNumber());
+            if (answers.containsKey(qNumStr)) {
+                q.setCorrectAnswer(answers.get(qNumStr));
+            }
+        }
+        practiceQuestionRepository.saveAll(questions);
+
+        // Update session status to READY (if it wasn't already)
+        practiceSession.setStatus(PracticeSessionStatus.READY);
+        practiceSessionRepository.save(practiceSession);
     }
 }

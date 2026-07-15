@@ -6,6 +6,7 @@ from app.utils.config import get_settings
 from app.api.health import router as health_router
 from app.api.upload import router as upload_router
 from app.api.mentor import router as mentor_router
+from app.api.answer_key import router as answer_key_router
 
 
 @asynccontextmanager
@@ -39,6 +40,7 @@ app.add_middleware(
 app.include_router(health_router, tags=["Health"])
 app.include_router(upload_router, tags=["Upload"])
 app.include_router(mentor_router, tags=["Mentor"])
+app.include_router(answer_key_router, tags=["Answer Key"])
 
 
 if __name__ == "__main__":

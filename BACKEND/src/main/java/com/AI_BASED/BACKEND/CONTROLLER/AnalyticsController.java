@@ -18,20 +18,12 @@ public class AnalyticsController {
     @Autowired
     private AnalyticsService analyticsService;
 
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        return null;
-    }
+    @Autowired
+    private com.AI_BASED.BACKEND.UTIL.AuthUtils authUtils;
 
     @GetMapping
     public ResponseEntity<AnalyticsResponse> getStudentAnalytics() {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         AnalyticsResponse response = analyticsService.getStudentAnalytics(user);
         return ResponseEntity.ok(response);
     }

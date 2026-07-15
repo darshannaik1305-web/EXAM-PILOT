@@ -65,6 +65,34 @@ public class FastApiClient {
                 .body(com.AI_BASED.BACKEND.DTO.MentorChatResponseDto.class);
     }
 
+    public java.util.Map<String, String> uploadAnswerKeyPdf(MultipartFile file, Integer expectedCount) throws IOException {
+        MultipartBodyBuilder bodyBuilder = new MultipartBodyBuilder();
+        bodyBuilder.part("file", new ByteArrayResource(file.getBytes()) {
+            @Override
+            public String getFilename() {
+                return file.getOriginalFilename();
+            }
+        }, MediaType.parseMediaType(file.getContentType()));
+
+        if (expectedCount != null) {
+            bodyBuilder.part("expectedCount", expectedCount);
+        }
+
+        var body = bodyBuilder.build();
+
+        var response = restClient.post()
+                .uri("/answer-key")
+                .contentType(MediaType.MULTIPART_FORM_DATA)
+                .body(body)
+                .retrieve()
+                .body(java.util.Map.class);
+
+        if (response != null && response.get("answers") != null) {
+            return (java.util.Map<String, String>) response.get("answers");
+        }
+        return java.util.Collections.emptyMap();
+    }
+
     public boolean isFastApiAvailable() {
         try {
             ResponseEntity<Void> response = restClient.get()

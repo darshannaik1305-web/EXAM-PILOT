@@ -4,6 +4,7 @@ import json
 import time
 from pathlib import Path
 from google import genai
+from google.genai import types
 from google.genai.errors import APIError
 
 from app.core.logger import logger
@@ -65,13 +66,23 @@ Return JSON only.
     "optionA": "",
     "optionB": "",
     "optionC": "",
-    "optionD": ""
+    "optionD": "",
+    "correctAnswer": "",
+    "subject": "",
+    "difficulty": "",
+    "explanation": "",
+    "solution": ""
   }
 ]
 
 Rules:
 - Extract all questions.
 - Extract complete options.
+- Extract correctAnswer (should be one of A, B, C, or D. If not directly available, leave blank).
+- Extract subject (e.g. Physics, Chemistry, Mathematics).
+- Extract difficulty (e.g. Easy, Medium, Hard).
+- Extract explanation (short text describing why the answer is correct).
+- Extract solution (step-by-step mathematical/conceptual solution detail).
 - Ignore Question IDs.
 - Ignore metadata.
 - Return valid JSON only.
@@ -82,7 +93,10 @@ Rules:
             contents=[
                 uploaded_file,
                 prompt
-            ]
+            ],
+            config=types.GenerateContentConfig(
+                response_mime_type="application/json"
+            )
         )
         logger.info("Gemini Response Received")
     except APIError as api_err:
@@ -96,13 +110,16 @@ Rules:
     try:
         text = response.text.strip()
 
+        # Clean markdown code block fences if present
         if text.startswith("```json"):
-            text = text.replace("```json", "")
-
+            text = text[7:]
+        elif text.startswith("```"):
+            text = text[3:]
         if text.endswith("```"):
-            text = text.replace("```", "")
+            text = text[:-3]
+        text = text.strip()
 
-        questions = json.loads(text)
+        questions = json.loads(text, strict=False)
     except json.JSONDecodeError as decode_err:
         logger.error("Extraction Failed")
         raise ExtractionException(f"Malformed JSON returned from model: {str(decode_err)}")

@@ -20,30 +20,19 @@ public class MockTestController {
     @Autowired
     private MockTestService mockTestService;
 
-    private User getAuthenticatedUser() {
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (authentication != null && authentication.getPrincipal() instanceof User) {
-            return (User) authentication.getPrincipal();
-        }
-        return null;
-    }
+    @Autowired
+    private com.AI_BASED.BACKEND.UTIL.AuthUtils authUtils;
 
     @PostMapping("/{sessionId}/test/start")
     public ResponseEntity<MockTestSessionResponse> startOrResumeTest(@PathVariable("sessionId") Long sessionId) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         MockTestSessionResponse response = mockTestService.startOrResumeTestSession(sessionId, user);
-        return ResponseEntity.ok(response);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
     }
 
     @GetMapping("/test-sessions/{testSessionId}")
     public ResponseEntity<MockTestSessionResponse> getTestSession(@PathVariable("testSessionId") Long testSessionId) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         MockTestSessionResponse response = mockTestService.getTestSession(testSessionId, user);
         return ResponseEntity.ok(response);
     }
@@ -53,10 +42,7 @@ public class MockTestController {
             @PathVariable("testSessionId") Long testSessionId,
             @PathVariable("num") int questionNumber
     ) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         MockTestQuestionResponse response = mockTestService.getQuestion(testSessionId, questionNumber, user);
         return ResponseEntity.ok(response);
     }
@@ -67,31 +53,43 @@ public class MockTestController {
             @PathVariable("num") int questionNumber,
             @RequestBody MockTestAnswerRequest request
     ) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         MockTestQuestionResponse response = mockTestService.saveAnswer(testSessionId, questionNumber, request, user);
         return ResponseEntity.ok(response);
     }
 
     @GetMapping("/test-sessions/{testSessionId}/palette")
     public ResponseEntity<List<MockTestPaletteItem>> getPalette(@PathVariable("testSessionId") Long testSessionId) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         List<MockTestPaletteItem> response = mockTestService.getPalette(testSessionId, user);
         return ResponseEntity.ok(response);
     }
 
     @PostMapping("/test-sessions/{testSessionId}/submit")
     public ResponseEntity<MockTestSessionResponse> submitTest(@PathVariable("testSessionId") Long testSessionId) {
-        User user = getAuthenticatedUser();
-        if (user == null) {
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
-        }
+        User user = authUtils.getCurrentUser();
         MockTestSessionResponse response = mockTestService.submitTest(testSessionId, user);
+        return ResponseEntity.ok(response);
+    }
+
+    @PostMapping("/{sessionId}/test/retake")
+    public ResponseEntity<MockTestSessionResponse> retakeTest(@PathVariable("sessionId") Long sessionId) {
+        User user = authUtils.getCurrentUser();
+        MockTestSessionResponse response = mockTestService.retakeTest(sessionId, user);
+        return ResponseEntity.status(HttpStatus.CREATED).body(response);
+    }
+
+    @GetMapping("/{sessionId}/attempts")
+    public ResponseEntity<List<AttemptHistoryResponse>> getAttemptHistory(@PathVariable("sessionId") Long sessionId) {
+        User user = authUtils.getCurrentUser();
+        List<AttemptHistoryResponse> response = mockTestService.getAttemptHistory(sessionId, user);
+        return ResponseEntity.ok(response);
+    }
+
+    @GetMapping("/test-sessions/{testSessionId}/review")
+    public ResponseEntity<List<ReviewQuestionResponse>> getReviewData(@PathVariable("testSessionId") Long testSessionId) {
+        User user = authUtils.getCurrentUser();
+        List<ReviewQuestionResponse> response = mockTestService.getReviewData(testSessionId, user);
         return ResponseEntity.ok(response);
     }
 }

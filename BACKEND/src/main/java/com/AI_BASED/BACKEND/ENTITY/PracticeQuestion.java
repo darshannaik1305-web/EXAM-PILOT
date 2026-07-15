@@ -8,7 +8,9 @@ import lombok.NoArgsConstructor;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "practice_questions")
+@Table(name = "practice_questions", indexes = {
+    @Index(name = "idx_pq_session", columnList = "practice_session_id")
+})
 public class PracticeQuestion {
 
     @Id
@@ -41,4 +43,11 @@ public class PracticeQuestion {
 
     @Column(length = 5000)
     private String explanation;
+
+    private String subject;
+
+    private String difficulty;
+
+    @Column(columnDefinition = "TEXT")
+    private String solution;
 }

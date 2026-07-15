@@ -44,6 +44,34 @@ public class PracticeSession {
 
     private LocalDateTime updatedAt;
 
+    // Exam Configuration (Sprint 2)
+    @Column(name = "exam_duration_seconds")
+    private Integer examDurationSeconds;
+
+    @Column(name = "positive_marks")
+    private Double positiveMarks;
+
+    @Column(name = "negative_marks")
+    private Double negativeMarks;
+
+    @Column(name = "passing_percentage")
+    private Double passingPercentage;
+
+    @Column(name = "exam_structure")
+    private String examStructure;
+
+    @Column(name = "exam_name")
+    private String examName;
+
+    @Column(name = "answer_key_type")
+    private String answerKeyType;
+
+    @Column(name = "maximum_marks")
+    private Double maximumMarks;
+
+    @Column(name = "subject")
+    private String subject;
+
     @PrePersist
     protected void onCreate() {
         createdAt = LocalDateTime.now();

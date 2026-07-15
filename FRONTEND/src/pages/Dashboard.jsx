@@ -1,6 +1,7 @@
 import { useContext, useState, useEffect, useRef } from "react";
 import { AuthContext } from "../context/AuthContext";
 import { getSessions } from "../services/practiceService";
+import { getDashboardStats } from "../services/analyticsService";
 import StatCard from "../components/workspace/StatCard";
 import ResumeBanner from "../components/workspace/ResumeBanner";
 import SessionTable from "../components/workspace/SessionTable";
@@ -28,6 +29,13 @@ import {
 } from "lucide-react";
 import { formatDate } from "../utils/formatters";
 import toast from "react-hot-toast";
+import { useSearchParams } from "react-router-dom";
+
+function formatSpeed(seconds) {
+  if (seconds === undefined || seconds === null || seconds <= 0) return "—";
+  if (seconds < 60) return `${seconds.toFixed(0)}s/Q`;
+  return `${(seconds / 60).toFixed(1)}m/Q`;
+}
 
 function Dashboard() {
   const { user } = useContext(AuthContext);
@@ -37,15 +45,56 @@ function Dashboard() {
   const [totalPages, setTotalPages] = useState(0);
   const [loading, setLoading] = useState(true);
 
+  const [stats, setStats] = useState(null);
+  const [statsLoading, setStatsLoading] = useState(true);
+
   // Search & Filter state
-  const [searchQuery, setSearchQuery] = useState("");
+  const [searchParams, setSearchParams] = useSearchParams();
+  const searchParamQuery = searchParams.get("search") || "";
+  const [searchQuery, setSearchQuery] = useState(searchParamQuery);
   const [statusFilter, setStatusFilter] = useState("ALL");
+
+  // Synchronize URL search param to local state
+  useEffect(() => {
+    setSearchQuery(searchParamQuery);
+  }, [searchParamQuery]);
 
   const uploadZoneRef = useRef(null);
 
   useEffect(() => {
     fetchSessions();
   }, [page]);
+
+  useEffect(() => {
+    fetchStats();
+  }, []);
+
+  const handleDashboardSearchChange = (val) => {
+    setSearchQuery(val);
+    setSearchParams(
+      (prev) => {
+        if (val) {
+          prev.set("search", val);
+        } else {
+          prev.delete("search");
+        }
+        return prev;
+      },
+      { replace: true }
+    );
+  };
+
+  async function fetchStats() {
+    setStatsLoading(true);
+    try {
+      const data = await getDashboardStats();
+      setStats(data);
+    } catch (err) {
+      console.error("Failed to load dashboard stats", err);
+    } finally {
+      setStatsLoading(false);
+    }
+  }
 
   async function fetchSessions() {
     setLoading(true);
@@ -69,14 +118,17 @@ function Dashboard() {
   function handleUploadSuccess() {
     setPage(0);
     fetchSessions();
+    fetchStats();
   }
 
   function scrollToUpload() {
     uploadZoneRef.current?.scrollIntoView({ behavior: "smooth" });
   }
 
-  // Derived states
-  const latestReadySession = sessions.find((s) => s.status === "READY") || null;
+  // Derived states: prioritize session with ACTIVE test, fallback to first READY session
+  const latestReadySession = sessions.find((s) => s.status === "READY" && s.latestTestStatus === "ACTIVE")
+    || sessions.find((s) => s.status === "READY")
+    || null;
 
   const filteredSessions = sessions.filter((session) => {
     const matchesSearch = session.title.toLowerCase().includes(searchQuery.toLowerCase());
@@ -150,15 +202,15 @@ function Dashboard() {
         <div className="flex flex-wrap gap-2.5 relative z-10 lg:justify-end select-none">
           <div className="flex items-center space-x-1.5 bg-card border border-border px-3.5 py-2 rounded-xl text-xs text-muted font-medium">
             <Flame size={14} className="text-amber-500" />
-            <span>Streak: <strong className="text-text font-mono">--</strong></span>
+            <span>Streak: <strong className="text-text font-mono">{statsLoading ? "--" : (stats?.studyStreak ?? 0)}</strong></span>
           </div>
           <div className="flex items-center space-x-1.5 bg-card border border-border px-3.5 py-2 rounded-xl text-xs text-muted font-medium">
             <BookOpen size={14} className="text-violet-400" />
-            <span>Sessions: <strong className="text-text font-mono">{loading ? "—" : sessions.length}</strong></span>
+            <span>Sessions: <strong className="text-text font-mono">{statsLoading ? "—" : (stats?.totalPracticeSessions ?? 0)}</strong></span>
           </div>
           <div className="flex items-center space-x-1.5 bg-card border border-border px-3.5 py-2 rounded-xl text-xs text-muted font-medium">
             <Award size={14} className="text-cyan-400" />
-            <span>Accuracy: <strong className="text-text font-mono">--</strong></span>
+            <span>Accuracy: <strong className="text-text font-mono">{statsLoading ? "--" : (stats?.overallTestAccuracy ? `${stats.overallTestAccuracy.toFixed(0)}%` : "—")}</strong></span>
           </div>
           <div className="flex items-center space-x-1.5 bg-card border border-border px-3.5 py-2 rounded-xl text-xs text-muted font-medium">
             <Clock size={14} className="text-emerald-400" />
@@ -171,19 +223,19 @@ function Dashboard() {
       <div className="grid sm:grid-cols-3 gap-6">
         <StatCard
           title="Practice Sessions"
-          value={loading ? "—" : sessions.length}
-          description="Uploaded test packages"
+          value={statsLoading ? "—" : (stats?.totalPracticeSessions ?? 0)}
+          description="READY practice papers"
           icon={BookOpen}
         />
         <StatCard
           title="Average Solving Speed"
-          value="—"
-          description="JEE simulation timing metric"
+          value={statsLoading ? "—" : formatSpeed(stats?.averageSolvingSpeed)}
+          description="Average timing per question"
           icon={Zap}
         />
         <StatCard
           title="Overall Test Accuracy"
-          value="—"
+          value={statsLoading ? "—" : (stats?.overallTestAccuracy !== undefined && stats?.overallTestAccuracy !== null ? `${stats.overallTestAccuracy.toFixed(1)}%` : "—")}
           description="Average practice score"
           icon={Award}
         />
@@ -252,23 +304,23 @@ function Dashboard() {
               <div className="w-full sm:w-56">
                 <SearchBar
                   value={searchQuery}
-                  onChange={(e) => setSearchQuery(e.target.value)}
+                  onChange={(e) => handleDashboardSearchChange(e.target.value)}
                   placeholder="Search..."
-                  className="py-2.5 pl-9 pr-3 text-xs"
+                  className="text-sm"
                 />
               </div>
 
-              <div className="flex items-center space-x-1.5 bg-slate-900 border border-border rounded-xl px-2.5 py-2.5 text-xs text-muted">
-                <SlidersHorizontal size={12} />
+              <div className="flex items-center space-x-2 bg-slate-900 border border-border rounded-xl px-3 py-2.5 text-sm text-text focus-within:border-primary focus-within:ring-2 focus-within:ring-primary/20 transition-all select-none">
+                <SlidersHorizontal size={14} className="text-muted" />
                 <select
                   value={statusFilter}
                   onChange={(e) => setStatusFilter(e.target.value)}
-                  className="bg-transparent focus:outline-none cursor-pointer font-semibold text-[11px] bg-slate-900"
+                  className="bg-transparent focus:outline-none cursor-pointer font-semibold text-sm text-text bg-slate-900 border-none outline-none"
                 >
-                  <option value="ALL">All Statuses</option>
-                  <option value="READY">Ready</option>
-                  <option value="EXTRACTING">Extracting</option>
-                  <option value="FAILED">Failed</option>
+                  <option value="ALL" className="bg-slate-900 text-text">All Statuses</option>
+                  <option value="READY" className="bg-slate-900 text-text">Ready</option>
+                  <option value="EXTRACTING" className="bg-slate-900 text-text">Extracting</option>
+                  <option value="FAILED" className="bg-slate-900 text-text">Failed</option>
                 </select>
               </div>
             </div>
@@ -280,6 +332,23 @@ function Dashboard() {
               <Skeleton className="h-12 w-full" />
               <Skeleton className="h-16 w-full" />
               <Skeleton className="h-16 w-full" />
+            </div>
+          ) : sessions.length === 0 ? (
+            /* Premium Onboarding Empty Card (Only when they have 0 sessions in total) */
+            <div className="border border-border bg-card rounded-2xl p-12 text-center shadow-sm relative overflow-hidden group">
+              <div className="absolute -inset-px bg-gradient-to-tr from-primary/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
+              <div className="mx-auto w-14 h-14 bg-slate-900 border border-border rounded-2xl flex items-center justify-center text-muted mb-4 relative z-10">
+                <FileSpreadsheet size={24} />
+              </div>
+              <h4 className="text-base font-bold text-text relative z-10 font-outfit">No Practice Sessions Yet</h4>
+              <p className="text-muted text-xs max-w-xs mx-auto mt-1.5 leading-relaxed relative z-10">
+                Upload your first PDF past exam paper in the dropzone above to activate Gemini questions extraction.
+              </p>
+              <div className="mt-5 relative z-10">
+                <Button variant="outline" size="sm" onClick={scrollToUpload} className="px-5 cursor-pointer">
+                  Upload Paper
+                </Button>
+              </div>
             </div>
           ) : filteredSessions.length > 0 ? (
             <div className="space-y-4">
@@ -316,19 +385,18 @@ function Dashboard() {
               )}
             </div>
           ) : (
-            /* Premium Onboarding Empty Card */
-            <div className="border border-border bg-card rounded-2xl p-12 text-center shadow-sm relative overflow-hidden group">
-              <div className="absolute -inset-px bg-gradient-to-tr from-primary/5 to-cyan-500/5 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none" />
-              <div className="mx-auto w-14 h-14 bg-slate-900 border border-border rounded-2xl flex items-center justify-center text-muted mb-4 relative z-10">
-                <FileSpreadsheet size={24} />
+            /* No search results matched */
+            <div className="border border-border bg-card rounded-2xl p-12 text-center shadow-sm relative overflow-hidden">
+              <div className="mx-auto w-14 h-14 bg-slate-900 border border-border rounded-2xl flex items-center justify-center text-muted mb-4">
+                <Inbox size={24} />
               </div>
-              <h4 className="text-base font-bold text-text relative z-10 font-outfit">No Practice Sessions Yet</h4>
-              <p className="text-muted text-xs max-w-xs mx-auto mt-1.5 leading-relaxed relative z-10">
-                Upload your first PDF past exam paper in the dropzone above to activate Gemini questions extraction.
+              <h4 className="text-base font-bold text-text font-outfit">No Results Found</h4>
+              <p className="text-muted text-xs max-w-xs mx-auto mt-1.5 leading-relaxed">
+                We couldn't find any practice sessions matching "<strong>{searchQuery}</strong>". Try checking your spelling or selecting a different status filter.
               </p>
-              <div className="mt-5 relative z-10">
-                <Button variant="outline" size="sm" onClick={scrollToUpload} className="px-5 cursor-pointer">
-                  Upload Paper
+              <div className="mt-5">
+                <Button variant="outline" size="sm" onClick={() => handleDashboardSearchChange("")} className="px-5 cursor-pointer">
+                  Clear Search Filter
                 </Button>
               </div>
             </div>

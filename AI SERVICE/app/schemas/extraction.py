@@ -10,6 +10,9 @@ class QuestionResponse(BaseModel):
     optionD: str
     correctAnswer: str
     explanation: Optional[str] = None
+    subject: Optional[str] = None
+    difficulty: Optional[str] = None
+    solution: Optional[str] = None
 
 class ExtractionResponse(BaseModel):
     success: bool

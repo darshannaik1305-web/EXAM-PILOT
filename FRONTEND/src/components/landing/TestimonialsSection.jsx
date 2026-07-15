@@ -6,19 +6,19 @@ function TestimonialsSection() {
   const reviews = [
     {
       name: "Abhishek K.",
-      role: "JEE Main Aspirant",
+      role: "Exam Candidate",
       initials: "AK",
       text: "ExamPilot's Gemini-driven parsing resolved algebraic and LaTeX formulas from my PDFs flawlessly. The timer pacing metric changed how I practice.",
     },
     {
       name: "Sneha M.",
-      role: "NEET Candidate",
+      role: "Pre-Med Student",
       initials: "SM",
       text: "Ingesting biology sample papers takes seconds. Being able to review step-by-step solutions instantly on diagrams has saved me hours of manual study.",
     },
     {
       name: "Varun S.",
-      role: "BITSAT Aspirant",
+      role: "College Candidate",
       initials: "VS",
       text: "The dark theme interface looks premium and professional. It feels like actual competitive testing portal setups. A must-have tool.",
     },

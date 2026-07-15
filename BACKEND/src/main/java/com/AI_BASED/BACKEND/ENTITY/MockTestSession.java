@@ -9,7 +9,10 @@ import java.time.LocalDateTime;
 @Entity
 @Data
 @NoArgsConstructor
-@Table(name = "mock_test_sessions")
+@Table(name = "mock_test_sessions", indexes = {
+    @Index(name = "idx_mts_user_status", columnList = "user_id, status"),
+    @Index(name = "idx_mts_user_practice", columnList = "user_id, practice_session_id")
+})
 public class MockTestSession {
 
     @Id
@@ -36,6 +39,9 @@ public class MockTestSession {
     private Integer totalQuestions;
 
     private Double score;
+
+    @Column(name = "attempt_number")
+    private Integer attemptNumber;
 
     @PrePersist
     protected void onCreate() {

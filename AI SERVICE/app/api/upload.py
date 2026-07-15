@@ -120,6 +120,9 @@ async def upload_pdf(
             opt_d = q.get("optionD") or ""
             corr_ans = q.get("correctAnswer") or ""
             exp = q.get("explanation")
+            subj = q.get("subject")
+            diff = q.get("difficulty")
+            sol = q.get("solution")
 
             mapped_questions.append(
                 QuestionResponse(
@@ -130,7 +133,10 @@ async def upload_pdf(
                     optionC=str(opt_c),
                     optionD=str(opt_d),
                     correctAnswer=str(corr_ans),
-                    explanation=str(exp) if exp is not None else None
+                    explanation=str(exp) if exp is not None else None,
+                    subject=str(subj) if subj is not None else None,
+                    difficulty=str(diff) if diff is not None else None,
+                    solution=str(sol) if sol is not None else None
                 )
             )
 

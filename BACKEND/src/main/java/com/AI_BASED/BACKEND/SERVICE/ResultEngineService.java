@@ -47,37 +47,55 @@ public class ResultEngineService {
             String studentAns = ans.getSelectedOption();
             
             // Classification helpers
-            String subject = getSubject(q.getQuestionNumber(), q.getQuestion());
+            final String finalSubject;
+            if (session.getPracticeSession().getSubject() != null && !session.getPracticeSession().getSubject().trim().isEmpty()) {
+                finalSubject = session.getPracticeSession().getSubject().trim();
+            } else if (q.getSubject() != null && !q.getSubject().trim().isEmpty()) {
+                finalSubject = q.getSubject().trim();
+            } else {
+                finalSubject = "General";
+            }
             String difficulty = getDifficulty(q.getQuestionNumber());
 
             // Initialize stats maps
-            subjectStatsMap.computeIfAbsent(subject, k -> new SubjectStats(subject));
+            subjectStatsMap.computeIfAbsent(finalSubject, k -> new SubjectStats(finalSubject));
             difficultyStatsMap.computeIfAbsent(difficulty, k -> new DifficultyStats(difficulty));
 
-            SubjectStats sStats = subjectStatsMap.get(subject);
+            SubjectStats sStats = subjectStatsMap.get(finalSubject);
             DifficultyStats dStats = difficultyStatsMap.get(difficulty);
 
+            double posMarks = session.getPracticeSession().getPositiveMarks() != null
+                    ? session.getPracticeSession().getPositiveMarks() : 4.0;
+            double negMarks = session.getPracticeSession().getNegativeMarks() != null
+                    ? Math.abs(session.getPracticeSession().getNegativeMarks()) : 1.0;
+
+            String correctAnswer = q.getCorrectAnswer();
             if (studentAns == null || studentAns.trim().isEmpty() || Boolean.TRUE.equals(ans.getIsSkipped())) {
                 // Skipped question
                 skippedQuestions++;
                 sStats.skipped++;
                 dStats.skipped++;
-            } else if (studentAns.trim().equalsIgnoreCase(q.getCorrectAnswer().trim())) {
-                // Correct answer (+4 marks)
+            } else if (correctAnswer == null || correctAnswer.trim().isEmpty()) {
+                // No correct answer key - treat as skipped to prevent NPE
+                skippedQuestions++;
+                sStats.skipped++;
+                dStats.skipped++;
+            } else if (studentAns.trim().equalsIgnoreCase(correctAnswer.trim())) {
+                // Correct answer
                 correctAnswers++;
-                score += 4.0;
+                score += posMarks;
                 sStats.correct++;
-                sStats.score += 4.0;
+                sStats.score += posMarks;
                 dStats.correct++;
-                dStats.score += 4.0;
+                dStats.score += posMarks;
             } else {
-                // Wrong answer (-1.0 mark negative marking)
+                // Wrong answer
                 wrongAnswers++;
-                score -= 1.0;
+                score -= negMarks;
                 sStats.wrong++;
-                sStats.score -= 1.0;
+                sStats.score -= negMarks;
                 dStats.wrong++;
-                dStats.score -= 1.0;
+                dStats.score -= negMarks;
             }
         }
 
@@ -116,7 +134,12 @@ public class ResultEngineService {
             timeTaken = session.getDurationSeconds();
         }
 
-        double maxScore = answers.size() * 4.0;
+        double posMarks = session.getPracticeSession().getPositiveMarks() != null
+                ? session.getPracticeSession().getPositiveMarks() : 4.0;
+        double negMarks = session.getPracticeSession().getNegativeMarks() != null
+                ? Math.abs(session.getPracticeSession().getNegativeMarks()) : 1.0;
+
+        double maxScore = answers.size() * posMarks;
         double percentage = maxScore > 0 ? (score / maxScore) * 100.0 : 0.0;
         int totalAnswered = correctAnswers + wrongAnswers;
         double accuracy = totalAnswered > 0 ? ((double) correctAnswers / totalAnswered) * 100.0 : 0.0;
@@ -134,6 +157,13 @@ public class ResultEngineService {
         result.setTimeTakenSeconds(timeTaken);
         result.setSubmittedAt(LocalDateTime.now());
 
+        // Set rich statistics
+        result.setAttemptedQuestions(correctAnswers + wrongAnswers);
+        result.setPositiveMarksEarned(correctAnswers * posMarks);
+        result.setNegativeMarksDeducted(wrongAnswers * negMarks);
+        double avgTime = answers.isEmpty() ? 0.0 : (double) timeTaken / answers.size();
+        result.setAverageTimePerQuestion(avgTime);
+
         result = resultRepository.save(result);
 
         // Update score in session itself for ease of queries
@@ -143,43 +173,7 @@ public class ResultEngineService {
         return result;
     }
 
-    // Keyword classifier
-    private String getSubject(int questionNumber, String text) {
-        String lowerText = text != null ? text.toLowerCase() : "";
-        if (lowerText.contains("velocity") || lowerText.contains("force") || lowerText.contains("acceleration") || 
-            lowerText.contains("physics") || lowerText.contains("mass") || lowerText.contains("circuit") || 
-            lowerText.contains("resistance") || lowerText.contains("current") || lowerText.contains("charge") ||
-            lowerText.contains("magnetic") || lowerText.contains("electric") || lowerText.contains("friction") ||
-            lowerText.contains("gravity") || lowerText.contains("momentum") || lowerText.contains("energy") ||
-            lowerText.contains("wave") || lowerText.contains("light") || lowerText.contains("lens") ||
-            lowerText.contains("thermodynamics") || lowerText.contains("projectile") || lowerText.contains("torque")) {
-            return "Physics";
-        }
-        if (lowerText.contains("reaction") || lowerText.contains("molecule") || lowerText.contains("atom") || 
-            lowerText.contains("compound") || lowerText.contains("acid") || lowerText.contains("base") || 
-            lowerText.contains("organic") || lowerText.contains("chemistry") || lowerText.contains("solution") ||
-            lowerText.contains("element") || lowerText.contains("oxidation") || lowerText.contains("gas") ||
-            lowerText.contains("alkali") || lowerText.contains("halogen") || lowerText.contains("ester") ||
-            lowerText.contains("ether") || lowerText.contains("bonding") || lowerText.contains("catalyst") ||
-            lowerText.contains("polymer") || lowerText.contains("thermo-chemistry")) {
-            return "Chemistry";
-        }
-        if (lowerText.contains("matrix") || lowerText.contains("determinant") || lowerText.contains("integration") || 
-            lowerText.contains("derivative") || lowerText.contains("limit") || lowerText.contains("probability") || 
-            lowerText.contains("vector") || lowerText.contains("triangle") || lowerText.contains("equation") ||
-            lowerText.contains("math") || lowerText.contains("geometry") || lowerText.contains("algebra") ||
-            lowerText.contains("function") || lowerText.contains("set") || lowerText.contains("log") || lowerText.contains("sin") ||
-            lowerText.contains("cos") || lowerText.contains("tan") || lowerText.contains("polynomial") ||
-            lowerText.contains("circle") || lowerText.contains("parabola") || lowerText.contains("ellipse") ||
-            lowerText.contains("hyperbola") || lowerText.contains("calculus") || lowerText.contains("coefficient")) {
-            return "Mathematics";
-        }
-        
-        // Equal thirds split fallback
-        if (questionNumber <= 10) return "Physics";
-        if (questionNumber <= 20) return "Chemistry";
-        return "Mathematics";
-    }
+
 
     private String getDifficulty(int questionNumber) {
         int rem = questionNumber % 3;

@@ -14,8 +14,7 @@ function Hero() {
 
       <p className="mt-3 text-lg text-gray-500 max-w-3xl">
         Practice smarter with adaptive mock tests, instant AI feedback,
-        performance tracking, and detailed analytics for JEE, NEET,
-        GATE, UPSC, and more.
+        performance tracking, and detailed analytics for any examination.
       </p>
 
       <div className="mt-10 flex gap-5">

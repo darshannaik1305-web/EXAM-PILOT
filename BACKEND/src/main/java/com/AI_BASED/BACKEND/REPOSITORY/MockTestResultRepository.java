@@ -5,10 +5,13 @@ import com.AI_BASED.BACKEND.ENTITY.MockTestSession;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
+import java.util.List;
 import java.util.Optional;
 
 @Repository
 public interface MockTestResultRepository extends JpaRepository<MockTestResult, Long> {
 
     Optional<MockTestResult> findByMockTestSession(MockTestSession mockTestSession);
+
+    List<MockTestResult> findByMockTestSessionIn(List<MockTestSession> sessions);
 }

@@ -44,12 +44,16 @@ function PracticeTest() {
   // Time spent tracking
   const questionLoadedAt = useRef(null);
   const timerRef = useRef(null);
+  const didInit = useRef(false);
 
   // Confirmation Modals
   const [showSubmitModal, setShowSubmitModal] = useState(false);
 
   // 1. Initial Start or Resume
   useEffect(() => {
+    if (didInit.current) return;
+    didInit.current = true;
+
     async function initTest() {
       try {
         setLoading(true);
@@ -57,8 +61,9 @@ function PracticeTest() {
         setSession(testSession);
 
         // Calculate time remaining
-        const elapsed = Math.floor((new Date() - new Date(testSession.startedAt)) / 1000);
-        const remaining = testSession.durationSeconds - elapsed;
+        const remaining = testSession.remainingSeconds !== undefined && testSession.remainingSeconds !== null
+          ? testSession.remainingSeconds
+          : (testSession.durationSeconds - Math.floor((new Date() - new Date(testSession.startedAt)) / 1000));
         setTimeLeft(remaining > 0 ? remaining : 0);
 
         // Load Question 1
@@ -237,10 +242,10 @@ function PracticeTest() {
   async function executeSubmission() {
     setSubmitting(true);
     try {
-      await submitTest(session.id);
+      const response = await submitTest(session.id);
       toast.success("Test submitted successfully!");
       setShowSubmitModal(false);
-      navigate(`/student/practice/${id}/review`);
+      navigate(`/student/practice/${id}/review?testSessionId=${response.id}`);
     } catch (err) {
       console.error(err);
       toast.error("Failed to submit test.");

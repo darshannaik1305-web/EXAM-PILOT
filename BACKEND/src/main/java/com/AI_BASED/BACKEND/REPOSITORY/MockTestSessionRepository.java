@@ -18,4 +18,10 @@ public interface MockTestSessionRepository extends JpaRepository<MockTestSession
     List<MockTestSession> findByUserOrderByStartedAtDesc(User user);
     
     Optional<MockTestSession> findFirstByUserAndStatus(User user, MockTestStatus status);
+
+    List<MockTestSession> findByUserAndPracticeSessionInOrderByStartedAtDesc(User user, List<PracticeSession> sessions);
+
+    List<MockTestSession> findByPracticeSessionAndUserOrderByStartedAtDesc(PracticeSession session, User user);
+
+    long countByUserAndPracticeSession(User user, PracticeSession session);
 }
