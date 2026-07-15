@@ -35,12 +35,52 @@ This approach fails in exam parsing because:
 This section documents the chronological progression of the ExamPilot PDF Extraction Engine, detailing the stages researched, evaluated, and rejected on our path to the production design.
 
 ```text
-[Stage 1: Local OCR] ➔ [Stage 2: Gemini Image Batching] ➔ [Stage 3: Gemini Native PDF] ➔ [Stage 4: Diagram Cropping (Planned)]
+[Stage 0: Tesseract OCR] ➔ [Stage 1: Local OCR (Paddle)] ➔ [Stage 2: Gemini Image Batching] ➔ [Stage 3: Gemini Native PDF] ➔ [Stage 4: Diagram Cropping (Planned)]
 ```
 
 ---
 
-### Stage 1: Local OCR Pipeline
+### Stage 0 — Initial OCR Research (Tesseract OCR)
+
+*   **Goal**: Determine whether a completely free and open-source OCR engine could accurately extract questions from competitive examination PDFs.
+*   **Architecture & Workflow**:
+    ```text
+    PDF
+     │
+     ▼
+    pdf2image
+     │
+     ▼
+    Page Images
+     │
+     ▼
+    Tesseract OCR
+     │
+     ▼
+    Raw Text
+     │
+     ▼
+    Regex / Manual Parsing
+     │
+     ▼
+    Structured Data
+    ```
+*   **Tools Used**: `Tesseract OCR`, `pytesseract`, `pdf2image`, `Poppler`, `Pillow (PIL)`, `Python`.
+*   **Evaluation Metrics**:
+    *   *Approximate Extraction Accuracy*: **45% – 60%** (engineering estimate based on project experimentation and is not an official benchmark).
+*   **Key Findings**:
+    *   *Advantages*: Completely free; open source; easy to install; good for plain English text; large community support; useful for initial proof-of-concept experiments.
+    *   *Limitations*: Poor mathematical equation recognition; Greek symbols incorrectly recognized; difficulty with superscripts and subscripts; multi-column pages mixed together; tables not preserved; diagram labels extracted incorrectly; unable to understand document structure; large amount of preprocessing required; no semantic understanding; high manual post-processing.
+*   **Why This Approach Was Abandoned**: Tesseract performs optical character recognition only. It recognizes characters but does not understand question boundaries, layout, tables, mathematical structures, or relationships between options and answers. Competitive examination papers require document understanding rather than simple OCR.
+*   **Lessons Learned**:
+    *   OCR alone is insufficient for competitive exam papers.
+    *   Layout understanding is essential.
+    *   Mathematical content requires AI-based document understanding.
+    *   This research motivated the move to PaddleOCR for improved layout handling.
+
+---
+
+### Stage 1: Local OCR Pipeline (PaddleOCR)
 
 *   **Goal**: Create a fully local, offline pipeline to convert uploaded exam PDFs into structured database records without external cloud dependencies.
 *   **Architecture & Workflow**:
@@ -211,6 +251,7 @@ The following table tracks the specific tools evaluated during our research spri
 
 | Stage | Tool | Purpose | Key Advantages | Key Limitations |
 | :--- | :--- | :--- | :--- | :--- |
+| **Stage 0** | **Tesseract OCR** | Basic OCR | Free, open-source, large community support. | Poor mathematical extraction and no document understanding. |
 | **Stage 1** | **PaddleOCR** | Local OCR text extraction | 100% offline, free. | Fails on math formulas and tables; high error rates. |
 | **Stage 1** | **pdf2image** | Converts PDF pages to images | Easy Python API. | Slow; relies on external Poppler binary dependencies. |
 | **Stage 1** | **Poppler** | PDF rendering utility | High rendering quality. | System installation dependency; path issues on Windows. |
@@ -233,10 +274,11 @@ The table below outlines our estimated extraction quality improvements across it
 
 | Stage | Approximate Accuracy | Main Improvement | Example Result |
 | :--- | :---: | :--- | :--- |
-| **Stage 1: Local OCR** | **65%** | Basic OCR | Math equations rendered as garbage text like `f x2 dx`. |
+| **Stage 0: Tesseract OCR** | **45% – 60%** | Basic character recognition | Equations, subscripts/superscripts, and layouts completely broken. |
+| **Stage 1: Local OCR (Paddle)** | **60% – 70%** | Layout analysis addition | Math equations rendered as garbage text like `f x2 dx`. |
 | **Stage 2: Gemini Images** | **85%** | AI Vision | Correctly parsed questions and formatted math to LaTeX, but rate limits caused batch failures. |
 | **Stage 3: Native PDF** | **95%** | Direct Document Parsing | Clean, error-free parsing of text, multi-column layouts, and complex LaTeX equations. |
-| **Stage 4: Bounding Box** | **98%+** | Graded Diagram Alignment | Displays complete questions containing all text, options, answers, and visual diagrams. |
+| **Stage 4: Diagram Cropping** | **98%+** | Complete Question Representation (Projected end-to-end visual completeness) | Displays complete questions containing all text, options, answers, and visual diagrams. |
 
 > [!NOTE]
 > *Accuracy rates are engineering estimates based on internal testing and evaluation runs, not standardized scientific benchmarks.*
@@ -287,6 +329,16 @@ To prepare the platform for production deployment, the following sprints are pla
 ---
 
 ## 7. Key Engineering Decisions
+
+### Why Tesseract OCR Was Replaced
+*   **Problem**: Low extraction accuracy for competitive examination papers.
+*   **Options Considered**:
+    *   Improve OCR preprocessing
+    *   Switch to another OCR engine
+    *   Move to AI-based document understanding
+*   **Decision Taken**: Move to PaddleOCR.
+*   **Reason**: Better layout analysis, rotated text handling, and improved OCR quality.
+*   **Trade-off**: Slightly higher dependency complexity but significantly improved extraction quality.
 
 ### Why We Abandoned Traditional OCR
 Traditional OCR was too rigid, had high character error rates on complex math equations, and lacked the visual understanding needed to parse split multi-column layouts.
