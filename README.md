@@ -79,7 +79,7 @@ sequenceDiagram
     participant SB as Spring Boot Backend
     participant FA as FastAPI AI Service
     participant Gemini as Google Gemini API
-    database DB as MySQL Database
+    participant DB as MySQL Database
 
     Student->>FE: Interacts with UI & Uploads PDF
     FE->>SB: POST /api/practice/sessions (PDF + Auth Header)
