@@ -100,7 +100,6 @@ Rules:
 """
         
         # Implement retry logic for 503 UNAVAILABLE server errors
-        import time
         max_retries = 3
         retry_delay = 5
         for attempt in range(max_retries):
