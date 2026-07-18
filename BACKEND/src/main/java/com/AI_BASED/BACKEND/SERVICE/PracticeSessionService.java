@@ -186,7 +186,13 @@ public class PracticeSessionService {
                         q.getOptionC(),
                         q.getOptionD(),
                         q.getCorrectAnswer(),
-                        q.getExplanation()
+                        q.getExplanation(),
+                        q.getSubject(),
+                        q.getDifficulty(),
+                        q.getSolution(),
+                        q.getDiagramUrl(),
+                        q.getDiagramWidth(),
+                        q.getDiagramHeight()
                 ))
                 .toList();
     }

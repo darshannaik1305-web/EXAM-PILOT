@@ -28,4 +28,17 @@ public class PracticeQuestionResponse {
     private String correctAnswer;
 
     private String explanation;
+
+    private String subject;
+
+    private String difficulty;
+
+    private String solution;
+
+    private String diagramUrl;
+
+    private Integer diagramWidth;
+
+    private Integer diagramHeight;
 }
+
