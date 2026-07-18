@@ -286,9 +286,9 @@ export default function Settings() {
         </div>
       </div>
 
-      <div className="grid grid-cols-1 gap-8 md:grid-cols-4">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left Side Tab Navigation */}
-        <div className="flex flex-col gap-2 rounded-2xl border border-slate-700/80 bg-slate-900/50 p-4 shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-4 xl:col-span-3 flex flex-row lg:flex-col gap-2 rounded-2xl border border-slate-700/80 bg-slate-900/50 p-3 sm:p-4 shadow-xl backdrop-blur-md overflow-x-auto lg:overflow-x-visible scrollbar-none h-fit">
           {SETTINGS_SECTIONS.map((section) => {
             const Icon = section.icon;
             const isActive = activeSection === section.id;
@@ -296,7 +296,7 @@ export default function Settings() {
               <button
                 key={section.id}
                 onClick={() => setActiveSection(section.id)}
-                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-left font-semibold transition-all duration-300 ${
+                className={`flex items-center gap-3 rounded-xl px-4 py-3 text-left font-semibold transition-all duration-300 whitespace-nowrap lg:whitespace-normal ${
                   isActive 
                     ? "bg-violet-600/90 text-white shadow-lg shadow-violet-500/25" 
                     : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-50"
@@ -310,7 +310,7 @@ export default function Settings() {
         </div>
 
         {/* Right Side Content Panel */}
-        <div className="md:col-span-3 rounded-2xl border border-slate-700/80 bg-slate-900/80 p-8 shadow-xl backdrop-blur-md">
+        <div className="lg:col-span-8 xl:col-span-9 rounded-2xl border border-slate-700/80 bg-slate-900/80 p-6 sm:p-8 shadow-xl backdrop-blur-md">
           {/* Section: Account Settings */}
           {activeSection === "account" && (
             <div className="flex flex-col gap-8">
@@ -580,7 +580,7 @@ export default function Settings() {
               </div>
 
               {/* Theme Toggles */}
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 {[
                   { id: "LIGHT", label: "Light Mode", desc: "Crisp white styling" },
                   { id: "DARK", label: "Dark Mode", desc: "Premium slate color styling" },
@@ -664,7 +664,7 @@ export default function Settings() {
               </div>
 
               {/* Statistics grid */}
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div className="flex items-center gap-3 rounded-2xl bg-slate-900/40 border border-slate-800 p-4">
                   <Calendar className="h-8 w-8 text-cyan-400 shrink-0" />
                   <div>
@@ -705,7 +705,7 @@ export default function Settings() {
                 <h3 className="font-semibold text-slate-200 mb-3 flex items-center gap-2">
                   <Clock className="h-4 w-4" /> Technical Versions
                 </h3>
-                <div className="grid grid-cols-3 gap-3">
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
                   <div className="rounded-xl border border-slate-800 bg-slate-950/60 p-3 text-center">
                     <span className="block text-[10px] text-slate-500 font-bold uppercase">Frontend Build</span>
                     <span className="font-mono text-sm text-slate-300 font-bold">{stats.frontendVersion}</span>
