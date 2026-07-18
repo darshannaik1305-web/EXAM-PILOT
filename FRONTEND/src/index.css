@@ -42,8 +42,8 @@ body {
   /* Light gray background */
   --color-surface: #FFFFFF;
   /* White surface */
-  --color-card: #F3F4F6;
-  /* Gray 100 for cards */
+  --color-card: #FFFFFF;
+  /* Pure white cards */
   --color-border: #E2E8F0;
   /* Gray 300 for borders */
   --color-primary: #7c3aed;
@@ -56,22 +56,22 @@ body {
   /* Yellow */
   --color-danger: #ef4444;
   /* Red */
-  --color-text: #111827;
+  --color-text: #0F172A;
   /* Dark text */
-  --color-muted: #9ca3af;
+  --color-muted: #64748B;
   /* Muted gray */
   /* Slate shades aligning with new palette */
-  --color-slate-50: #F8FAFC;
-  --color-slate-100: #F3F4F6;
-  --color-slate-200: #E5E7EB;
-  --color-slate-300: #D1D5DB;
-  --color-slate-400: #9CA3AF;
-  --color-slate-500: #6B7280;
-  --color-slate-600: #4B5563;
-  --color-slate-700: #374151;
-  --color-slate-800: #1F2937;
-  --color-slate-900: #111827;
-  --color-slate-950: #0F172A;
+  --color-slate-50: #0F172A;
+  --color-slate-100: #1E293B;
+  --color-slate-200: #334155;
+  --color-slate-300: #475569;
+  --color-slate-400: #64748B;
+  --color-slate-500: #94A3B8;
+  --color-slate-600: #CBD5E1;
+  --color-slate-700: #E2E8F0;
+  --color-slate-800: #F1F5F9;
+  --color-slate-900: #F8FAFC;
+  --color-slate-950: #FFFFFF;
 }
 
 /* Custom scrollbar styling to fit the premium theme */

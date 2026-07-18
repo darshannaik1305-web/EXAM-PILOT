@@ -60,7 +60,7 @@ function Mentor() {
           parts.push(cleanLine.substring(lastIdx, match.index));
         }
         parts.push(
-          <strong key={match.index} className="font-extrabold text-white">
+          <strong key={match.index} className="font-extrabold text-slate-50">
             {match[1]}
           </strong>
         );
