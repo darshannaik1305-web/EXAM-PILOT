@@ -1,5 +1,5 @@
-import { useState, useEffect, useRef } from "react";
-import { sendMentorMessage } from "../services/mentorService";
+import { useState, useEffect, useRef, useContext } from "react";
+import { MentorContext } from "../context/MentorContext";
 import { getStudentAnalytics } from "../services/analyticsService";
 import {
   Bot,
@@ -19,17 +19,10 @@ import LoadingSpinner from "../components/common/LoadingSpinner";
 import { toast } from "react-hot-toast";
 
 function Mentor() {
+  const { messages, sending, sendMessage } = useContext(MentorContext);
   const [loadingStats, setLoadingStats] = useState(true);
   const [stats, setStats] = useState(null);
-  
-  const [messages, setMessages] = useState([
-    {
-      role: "model",
-      content: "Hello! I am your AI Mentor. I've reviewed your ExamPilot study history and analytics profile. How can I help you optimize your study strategies or resolve doubt topics today?"
-    }
-  ]);
   const [inputValue, setInputValue] = useState("");
-  const [sending, setSending] = useState(false);
   
   const chatEndRef = useRef(null);
 
@@ -103,30 +96,12 @@ function Mentor() {
     chatEndRef.current?.scrollIntoView({ behavior: "smooth" });
   }, [messages, sending]);
 
-  async function handleSendMessage(e) {
+  function handleSendMessage(e) {
     e.preventDefault();
     if (!inputValue.trim() || sending) return;
 
-    const userMessage = { role: "user", content: inputValue.trim() };
-    setMessages((prev) => [...prev, userMessage]);
+    sendMessage(inputValue);
     setInputValue("");
-    setSending(true);
-
-    try {
-      // Send message history to Spring Boot gateway
-      const historyToSend = [...messages, userMessage].map(m => ({
-        role: m.role,
-        content: m.content
-      }));
-
-      const result = await sendMentorMessage(historyToSend);
-      setMessages((prev) => [...prev, { role: "model", content: result.reply }]);
-    } catch (err) {
-      console.error(err);
-      toast.error("Failed to send message to AI Mentor. Please try again.");
-    } finally {
-      setSending(false);
-    }
   }
 
   return (

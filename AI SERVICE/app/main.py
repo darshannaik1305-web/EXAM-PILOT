@@ -7,6 +7,7 @@ from app.api.health import router as health_router
 from app.api.upload import router as upload_router
 from app.api.mentor import router as mentor_router
 from app.api.answer_key import router as answer_key_router
+from app.api.cleanup import router as cleanup_router
 
 
 @asynccontextmanager
@@ -41,6 +42,7 @@ app.include_router(health_router, tags=["Health"])
 app.include_router(upload_router, tags=["Upload"])
 app.include_router(mentor_router, tags=["Mentor"])
 app.include_router(answer_key_router, tags=["Answer Key"])
+app.include_router(cleanup_router, tags=["Cleanup"])
 
 
 if __name__ == "__main__":

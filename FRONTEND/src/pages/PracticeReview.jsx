@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { useParams, useNavigate, Link, useSearchParams } from "react-router-dom";
 import { getSession, getQuestions, getSummary, getReviewData } from "../services/practiceService";
+import { API_BASE_URL } from "../services/api";
 import {
   FileText,
   CheckCircle,
@@ -312,6 +313,21 @@ function PracticeReview() {
               <p className="text-base font-medium leading-relaxed mb-6 whitespace-pre-wrap">
                 {currentQ?.questionText || currentQ?.question}
               </p>
+
+              {/* Diagram Rendering */}
+              {currentQ?.diagramUrl && (
+                <div className="my-5 flex justify-center bg-slate-950/40 p-4 rounded-xl border border-border/10">
+                  <img
+                    src={`${API_BASE_URL}${currentQ.diagramUrl}`}
+                    alt={`Question ${currentQ.questionNumber} Diagram`}
+                    style={{
+                      maxWidth: currentQ.diagramWidth ? `${currentQ.diagramWidth / 3}px` : "100%",
+                      maxHeight: "320px",
+                    }}
+                    className="object-contain rounded-lg shadow-sm"
+                  />
+                </div>
+              )}
 
               {/* Options list showing highlighted correct key vs student choice */}
               <div className="grid grid-cols-1 md:grid-cols-2 gap-3.5">

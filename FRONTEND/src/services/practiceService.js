@@ -1,6 +1,6 @@
 import api from "./api";
 
-export async function uploadPractice(title, uploadType, file, config = {}) {
+export async function uploadPractice(title, uploadType, file, config = {}, signal) {
   const formData = new FormData();
   formData.append("file", file);
   formData.append("title", title);
@@ -13,10 +13,16 @@ export async function uploadPractice(title, uploadType, file, config = {}) {
   if (config.subject) formData.append("subject", config.subject);
 
   const response = await api.post("/api/practice/sessions", formData, {
+    signal,
     headers: {
       "Content-Type": "multipart/form-data",
     },
   });
+  return response.data;
+}
+
+export async function deleteSession(sessionId) {
+  const response = await api.delete(`/api/practice/sessions/${sessionId}`);
   return response.data;
 }
 

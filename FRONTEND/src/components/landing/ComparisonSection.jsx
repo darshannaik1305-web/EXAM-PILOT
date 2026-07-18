@@ -28,7 +28,7 @@ function ComparisonSection() {
           description="Understand the difference between static past paper files and a modern learning feedback loop."
         />
 
-        <div className="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
           {/* Traditional Card */}
           <div className="p-8 rounded-2xl border border-slate-200/60 bg-white shadow-sm flex flex-col">
             <div className="flex items-center space-x-3 mb-6">

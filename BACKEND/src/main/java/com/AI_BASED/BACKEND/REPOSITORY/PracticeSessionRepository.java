@@ -15,4 +15,6 @@ public interface PracticeSessionRepository extends JpaRepository<PracticeSession
     Page<PracticeSession> findByUserOrderByCreatedAtDesc(User user, Pageable pageable);
 
     long countByUserAndStatus(User user, com.AI_BASED.BACKEND.ENTITY.PracticeSessionStatus status);
+
+    long countByUser(User user);
 }

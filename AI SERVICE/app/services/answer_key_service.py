@@ -104,13 +104,33 @@ Rules:
 - Map every question number to its correct answer option (uppercase A, B, C, or D).
 - If a question has multiple correct options, return the first one or combine them if standard (e.g., "A").
 """
-        response = client.models.generate_content(
-            model="gemini-2.5-flash",
-            contents=[uploaded_file, prompt],
-            config=types.GenerateContentConfig(
-                response_mime_type="application/json"
-            )
-        )
+        # Implement retry logic for 503 UNAVAILABLE server errors
+        max_retries = 3
+        retry_delay = 5
+        for attempt in range(max_retries):
+            try:
+                response = client.models.generate_content(
+                    model="gemini-2.5-flash",
+                    contents=[uploaded_file, prompt],
+                    config=types.GenerateContentConfig(
+                        response_mime_type="application/json"
+                    )
+                )
+                break
+            except APIError as api_err:
+                is_503 = getattr(api_err, "code", None) == 503 or "503" in str(api_err) or "UNAVAILABLE" in str(api_err)
+                if is_503 and attempt < max_retries - 1:
+                    logger.warning(f"Gemini API returned 503 (High Demand) during answer key extraction. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                    time.sleep(retry_delay)
+                    continue
+                raise GeminiException(f"Gemini API error during answer key extraction: {str(api_err)}")
+            except Exception as e:
+                is_503 = "503" in str(e) or "UNAVAILABLE" in str(e)
+                if is_503 and attempt < max_retries - 1:
+                    logger.warning(f"Gemini API call failed with 503 during answer key extraction. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
+                    time.sleep(retry_delay)
+                    continue
+                raise GeminiException(f"Failed to communicate with Gemini: {str(e)}")
         
         text = response.text.strip()
         if text.startswith("```json"):
@@ -125,10 +145,6 @@ Rules:
         # Convert keys to integers and values to uppercase strings
         formatted_result = {int(k): str(v).upper() for k, v in result.items() if k.isdigit()}
         return formatted_result
-    except APIError as api_err:
-        raise GeminiException(f"Gemini API error during answer key extraction: {str(api_err)}")
-    except Exception as e:
-        raise GeminiException(f"Failed to communicate with Gemini: {str(e)}")
 
 def extract_answer_key(file_path: str, expected_count: int = None) -> dict:
     """Orchestrates answer key extraction with Regex-first and Gemini fallback."""

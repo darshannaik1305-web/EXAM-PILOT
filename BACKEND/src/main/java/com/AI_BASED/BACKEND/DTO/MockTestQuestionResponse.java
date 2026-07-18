@@ -19,4 +19,9 @@ public class MockTestQuestionResponse {
     private Boolean isMarkedForReview;
     private Boolean isSkipped;
     private Long timeSpentSeconds;
+    private String diagramUrl;
+    private String diagramType;
+    private Double diagramConfidence;
+    private Integer diagramWidth;
+    private Integer diagramHeight;
 }

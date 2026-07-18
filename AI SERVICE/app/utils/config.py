@@ -21,6 +21,14 @@ class Settings(BaseSettings):
     ARCHIVE_DIR: str = "archive"
     OUTPUT_DIR: str = "output"
     
+    # Diagram extraction rendering parameters
+    CROP_RENDER_SCALE: int = 3
+    WEBP_QUALITY: int = 80
+    MIN_DIAGRAM_CONFIDENCE: float = 0.85
+    WARNING_DIAGRAM_CONFIDENCE: float = 0.60
+    MIN_CROP_DIMENSION: int = 60
+    CROP_PADDING_PERCENT: float = 0.10
+    
     # API key for Gemini models
     GEMINI_API_KEY: str = ""
 
@@ -48,11 +56,17 @@ class Settings(BaseSettings):
         path = Path(self.OUTPUT_DIR)
         return path if path.is_absolute() else BASE_DIR / path
 
+    @property
+    def shared_diagrams_storage_path(self) -> Path:
+        """Returns resolved Path object for the shared diagrams storage directory."""
+        return BASE_DIR.parent / "storage" / "diagrams"
+
     def create_required_directories(self) -> None:
         """Dynamically creates storage directories if they do not exist."""
         self.upload_path.mkdir(parents=True, exist_ok=True)
         self.archive_path.mkdir(parents=True, exist_ok=True)
         self.output_path.mkdir(parents=True, exist_ok=True)
+        self.shared_diagrams_storage_path.mkdir(parents=True, exist_ok=True)
 
 
 @lru_cache()

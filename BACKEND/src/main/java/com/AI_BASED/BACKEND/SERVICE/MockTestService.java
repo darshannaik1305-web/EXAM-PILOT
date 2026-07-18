@@ -128,7 +128,12 @@ public class MockTestService {
                 answer.getSelectedOption(),
                 answer.getIsMarkedForReview(),
                 answer.getIsSkipped(),
-                answer.getTimeSpentSeconds()
+                answer.getTimeSpentSeconds(),
+                question.getDiagramUrl(),
+                question.getDiagramType(),
+                question.getDiagramConfidence(),
+                question.getDiagramWidth(),
+                question.getDiagramHeight()
         );
     }
 
@@ -173,7 +178,12 @@ public class MockTestService {
                 answer.getSelectedOption(),
                 answer.getIsMarkedForReview(),
                 answer.getIsSkipped(),
-                answer.getTimeSpentSeconds()
+                answer.getTimeSpentSeconds(),
+                question.getDiagramUrl(),
+                question.getDiagramType(),
+                question.getDiagramConfidence(),
+                question.getDiagramWidth(),
+                question.getDiagramHeight()
         );
     }
 
@@ -401,6 +411,11 @@ public class MockTestService {
             r.setDifficulty(q.getDifficulty());
             r.setExplanation(q.getExplanation());
             r.setSolution(q.getSolution());
+            r.setDiagramUrl(q.getDiagramUrl());
+            r.setDiagramType(q.getDiagramType());
+            r.setDiagramConfidence(q.getDiagramConfidence());
+            r.setDiagramWidth(q.getDiagramWidth());
+            r.setDiagramHeight(q.getDiagramHeight());
             return r;
         }).collect(Collectors.toList());
     }

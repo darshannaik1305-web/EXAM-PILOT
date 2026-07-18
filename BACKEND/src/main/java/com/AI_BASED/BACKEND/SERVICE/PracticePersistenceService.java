@@ -8,6 +8,9 @@ import com.AI_BASED.BACKEND.ENTITY.UploadType;
 import com.AI_BASED.BACKEND.EXCEPTION.ExtractionException;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeQuestionRepository;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeSessionRepository;
+import com.AI_BASED.BACKEND.ENTITY.MockTestSession;
+import com.AI_BASED.BACKEND.ENTITY.User;
+import com.AI_BASED.BACKEND.REPOSITORY.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -24,6 +27,21 @@ public class PracticePersistenceService {
 
     @Autowired
     private PracticeQuestionRepository practiceQuestionRepository;
+
+    @Autowired
+    private MockTestSessionRepository sessionRepository;
+
+    @Autowired
+    private MockTestAnswerRepository mockTestAnswerRepository;
+
+    @Autowired
+    private MockTestResultRepository mockTestResultRepository;
+
+    @Autowired
+    private MockTestSubjectResultRepository mockTestSubjectResultRepository;
+
+    @Autowired
+    private MockTestDifficultyResultRepository mockTestDifficultyResultRepository;
 
     @Transactional
     public void saveQuestions(Long sessionId, List<QuestionDto> questionDtos) {
@@ -52,6 +70,11 @@ public class PracticePersistenceService {
             }
             q.setDifficulty(qDto.getDifficulty());
             q.setSolution(qDto.getSolution());
+            q.setDiagramUrl(qDto.getDiagramUrl());
+            q.setDiagramType(qDto.getDiagramType());
+            q.setDiagramConfidence(qDto.getDiagramConfidence());
+            q.setDiagramWidth(qDto.getDiagramWidth());
+            q.setDiagramHeight(qDto.getDiagramHeight());
             return q;
         }).collect(Collectors.toList());
 
@@ -81,5 +104,33 @@ public class PracticePersistenceService {
             session.setStatus(PracticeSessionStatus.FAILED);
             practiceSessionRepository.save(session);
         });
+    }
+
+    @Transactional
+    public void deleteSessionDbData(PracticeSession session, User user) {
+        // Find all MockTestSessions for this practice session and user
+        List<MockTestSession> mockTestSessions = sessionRepository
+                .findByPracticeSessionAndUserOrderByStartedAtDesc(session, user);
+
+        if (!mockTestSessions.isEmpty()) {
+            // 1. Delete MockTestAnswers first (leaf table — references MockTestSession + PracticeQuestion)
+            mockTestAnswerRepository.deleteByMockTestSessionIn(mockTestSessions);
+
+            // 2. Delete MockTestResults, SubjectResults, DifficultyResults (all reference MockTestSession)
+            for (MockTestSession mts : mockTestSessions) {
+                mockTestResultRepository.deleteByMockTestSession(mts);
+            }
+            mockTestSubjectResultRepository.deleteByMockTestSessionIn(mockTestSessions);
+            mockTestDifficultyResultRepository.deleteByMockTestSessionIn(mockTestSessions);
+
+            // 3. Delete MockTestSessions themselves
+            sessionRepository.deleteAllInBatch_(mockTestSessions);
+        }
+
+        // 4. Delete PracticeQuestions (references PracticeSession)
+        practiceQuestionRepository.deleteByPracticeSession(session);
+
+        // 5. Delete the PracticeSession record
+        practiceSessionRepository.delete(session);
     }
 }

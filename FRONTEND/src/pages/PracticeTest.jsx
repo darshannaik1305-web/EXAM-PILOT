@@ -5,8 +5,8 @@ import {
   getTestQuestion,
   saveTestAnswer,
   getTestPalette,
-  submitTest
 } from "../services/practiceService";
+import { API_BASE_URL } from "../services/api";
 import {
   Timer,
   ChevronLeft,
@@ -48,6 +48,7 @@ function PracticeTest() {
 
   // Confirmation Modals
   const [showSubmitModal, setShowSubmitModal] = useState(false);
+  const [showExitModal, setShowExitModal] = useState(false);
 
   // 1. Initial Start or Resume
   useEffect(() => {
@@ -278,11 +279,7 @@ function PracticeTest() {
       <header className="flex items-center justify-between px-6 h-16 border-b border-border bg-slate-900/60 backdrop-blur-md">
         <div className="flex items-center space-x-4">
           <button
-            onClick={() => {
-              if (window.confirm("Are you sure you want to pause and exit? Your progress is saved.")) {
-                navigate("/student/workspace");
-              }
-            }}
+            onClick={() => setShowExitModal(true)}
             className="flex items-center text-sm font-semibold text-muted hover:text-text gap-1.5 transition-colors cursor-pointer"
           >
             <ArrowLeft size={16} />
@@ -324,6 +321,21 @@ function PracticeTest() {
               <p className="text-base font-medium leading-relaxed mb-6 whitespace-pre-wrap">
                 {currentQuestion?.questionText}
               </p>
+
+              {/* Diagram Rendering */}
+              {currentQuestion?.diagramUrl && (
+                <div className="my-5 flex justify-center bg-slate-950/40 p-4 rounded-xl border border-border/10">
+                  <img
+                    src={`${API_BASE_URL}${currentQuestion.diagramUrl}`}
+                    alt={`Question ${currentQuestion.questionNumber} Diagram`}
+                    style={{
+                      maxWidth: currentQuestion.diagramWidth ? `${currentQuestion.diagramWidth / 3}px` : "100%",
+                      maxHeight: "320px",
+                    }}
+                    className="object-contain rounded-lg shadow-sm"
+                  />
+                </div>
+              )}
 
               {/* Option Selector Grid */}
               <div className="space-y-3.5">
@@ -507,6 +519,40 @@ function PracticeTest() {
                 className="bg-success hover:bg-green-600 shadow-lg shadow-green-500/10"
               >
                 {submitting ? "Submitting..." : "Yes, Submit Test"}
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Pause/Exit Confirmation Modal */}
+      {showExitModal && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/70 backdrop-blur-sm select-none">
+          <div className="w-full max-w-md bg-card border border-border p-6 rounded-2xl shadow-xl space-y-4">
+            <div className="flex items-center gap-3 text-warning">
+              <AlertCircle size={24} />
+              <h3 className="text-lg font-bold">Pause and Exit?</h3>
+            </div>
+            
+            <p className="text-sm text-muted leading-relaxed">
+              Are you sure you want to pause and exit? Your progress is saved and you can resume the test at any time.
+            </p>
+
+            <div className="flex items-center justify-end space-x-3 pt-2">
+              <Button
+                variant="outline"
+                onClick={() => setShowExitModal(false)}
+              >
+                Cancel
+              </Button>
+              <Button
+                variant="primary"
+                onClick={() => {
+                  setShowExitModal(false);
+                  navigate("/student/workspace");
+                }}
+              >
+                Exit Test
               </Button>
             </div>
           </div>

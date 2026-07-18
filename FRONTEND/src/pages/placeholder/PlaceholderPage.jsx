@@ -55,7 +55,7 @@ function PlaceholderPage({
             <h3 className="text-sm font-bold text-text uppercase tracking-wider">
               Integration Roadmap
             </h3>
-            <div className="grid sm:grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               {roadmap.map((item, idx) => (
                 <div
                   key={idx}

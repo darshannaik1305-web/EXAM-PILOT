@@ -1,15 +1,18 @@
 import { useState, useEffect } from "react";
-import { getSessions } from "../services/practiceService";
+import { getSessions, deleteSession } from "../services/practiceService";
 import { Link } from "react-router-dom";
-import { FileText, Eye, Inbox } from "lucide-react";
+import { FileText, Eye, Inbox, Trash2, ShieldAlert } from "lucide-react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
 import LoadingSpinner from "../components/common/LoadingSpinner";
 import { formatDate } from "../utils/formatters";
+import { toast } from "react-hot-toast";
 
 function PracticePapers() {
   const [loading, setLoading] = useState(true);
   const [sessions, setSessions] = useState([]);
+  const [deleteTarget, setDeleteTarget] = useState(null); // The session object to delete
+  const [deleting, setDeleting] = useState(false);
 
   useEffect(() => {
     async function loadSessions() {
@@ -24,6 +27,24 @@ function PracticePapers() {
     }
     loadSessions();
   }, []);
+
+  async function confirmDelete() {
+    if (!deleteTarget) return;
+    setDeleting(true);
+    toast.loading("Permanently deleting session and all assets...", { id: "delete-session-toast" });
+
+    try {
+      await deleteSession(deleteTarget.id);
+      setSessions((prev) => prev.filter((s) => s.id !== deleteTarget.id));
+      toast.success("Solved paper and all associated data deleted successfully.", { id: "delete-session-toast" });
+    } catch (err) {
+      console.error("Failed to delete session:", err);
+      toast.error("Failed to delete solved paper. Please try again.", { id: "delete-session-toast" });
+    } finally {
+      setDeleting(false);
+      setDeleteTarget(null);
+    }
+  }
 
   if (loading) {
     return (
@@ -74,16 +95,68 @@ function PracticePapers() {
                 </p>
               </div>
 
-              <div className="mt-6">
-                <Link to={`/student/practice/${session.id}/review`}>
+              <div className="mt-6 flex items-center gap-2">
+                <Link to={`/student/practice/${session.id}/review`} className="flex-grow">
                   <Button variant="outline" className="w-full flex items-center justify-center gap-1.5 border-border hover:bg-slate-800">
                     <Eye size={14} />
                     <span>Review Solutions</span>
                   </Button>
                 </Link>
+                <button
+                  type="button"
+                  onClick={() => setDeleteTarget(session)}
+                  className="p-2.5 border border-rose-500/20 hover:border-rose-500/50 hover:bg-rose-500/10 text-rose-400 rounded-xl transition-all cursor-pointer flex items-center justify-center"
+                  title="Delete solved paper"
+                >
+                  <Trash2 size={14} />
+                </button>
               </div>
             </Card>
           ))}
+        </div>
+      )}
+
+      {/* Premium Glassmorphic Confirmation Modal */}
+      {deleteTarget && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center p-4 bg-slate-950/80 backdrop-blur-md animate-in fade-in duration-200">
+          <div className="relative w-full max-w-md bg-card border border-border/80 rounded-2xl p-6 shadow-2xl flex flex-col items-center text-center space-y-4 animate-in zoom-in-95 duration-200">
+            {/* Alert Warning Icon */}
+            <div className="w-12 h-12 rounded-full bg-rose-500/10 border border-rose-500/20 flex items-center justify-center text-rose-500 animate-bounce">
+              <ShieldAlert size={24} />
+            </div>
+
+            {/* Titles & Description */}
+            <div className="space-y-1.5">
+              <h4 className="text-base font-extrabold text-text font-outfit">
+                Delete Solved Paper?
+              </h4>
+              <p className="text-xs text-muted leading-relaxed">
+                Are you sure you want to permanently delete{" "}
+                <span className="font-bold text-text">"{deleteTarget.title}"</span>?
+                This will delete all extracted questions, explanation keys, mock attempts, student answers, and clean up PDF/image storage on the AI service. This action cannot be undone.
+              </p>
+            </div>
+
+            {/* Action Buttons */}
+            <div className="flex items-center space-x-3 w-full pt-2">
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={confirmDelete}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-rose-600 hover:bg-rose-500 disabled:opacity-60 text-white text-xs font-bold transition-colors cursor-pointer border border-rose-700/50"
+              >
+                {deleting ? "Deleting..." : "Yes, Delete All"}
+              </button>
+              <button
+                type="button"
+                disabled={deleting}
+                onClick={() => setDeleteTarget(null)}
+                className="flex-1 px-4 py-2.5 rounded-xl bg-slate-900 hover:bg-slate-800 border border-border text-muted hover:text-text text-xs font-bold transition-colors cursor-pointer"
+              >
+                Keep Paper
+              </button>
+            </div>
+          </div>
         </div>
       )}
     </div>

@@ -10,16 +10,20 @@ import PracticePapers from "./pages/PracticePapers";
 import Analytics from "./pages/Analytics";
 import Mentor from "./pages/Mentor";
 import ProtectedRoute from "./components/common/ProtectedRoute";
+import SettingsPage from "./pages/Settings";
 import PublicRoute from "./components/common/PublicRoute";
 import GuestLayout from "./components/layout/GuestLayout";
 import StudentLayout from "./components/layout/StudentLayout";
 import PlaceholderPage from "./pages/placeholder/PlaceholderPage";
 import Workspace404 from "./pages/placeholder/Workspace404";
+import ScrollToTop from "./components/common/ScrollToTop";
 import { FileText, GraduationCap, BarChart3, Bot, Trophy, Settings } from "lucide-react";
 
 function App() {
   return (
-    <Routes>
+    <>
+      <ScrollToTop />
+      <Routes>
       {/* Guest Layout Shell */}
       <Route element={<GuestLayout />}>
         <Route path="/" element={<Home />} />
@@ -106,23 +110,14 @@ function App() {
         />
         <Route
           path="settings"
-          element={
-            <PlaceholderPage
-              title="Workspace Settings"
-              description="Manage study goals, email configurations, and account details."
-              icon={Settings}
-              roadmap={[
-                { title: "Profile Updates", desc: "Configure username and basic candidate preferences." },
-                { title: "System Preferences", desc: "Adjust notification timings and visual modes." },
-              ]}
-            />
-          }
+          element={<SettingsPage />}
         />
 
         {/* Fallback Workspace 404 Page */}
         <Route path="*" element={<Workspace404 />} />
       </Route>
     </Routes>
+    </>
   );
 }
 

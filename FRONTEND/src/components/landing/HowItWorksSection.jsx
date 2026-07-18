@@ -31,7 +31,7 @@ function HowItWorksSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
           {steps.map((item) => (
             <div key={item.step} className="space-y-4 border-l-2 border-border pl-6 relative">
               <div className="text-3xl font-extrabold text-primary font-mono">

@@ -3,12 +3,13 @@ from fastapi import APIRouter
 router = APIRouter()
 
 @router.get("/health")
-async def health_check():
+def health_check():
     """
     Health check endpoint to verify the service status.
-    Returns status: UP and the service name.
+    Returns status: UP, the service name, and version metadata.
     """
     return {
         "status": "UP",
-        "service": "ExamPilot AI Service"
+        "service": "ExamPilot AI Service",
+        "version": "1.0.0"
     }

@@ -12,7 +12,7 @@ function AnalyticsPreviewSection() {
           description="See exactly where you stand. Our dashboard monitors accuracy, solving speeds, and mastery trends."
         />
 
-        <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {/* Card 1: Accuracy & Score */}
           <div className="p-6 sm:p-8 rounded-2xl border border-slate-100 bg-slate-50/50 shadow-sm hover:shadow-md transition-shadow">
             <div className="flex items-center space-x-3 mb-6">

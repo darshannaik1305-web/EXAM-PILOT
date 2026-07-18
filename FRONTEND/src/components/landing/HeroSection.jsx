@@ -12,7 +12,7 @@ function HeroSection() {
   ];
 
   return (
-    <section className="relative overflow-hidden pt-24 pb-20 md:pt-32 md:pb-28">
+    <section className="relative overflow-hidden pt-12 pb-20 md:pt-16 md:pb-28">
       {/* Background radial glow */}
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[1000px] h-[400px] bg-gradient-to-b from-primary/10 to-transparent rounded-full filter blur-3xl -z-10"></div>
 
@@ -20,7 +20,7 @@ function HeroSection() {
         {/* Badge alert */}
         <div className="inline-flex items-center space-x-2 bg-slate-900 border border-border px-3.5 py-1.5 rounded-full text-xs font-semibold text-primary mb-6 animate-fade-in">
           <span className="w-1.5 h-1.5 bg-violet-500 rounded-full animate-pulse"></span>
-          <span>ExamPilot V2 Redesign Live</span>
+          <span>ExamPilot V3.1 Engine Live</span>
         </div>
 
         {/* Headline */}

@@ -1,22 +1,24 @@
-import { useState, useRef, useEffect } from "react";
+import { useState, useRef, useEffect, useContext } from "react";
 import toast from "react-hot-toast";
-import { Upload, FileText, X, ShieldAlert, CheckCircle2, ChevronRight, ChevronLeft, Settings, HelpCircle, FileSpreadsheet } from "lucide-react";
+import { Upload, FileText, X, ShieldAlert, CheckCircle2, ChevronRight, ChevronLeft, Settings, HelpCircle, FileSpreadsheet, Plus, Minus } from "lucide-react";
 import Button from "../ui/Button";
 import Card from "../ui/Card";
 import Spinner from "../ui/Spinner";
 import { uploadPractice, uploadAnswerKey } from "../../services/practiceService";
 import { formatBytes } from "../../utils/formatters";
+import { NotificationContext } from "../../context/NotificationContext";
 
 function UploadZone({ onUploadSuccess }) {
+  const { registerProcessingSession } = useContext(NotificationContext);
   // Wizard steps: 0 (Upload Q Paper), 1 (Configurations), 2 (Upload separate Answer Key if separate chosen)
   const [wizardStep, setWizardStep] = useState(0);
 
   // Form states
   const [title, setTitle] = useState("");
   const [examName, setExamName] = useState("");
-  const [durationMinutes, setDurationMinutes] = useState(90);
-  const [positiveMarks, setPositiveMarks] = useState(4.0);
-  const [negativeMarks, setNegativeMarks] = useState(1.0);
+  const [durationMinutes, setDurationMinutes] = useState("90");
+  const [positiveMarks, setPositiveMarks] = useState("4");
+  const [negativeMarks, setNegativeMarks] = useState("1");
   const [uploadType, setUploadType] = useState("PDF_MOCK"); // PDF_MOCK or QUESTION_AND_SEPARATE_ANSWER_KEY
   const [subject, setSubject] = useState("");
   const [customSubject, setCustomSubject] = useState("");
@@ -36,6 +38,7 @@ function UploadZone({ onUploadSuccess }) {
 
   const fileInputRef = useRef(null);
   const akInputRef = useRef(null);
+  const abortControllerRef = useRef(null);
 
   const steps = [
     "Uploading PDF to server...",
@@ -161,20 +164,50 @@ function UploadZone({ onUploadSuccess }) {
       return;
     }
 
+    // Input validations
+    const durationVal = parseInt(durationMinutes);
+    const positiveVal = parseFloat(positiveMarks);
+    const negativeVal = parseFloat(negativeMarks);
+
+    if (!durationMinutes || isNaN(durationVal) || durationVal <= 0) {
+      toast.error("Please enter a valid exam duration (Timer must be greater than 0)");
+      setError("Timer must be greater than 0 minutes");
+      return;
+    }
+
+    if (!positiveMarks || isNaN(positiveVal) || positiveVal < 0.5) {
+      toast.error("Please enter a valid positive score (Correct marks must be 0.5 or greater)");
+      setError("Correct marks must be 0.5 or greater");
+      return;
+    }
+
+    if (negativeMarks === "" || isNaN(negativeVal) || negativeVal < 0) {
+      toast.error("Please enter a valid negative score (Wrong marks deduction must be 0 or positive)");
+      setError("Wrong marks must be 0 or a positive deduction value");
+      return;
+    }
+
+    if (durationMinutes.toString().includes("-") || positiveMarks.toString().includes("-") || negativeMarks.toString().includes("-")) {
+      toast.error("Negative values/symbols are not allowed");
+      setError("Negative values/symbols are not allowed");
+      return;
+    }
+
     setLoading(true);
     try {
-      const durationSeconds = durationMinutes * 60;
+      const durationSeconds = durationVal * 60;
       const resolvedSubject = subject === "CUSTOM" ? customSubject.trim() : subject;
       const config = {
         examDurationSeconds: durationSeconds,
-        positiveMarks: positiveMarks,
-        negativeMarks: negativeMarks,
+        positiveMarks: positiveVal,
+        negativeMarks: negativeVal,
         examName: examName.trim() || null,
         examStructure: "Standard MCQ",
         subject: resolvedSubject || null
       };
 
-      const data = await uploadPractice(title.trim(), uploadType, file, config);
+      abortControllerRef.current = new AbortController();
+      const data = await uploadPractice(title.trim(), uploadType, file, config, abortControllerRef.current.signal);
 
       if (uploadType === "QUESTION_AND_SEPARATE_ANSWER_KEY") {
         setCreatedSessionId(data.sessionId);
@@ -182,10 +215,17 @@ function UploadZone({ onUploadSuccess }) {
         toast.success("Question paper processed! Please upload separate Answer Key PDF.");
       } else {
         toast.success("PDF parsed successfully! Mock test created.");
+        if (data?.sessionId) {
+          registerProcessingSession(data.sessionId);
+        }
         resetForm();
         if (onUploadSuccess) onUploadSuccess(data);
       }
     } catch (err) {
+      if (err.name === 'CanceledError' || err.message === 'canceled') {
+        console.log("Upload aborted by user.");
+        return;
+      }
       console.error(err);
       const errMsg = err.response?.data?.message || "Failed to process PDF. Check structure or try again.";
       setError(errMsg);
@@ -208,6 +248,9 @@ function UploadZone({ onUploadSuccess }) {
     try {
       await uploadAnswerKey(createdSessionId, answerKeyFile);
       toast.success("Answer key merged successfully! Session ready.");
+      if (createdSessionId) {
+        registerProcessingSession(createdSessionId);
+      }
       resetForm();
       if (onUploadSuccess) onUploadSuccess();
     } catch (err) {
@@ -221,11 +264,12 @@ function UploadZone({ onUploadSuccess }) {
   }
 
   function resetForm() {
+    setLoading(false);
     setTitle("");
     setExamName("");
-    setDurationMinutes(90);
-    setPositiveMarks(4.0);
-    setNegativeMarks(1.0);
+    setDurationMinutes("90");
+    setPositiveMarks("4");
+    setNegativeMarks("1");
     setUploadType("PDF_MOCK");
     setSubject("");
     setCustomSubject("");
@@ -237,6 +281,7 @@ function UploadZone({ onUploadSuccess }) {
     if (fileInputRef.current) fileInputRef.current.value = "";
     if (akInputRef.current) akInputRef.current.value = "";
   }
+
 
   return (
     <Card className="h-full flex flex-col justify-between hover:border-slate-600 transition-colors duration-300 relative group overflow-hidden min-h-[460px]">
@@ -302,6 +347,8 @@ function UploadZone({ onUploadSuccess }) {
                 );
               })}
             </div>
+
+
           </div>
         ) : (
           <div className="space-y-4">
@@ -493,41 +540,142 @@ function UploadZone({ onUploadSuccess }) {
                 {/* Grid Inputs */}
                 <div className="grid grid-cols-3 gap-3">
                   <div>
-                    <label className="block mb-1 text-[9px] font-bold text-muted uppercase tracking-wider">
+                    <label className="block mb-1.5 text-[9px] font-bold text-muted uppercase tracking-wider">
                       Timer (Mins)
                     </label>
-                    <input
-                      type="number"
-                      value={durationMinutes}
-                      min={10}
-                      max={600}
-                      onChange={(e) => setDurationMinutes(parseInt(e.target.value) || 90)}
-                      className="w-full border border-border bg-slate-900 rounded-xl p-3 text-xs text-center focus:outline-none focus:border-primary text-text"
-                    />
+                    <div className="flex items-center border border-border bg-slate-900 rounded-xl overflow-hidden px-1 py-1 focus-within:border-primary transition-all">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseInt(durationMinutes) || 0;
+                          if (val > 5) setDurationMinutes((val - 5).toString());
+                          else setDurationMinutes("0");
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <input
+                        type="text"
+                        pattern="[0-9]*"
+                        value={durationMinutes}
+                        onChange={(e) => {
+                          const clean = e.target.value.replace(/[^0-9]/g, "");
+                          setDurationMinutes(clean);
+                        }}
+                        onBlur={() => {
+                          const val = parseInt(durationMinutes);
+                          if (isNaN(val) || val < 1) {
+                            setDurationMinutes("1");
+                          }
+                        }}
+                        className="w-full text-center bg-transparent focus:outline-none text-xs font-bold text-text"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseInt(durationMinutes) || 0;
+                          setDurationMinutes((val + 5).toString());
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
                   </div>
                   <div>
-                    <label className="block mb-1 text-[9px] font-bold text-muted uppercase tracking-wider">
+                    <label className="block mb-1.5 text-[9px] font-bold text-muted uppercase tracking-wider">
                       Correct (+)
                     </label>
-                    <input
-                      type="number"
-                      step={0.5}
-                      value={positiveMarks}
-                      onChange={(e) => setPositiveMarks(parseFloat(e.target.value) || 4.0)}
-                      className="w-full border border-border bg-slate-900 rounded-xl p-3 text-xs text-center focus:outline-none focus:border-primary text-text"
-                    />
+                    <div className="flex items-center border border-border bg-slate-900 rounded-xl overflow-hidden px-1 py-1 focus-within:border-primary transition-all">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseFloat(positiveMarks) || 0.5;
+                          if (val > 0.5) {
+                            const newVal = Math.max(0.5, val - 0.5);
+                            setPositiveMarks(newVal.toString());
+                          } else {
+                            setPositiveMarks("0.5");
+                          }
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <input
+                        type="text"
+                        value={positiveMarks}
+                        onChange={(e) => {
+                          const clean = e.target.value.replace(/[^0-9.]/g, "");
+                          const dots = clean.split(".");
+                          if (dots.length > 2) return;
+                          setPositiveMarks(clean);
+                        }}
+                        onBlur={() => {
+                          const val = parseFloat(positiveMarks);
+                          if (isNaN(val) || val < 0.5) {
+                            setPositiveMarks("0.5");
+                          }
+                        }}
+                        className="w-full text-center bg-transparent focus:outline-none text-xs font-bold text-text"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseFloat(positiveMarks) || 0;
+                          setPositiveMarks((val + 0.5).toString());
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
                   </div>
                   <div>
-                    <label className="block mb-1 text-[9px] font-bold text-muted uppercase tracking-wider">
+                    <label className="block mb-1.5 text-[9px] font-bold text-muted uppercase tracking-wider">
                       Wrong (-)
                     </label>
-                    <input
-                      type="number"
-                      step={0.5}
-                      value={negativeMarks}
-                      onChange={(e) => setNegativeMarks(parseFloat(e.target.value) || 0.0)}
-                      className="w-full border border-border bg-slate-900 rounded-xl p-3 text-xs text-center focus:outline-none focus:border-primary text-text"
-                    />
+                    <div className="flex items-center border border-border bg-slate-900 rounded-xl overflow-hidden px-1 py-1 focus-within:border-primary transition-all">
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseFloat(negativeMarks) || 0;
+                          if (val > 0.25) setNegativeMarks((val - 0.25).toString());
+                          else setNegativeMarks("0");
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Minus size={12} />
+                      </button>
+                      <input
+                        type="text"
+                        value={negativeMarks}
+                        onChange={(e) => {
+                          const clean = e.target.value.replace(/[^0-9.]/g, "");
+                          const dots = clean.split(".");
+                          if (dots.length > 2) return;
+                          setNegativeMarks(clean);
+                        }}
+                        onBlur={() => {
+                          const val = parseFloat(negativeMarks);
+                          if (isNaN(val) || val < 0) {
+                            setNegativeMarks("0");
+                          }
+                        }}
+                        className="w-full text-center bg-transparent focus:outline-none text-xs font-bold text-text"
+                      />
+                      <button
+                        type="button"
+                        onClick={() => {
+                          const val = parseFloat(negativeMarks) || 0;
+                          setNegativeMarks((val + 0.25).toString());
+                        }}
+                        className="w-7 h-7 flex items-center justify-center text-muted hover:text-text hover:bg-slate-800 rounded-lg transition-colors cursor-pointer"
+                      >
+                        <Plus size={12} />
+                      </button>
+                    </div>
                   </div>
                 </div>
               </div>

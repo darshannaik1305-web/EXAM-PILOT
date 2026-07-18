@@ -50,16 +50,41 @@ function Sidebar({ isMobileOpen, setIsMobileOpen }) {
         {/* Sidebar Header branding */}
         <div className="flex items-center justify-between h-16 px-4 border-b border-border">
           {!isCollapsed && (
-            <Link to="/student/workspace" className="flex items-center space-x-2">
-              <span className="text-xl font-black bg-gradient-to-r from-violet-500 to-cyan-500 bg-clip-text text-transparent font-outfit">
+            <Link to="/student/workspace" className="flex items-center space-x-2.5 group">
+              <div className="relative flex items-center justify-center w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-violet-600/10 to-cyan-500/10 border border-violet-500/20 group-hover:border-cyan-400/40 transition-all duration-300 shadow-inner">
+                <svg className="w-5 h-5 transition-transform duration-500 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="logo-sidebar-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#a78bfa" />
+                      <stop offset="100%" stopColor="#22d3ee" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z" stroke="url(#logo-sidebar-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8.5 12L12 10L15.5 12" stroke="url(#logo-sidebar-grad)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="12" r="1.5" fill="url(#logo-sidebar-grad)" />
+                </svg>
+              </div>
+              <span className="text-xl font-black bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent font-outfit tracking-tight group-hover:brightness-110 transition-all duration-200">
                 ExamPilot
               </span>
             </Link>
           )}
           {isCollapsed && (
-            <span className="mx-auto text-xl font-black bg-gradient-to-r from-violet-500 to-cyan-500 bg-clip-text text-transparent font-outfit">
-              EP
-            </span>
+            <Link to="/student/workspace" className="mx-auto flex items-center justify-center group">
+              <div className="relative flex items-center justify-center w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-violet-600/10 to-cyan-500/10 border border-violet-500/20 group-hover:border-cyan-400/40 transition-all duration-300 shadow-inner">
+                <svg className="w-5 h-5 transition-transform duration-500 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <defs>
+                    <linearGradient id="logo-sidebar-grad-col" x1="0%" y1="0%" x2="100%" y2="100%">
+                      <stop offset="0%" stopColor="#a78bfa" />
+                      <stop offset="100%" stopColor="#22d3ee" />
+                    </linearGradient>
+                  </defs>
+                  <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z" stroke="url(#logo-sidebar-grad-col)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M8.5 12L12 10L15.5 12" stroke="url(#logo-sidebar-grad-col)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                  <circle cx="12" cy="12" r="1.5" fill="url(#logo-sidebar-grad-col)" />
+                </svg>
+              </div>
+            </Link>
           )}
 
           {/* Toggle collapsed button */}
@@ -119,9 +144,24 @@ function Sidebar({ isMobileOpen, setIsMobileOpen }) {
           {/* Drawer content panel */}
           <aside className="relative flex flex-col w-64 h-full bg-card border-r border-border text-text animate-in slide-in-from-left duration-200">
             <div className="flex items-center justify-between h-16 px-4 border-b border-border">
-              <span className="text-xl font-black bg-gradient-to-r from-violet-500 to-cyan-500 bg-clip-text text-transparent font-outfit">
-                ExamPilot
-              </span>
+              <Link to="/student/workspace" className="flex items-center space-x-2.5 group" onClick={() => setIsMobileOpen(false)}>
+                <div className="relative flex items-center justify-center w-8.5 h-8.5 rounded-xl bg-gradient-to-tr from-violet-600/10 to-cyan-500/10 border border-violet-500/20 group-hover:border-cyan-400/40 transition-all duration-300 shadow-inner">
+                  <svg className="w-5 h-5 transition-transform duration-500 group-hover:rotate-90" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <defs>
+                      <linearGradient id="logo-mobile-grad" x1="0%" y1="0%" x2="100%" y2="100%">
+                        <stop offset="0%" stopColor="#a78bfa" />
+                        <stop offset="100%" stopColor="#22d3ee" />
+                      </linearGradient>
+                    </defs>
+                    <path d="M12 2L15 9L22 12L15 15L12 22L9 15L2 12L9 9L12 2Z" stroke="url(#logo-mobile-grad)" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                    <path d="M8.5 12L12 10L15.5 12" stroke="url(#logo-mobile-grad)" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
+                    <circle cx="12" cy="12" r="1.5" fill="url(#logo-mobile-grad)" />
+                  </svg>
+                </div>
+                <span className="text-xl font-black bg-gradient-to-r from-violet-400 to-cyan-400 bg-clip-text text-transparent font-outfit tracking-tight group-hover:brightness-110 transition-all duration-200">
+                  ExamPilot
+                </span>
+              </Link>
             </div>
 
             <nav className="flex-grow px-3 py-4 space-y-1.5 overflow-y-auto">

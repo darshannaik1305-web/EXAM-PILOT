@@ -30,4 +30,14 @@ public class QuestionDto {
     private String difficulty;
 
     private String solution;
+
+    private String diagramUrl;
+
+    private String diagramType;
+
+    private Double diagramConfidence;
+
+    private Integer diagramWidth;
+
+    private Integer diagramHeight;
 }

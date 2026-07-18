@@ -22,10 +22,14 @@ The vision of ExamPilot is to bridge the gap between static PDF question banks (
 
 ### ✅ Current Features (Implemented)
 - **Interactive React Frontend**: Modern single-page web client for practicing tests, monitoring state machine processing, and uploading practice PDFs.
+- **Responsive Dark/Light/System Themes**: Dynamic theme modes persisted locally and applied across all views.
 - **Multipart Document Intake**: Handles multipart uploads of exam PDFs with custom titles and practice configurations.
 - **State-Machine Lifecycle Tracking**: Practice sessions undergo atomic state progressions: `UPLOADING` ➔ `EXTRACTING` ➔ `READY` (or `FAILED` upon errors).
 - **Synchronous Microservice Client**: Spring Boot bridges to the FastAPI microservice via a synchronous HTTP `RestClient` configured with strict timeouts.
 - **LLM Question Extraction**: FastAPI uses Google Gemini 2.5 Flash to structurally dissect PDF pages into clean JSON question blocks (questions, option arrays, correct answers, and explanations).
+- **Visual Diagram Extraction**: Crops and saves inline charts, diagrams, and figures from exam PDFs using PyMuPDF and Google Gemini, served via Spring Boot routing (`/uploads/diagrams/**`).
+- **Asynchronous Asset Sync & Cleanup**: Deep backend housekeeping via startup orphaned-asset sync and delete-session cleanup routines.
+- **Account & Preference Management**: Settings dashboard to update profile configurations, change password, and delete accounts (purging all associated resources).
 - **Unified Security Filter**: Validates stateless requests via a custom JWT-based authentication filter.
 - **Mock Test Simulation Engine**: Real-time timer-based interface for taking simulated exams, saving progress, and managing attempts lifecycle (`NOT_STARTED` ➔ `ACTIVE` ➔ `COMPLETED`).
 - **Interactive Review & Grading**: side-by-side performance review showing scores, correct/incorrect badges, time taken, and step-by-step LaTeX math notation answers.
@@ -226,8 +230,16 @@ ExamPilot/
 | **Spring Boot** | `GET` | `/api/practice/test-sessions/{testSessionId}/review` | Fetch questions and graded answers for review | Yes (Bearer JWT) |
 | **Spring Boot** | `GET` | `/api/dashboard/stats` | Retrieve generalized study statistics | Yes (Bearer JWT) |
 | **Spring Boot** | `POST` | `/api/mentor/chat` | Chat with the dynamic AI Guidance Mentor | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/users/profile` | Retrieve user profile settings and preferences | Yes (Bearer JWT) |
+| **Spring Boot** | `PUT` | `/api/users/profile` | Update profile settings and theme preference | Yes (Bearer JWT) |
+| **Spring Boot** | `GET` | `/api/users/profile/stats` | Retrieve comprehensive user stats | Yes (Bearer JWT) |
+| **Spring Boot** | `PUT` | `/api/users/password` | Update current user account password | Yes (Bearer JWT) |
+| **Spring Boot** | `POST` | `/api/users/me/delete` | Delete account and all user data/attempts | Yes (Bearer JWT) |
 | **FastAPI** | `GET` | `/health` | Check microservice health status | No |
 | **FastAPI** | `POST` | `/upload` | Extract questions directly from PDF | No (Internal) |
+| **FastAPI** | `POST` | `/answer-key` | Extract answer mappings from an answer key PDF | No (Internal) |
+| **FastAPI** | `DELETE` | `/cleanup` | Clean up deleted session PDF, crops, and output files | No (Internal) |
+| **FastAPI** | `POST` | `/cleanup/sync-active` | Clean up orphaned files not referenced by active sessions | No (Internal) |
 
 For complete payloads, request headers, and responses, view [API_OVERVIEW.md](file:///e:/ExamPilot/docs/API_OVERVIEW.md).
 

@@ -17,7 +17,7 @@ from app.core.constants import (
 router = APIRouter()
 
 @router.post("/answer-key")
-async def upload_answer_key(
+def upload_answer_key(
     file: UploadFile = File(...),
     expectedCount: Optional[int] = Form(None),
     settings: Settings = Depends(get_settings)

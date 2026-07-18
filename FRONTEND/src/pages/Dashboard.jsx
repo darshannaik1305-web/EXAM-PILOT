@@ -121,6 +121,10 @@ function Dashboard() {
     fetchStats();
   }
 
+  function handleSessionDeleted(deletedId) {
+    setSessions((prev) => prev.filter((s) => s.id !== deletedId));
+  }
+
   function scrollToUpload() {
     uploadZoneRef.current?.scrollIntoView({ behavior: "smooth" });
   }
@@ -179,7 +183,7 @@ function Dashboard() {
       {/* Welcome Header */}
       <div className="relative overflow-hidden bg-slate-900 border border-border p-6 sm:p-8 rounded-2xl flex flex-col lg:flex-row lg:items-center justify-between gap-6">
         <div className="absolute top-1/2 left-0 -translate-y-1/2 w-48 h-48 bg-primary/5 rounded-full filter blur-2xl"></div>
-        
+
         <div className="space-y-2 relative z-10">
           <div className="flex flex-wrap items-center gap-2.5">
             <span className="px-2.5 py-0.5 rounded-md text-[10px] font-bold bg-primary/10 border border-primary/20 text-primary uppercase tracking-wider select-none">
@@ -189,7 +193,7 @@ function Dashboard() {
               Goal: 20 Qs
             </span>
           </div>
-          
+
           <h2 className="text-xl sm:text-2xl font-extrabold text-text font-outfit">
             Welcome back, {user?.username || user?.email?.split("@")[0] || "Student"}! 👋
           </h2>
@@ -220,7 +224,7 @@ function Dashboard() {
       </div>
 
       {/* Quick Statistics Grid */}
-      <div className="grid sm:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 sm:grid-cols-3 gap-6">
         <StatCard
           title="Practice Sessions"
           value={statsLoading ? "—" : (stats?.totalPracticeSessions ?? 0)}
@@ -242,7 +246,7 @@ function Dashboard() {
       </div>
 
       {/* Upload and Resume Section */}
-      <div className="grid lg:grid-cols-12 gap-6 items-stretch">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-6 items-stretch">
         <div className="lg:col-span-7" ref={uploadZoneRef}>
           <UploadZone onUploadSuccess={handleUploadSuccess} />
         </div>
@@ -262,7 +266,7 @@ function Dashboard() {
             Performance Analytics
           </h3>
         </div>
-        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
           {analyticsPlaceholders.map((chart) => {
             const Icon = chart.icon;
             return (
@@ -291,7 +295,7 @@ function Dashboard() {
       </div>
 
       {/* Sessions and Activity log split layout */}
-      <div className="grid lg:grid-cols-12 gap-8">
+      <div className="grid grid-cols-1 lg:grid-cols-12 gap-8">
         {/* Left: Sessions Table */}
         <div className="lg:col-span-8 space-y-6">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 border-b border-border pb-4">
@@ -352,7 +356,7 @@ function Dashboard() {
             </div>
           ) : filteredSessions.length > 0 ? (
             <div className="space-y-4">
-              <SessionTable sessions={filteredSessions} />
+              <SessionTable sessions={filteredSessions} onSessionDeleted={handleSessionDeleted} />
 
               {/* Pagination */}
               {totalPages > 1 && (
@@ -424,9 +428,8 @@ function Dashboard() {
                   <div key={session.id} className="flex gap-3.5 relative">
                     {/* Circle marker */}
                     <div className="w-7 h-7 rounded-full bg-slate-950 border border-border flex items-center justify-center flex-shrink-0 z-10">
-                      <div className={`w-2 h-2 rounded-full ${
-                        session.status === "READY" ? "bg-emerald-500" : session.status === "FAILED" ? "bg-rose-500" : "bg-amber-500 animate-pulse"
-                      }`} />
+                      <div className={`w-2 h-2 rounded-full ${session.status === "READY" ? "bg-emerald-500" : session.status === "FAILED" ? "bg-rose-500" : "bg-amber-500 animate-pulse"
+                        }`} />
                     </div>
 
                     <div className="min-w-0">
@@ -448,18 +451,16 @@ function Dashboard() {
                 {timelineOnboarding.map((item, idx) => (
                   <div key={idx} className="flex gap-3.5 relative">
                     {/* Checklist icon circle */}
-                    <div className={`w-7 h-7 rounded-full border flex items-center justify-center flex-shrink-0 z-10 font-mono text-[10px] font-bold ${
-                      item.completed 
-                        ? "bg-slate-950 border-emerald-500/60 text-emerald-400 animate-fade-in" 
+                    <div className={`w-7 h-7 rounded-full border flex items-center justify-center flex-shrink-0 z-10 font-mono text-[10px] font-bold ${item.completed
+                        ? "bg-slate-950 border-emerald-500/60 text-emerald-400 animate-fade-in"
                         : "bg-slate-950 border-border text-muted"
-                    }`}>
+                      }`}>
                       {item.completed ? "✓" : idx + 1}
                     </div>
 
                     <div className="min-w-0">
-                      <h5 className={`text-xs sm:text-sm font-bold ${
-                        item.completed ? "text-text" : "text-muted"
-                      }`}>
+                      <h5 className={`text-xs sm:text-sm font-bold ${item.completed ? "text-text" : "text-muted"
+                        }`}>
                         {item.title}
                       </h5>
                       <p className="text-[10px] text-muted leading-relaxed mt-0.5">{item.desc}</p>

@@ -18,7 +18,7 @@ from app.schemas import ExtractionResponse, QuestionResponse
 router = APIRouter()
 
 @router.post("/upload", response_model=ExtractionResponse)
-async def upload_pdf(
+def upload_pdf(
     file: UploadFile = File(...),
     x_processing_job_id: Optional[str] = Header(None, alias="X-Processing-Job-Id"),
     settings: Settings = Depends(get_settings)
@@ -77,32 +77,47 @@ async def upload_pdf(
     # 3. Call Extractor to run Gemini Parsing
     saved_file_path = str(settings.upload_path / saved_filename)
     try:
-        questions = extractor.extract_pdf(saved_file_path)
-    except InvalidPdfException as ipe:
-        raise HTTPException(
-            status_code=status.HTTP_400_BAD_REQUEST,
-            detail=str(ipe)
-        )
-    except GeminiException as ge:
-        raise HTTPException(
-            status_code=status.HTTP_502_BAD_GATEWAY,
-            detail=str(ge)
-        )
-    except ExtractionException as ee:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(ee)
-        )
-    except FileStorageException as fse:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=str(fse)
-        )
-    except Exception as e:
-        raise HTTPException(
-            status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
-            detail=f"Extraction error: {str(e)}"
-        )
+        try:
+            questions = extractor.extract_pdf(saved_file_path)
+        except InvalidPdfException as ipe:
+            logger.error(f"Invalid PDF Exception: {str(ipe)}")
+            raise HTTPException(
+                status_code=status.HTTP_400_BAD_REQUEST,
+                detail=str(ipe)
+            )
+        except GeminiException as ge:
+            logger.error(f"Gemini Exception: {str(ge)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_502_BAD_GATEWAY,
+                detail=str(ge)
+            )
+        except ExtractionException as ee:
+            logger.error(f"Extraction Exception: {str(ee)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(ee)
+            )
+        except FileStorageException as fse:
+            logger.error(f"File Storage Exception: {str(fse)}")
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=str(fse)
+            )
+        except Exception as e:
+            logger.error(f"Unexpected Exception: {str(e)}", exc_info=True)
+            raise HTTPException(
+                status_code=status.HTTP_500_INTERNAL_SERVER_ERROR,
+                detail=f"Extraction error: {str(e)}"
+            )
+    finally:
+        # Cleanup uploaded PDF file to save disk space
+        try:
+            import os
+            if os.path.exists(saved_file_path):
+                os.remove(saved_file_path)
+                logger.info(f"Cleaned up uploaded PDF from disk: {saved_file_path}")
+        except Exception as cleanup_err:
+            logger.warning(f"Failed to cleanup uploaded PDF: {str(cleanup_err)}")
 
     duration = time.time() - start_time
 
@@ -123,6 +138,11 @@ async def upload_pdf(
             subj = q.get("subject")
             diff = q.get("difficulty")
             sol = q.get("solution")
+            diag_url = q.get("diagramUrl")
+            diag_type = q.get("diagramType")
+            diag_conf = q.get("diagramConfidence")
+            diag_w = q.get("diagramWidth")
+            diag_h = q.get("diagramHeight")
 
             mapped_questions.append(
                 QuestionResponse(
@@ -136,7 +156,12 @@ async def upload_pdf(
                     explanation=str(exp) if exp is not None else None,
                     subject=str(subj) if subj is not None else None,
                     difficulty=str(diff) if diff is not None else None,
-                    solution=str(sol) if sol is not None else None
+                    solution=str(sol) if sol is not None else None,
+                    diagramUrl=str(diag_url) if diag_url is not None else None,
+                    diagramType=str(diag_type) if diag_type is not None else None,
+                    diagramConfidence=float(diag_conf) if diag_conf is not None else None,
+                    diagramWidth=int(diag_w) if diag_w is not None else None,
+                    diagramHeight=int(diag_h) if diag_h is not None else None
                 )
             )
 

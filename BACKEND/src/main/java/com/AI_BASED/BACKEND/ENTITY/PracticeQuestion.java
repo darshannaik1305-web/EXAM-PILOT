@@ -50,4 +50,16 @@ public class PracticeQuestion {
 
     @Column(columnDefinition = "TEXT")
     private String solution;
+
+    @Column(length = 500)
+    private String diagramUrl;
+
+    @Column(length = 100)
+    private String diagramType;
+
+    private Double diagramConfidence;
+
+    private Integer diagramWidth;
+
+    private Integer diagramHeight;
 }

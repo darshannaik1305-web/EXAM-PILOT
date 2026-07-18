@@ -10,6 +10,9 @@ import com.AI_BASED.BACKEND.ENTITY.MockTestSession;
 import com.AI_BASED.BACKEND.ENTITY.MockTestStatus;
 import com.AI_BASED.BACKEND.ENTITY.MockTestResult;
 import com.AI_BASED.BACKEND.REPOSITORY.MockTestSessionRepository;
+import com.AI_BASED.BACKEND.REPOSITORY.MockTestAnswerRepository;
+import com.AI_BASED.BACKEND.REPOSITORY.MockTestSubjectResultRepository;
+import com.AI_BASED.BACKEND.REPOSITORY.MockTestDifficultyResultRepository;
 import com.AI_BASED.BACKEND.INTEGRATION.FastApiClient;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeSessionRepository;
 import com.AI_BASED.BACKEND.REPOSITORY.PracticeQuestionRepository;
@@ -48,6 +51,15 @@ public class PracticeSessionService {
 
     @Autowired
     private com.AI_BASED.BACKEND.REPOSITORY.MockTestResultRepository mockTestResultRepository;
+
+    @Autowired
+    private MockTestAnswerRepository mockTestAnswerRepository;
+
+    @Autowired
+    private MockTestSubjectResultRepository mockTestSubjectResultRepository;
+
+    @Autowired
+    private MockTestDifficultyResultRepository mockTestDifficultyResultRepository;
 
     public PracticeSessionCreatedResponse createAndProcessSession(
             String title, UploadType uploadType, MultipartFile file, User user,
@@ -321,4 +333,22 @@ public class PracticeSessionService {
         practiceSession.setStatus(PracticeSessionStatus.READY);
         practiceSessionRepository.save(practiceSession);
     }
+
+    // No @Transactional here to keep external REST calls outside DB transactional context
+    public void deleteSession(Long id, User user) {
+        PracticeSession session = practiceSessionRepository.findById(id)
+                .orElseThrow(() -> new com.AI_BASED.BACKEND.EXCEPTION.ResourceNotFoundException("Practice session not found with ID: " + id));
+
+        // Enforce ownership check
+        if (!session.getUser().getId().equals(user.getId())) {
+            throw new org.springframework.security.access.AccessDeniedException("You do not own this practice session.");
+        }
+
+        // 1. Best-effort cleanup of PDF and diagram files on the AI Service disk (runs outside DB transaction)
+        fastApiClient.cleanupSessionFiles(session.getOriginalPdfName());
+
+        // 2. Perform all database cascade deletions in a dedicated transactional block
+        practicePersistenceService.deleteSessionDbData(session, user);
+    }
 }
+

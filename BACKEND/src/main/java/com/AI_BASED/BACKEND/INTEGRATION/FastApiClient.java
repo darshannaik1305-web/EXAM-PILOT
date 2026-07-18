@@ -104,4 +104,56 @@ public class FastApiClient {
             return false;
         }
     }
+
+    /**
+     * Calls the FastAPI /cleanup endpoint to remove the uploaded PDF and any
+     * cropped diagram images associated with this session from the AI Service disk.
+     * Errors are swallowed — cleanup is best-effort so it never blocks session deletion.
+     *
+     * @param originalPdfName the original filename of the uploaded PDF (e.g. "jee2025.pdf")
+     */
+    public void cleanupSessionFiles(String originalPdfName) {
+        if (originalPdfName == null || originalPdfName.isBlank()) return;
+        try {
+            restClient.delete()
+                    .uri(uriBuilder -> uriBuilder
+                            .path("/cleanup")
+                            .queryParam("original_pdf_name", originalPdfName)
+                            .build())
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            // Cleanup is best-effort; log but do not propagate
+            System.err.println("[FastApiClient] cleanupSessionFiles failed for '" + originalPdfName + "': " + e.getMessage());
+        }
+    }
+
+    public void syncActiveSessionFiles(java.util.List<String> activePdfNames) {
+        try {
+            restClient.post()
+                    .uri("/cleanup/sync-active")
+                    .contentType(MediaType.parseMediaType("application/json"))
+                    .body(activePdfNames)
+                    .retrieve()
+                    .toBodilessEntity();
+        } catch (Exception e) {
+            System.err.println("[FastApiClient] syncActiveSessionFiles failed: " + e.getMessage());
+        }
+    }
+
+    public String getAiServiceVersion() {
+        try {
+            java.util.Map<?, ?> response = restClient.get()
+                    .uri("/health")
+                    .retrieve()
+                    .body(java.util.Map.class);
+            if (response != null && response.containsKey("version")) {
+                return String.valueOf(response.get("version"));
+            }
+            return "Unknown";
+        } catch (Exception e) {
+            return "Offline";
+        }
+    }
 }
+

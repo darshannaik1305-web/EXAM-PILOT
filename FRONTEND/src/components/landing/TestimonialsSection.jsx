@@ -36,7 +36,7 @@ function TestimonialsSection() {
           </p>
         </div>
 
-        <div className="grid md:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {reviews.map((rev) => (
             <Card key={rev.name} className="flex flex-col justify-between hover:border-slate-600 transition-colors">
               <p className="text-xs sm:text-sm text-muted leading-relaxed italic mb-6">

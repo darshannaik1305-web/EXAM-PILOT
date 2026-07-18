@@ -92,4 +92,11 @@ public class PracticeSessionController {
         practiceSessionService.mergeAnswerKey(id, file, user);
         return ResponseEntity.ok().build();
     }
+
+    @DeleteMapping("/sessions/{id}")
+    public ResponseEntity<Void> deleteSession(@PathVariable("id") Long id) {
+        User user = authUtils.getCurrentUser();
+        practiceSessionService.deleteSession(id, user);
+        return ResponseEntity.noContent().build();
+    }
 }

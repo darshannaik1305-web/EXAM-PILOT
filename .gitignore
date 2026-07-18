@@ -69,3 +69,6 @@ build/
 **/Thumbs.db
 **/desktop.ini
 
+# Local storage and diagram crops
+storage/diagrams/*
+!storage/diagrams/.gitkeep
