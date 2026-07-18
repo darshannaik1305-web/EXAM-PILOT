@@ -299,7 +299,7 @@ export default function Settings() {
                 className={`flex items-center gap-3 rounded-xl px-4 py-3 text-left font-semibold transition-all duration-300 ${
                   isActive 
                     ? "bg-violet-600/90 text-white shadow-lg shadow-violet-500/25" 
-                    : "text-slate-400 hover:bg-slate-800/60 hover:text-white"
+                    : "text-slate-400 hover:bg-slate-800/60 hover:text-slate-50"
                 }`}
               >
                 <Icon className="h-5 w-5" />
