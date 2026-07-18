@@ -124,16 +124,20 @@ Rules:
                     logger.warning(f"Gemini API returned 503 (High Demand). Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
                     time.sleep(retry_delay)
                     continue
-                logger.error("Extraction Failed")
-                raise GeminiException(f"Google Gemini API error: {str(api_err)}")
+                raise
             except Exception as e:
                 is_503 = "503" in str(e) or "UNAVAILABLE" in str(e)
                 if is_503 and attempt < max_retries - 1:
                     logger.warning(f"Gemini API call failed with 503. Retrying in {retry_delay}s... (Attempt {attempt+1}/{max_retries})")
                     time.sleep(retry_delay)
                     continue
-                logger.error("Extraction Failed")
-                raise GeminiException(f"Failed to communicate with Gemini: {str(e)}")
+                raise
+    except APIError as api_err:
+        logger.error("Extraction Failed")
+        raise GeminiException(f"Google Gemini API error: {str(api_err)}")
+    except Exception as e:
+        logger.error("Extraction Failed")
+        raise GeminiException(f"Failed to communicate with Gemini: {str(e)}")
 
     # 3. Response Parsing (preserved exactly)
     try:
