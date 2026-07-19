@@ -32,6 +32,11 @@ class Settings(BaseSettings):
     # API key for Gemini models
     GEMINI_API_KEY: str = ""
 
+    # Cloudinary Cloud Storage Config
+    CLOUDINARY_CLOUD_NAME: str = ""
+    CLOUDINARY_API_KEY: str = ""
+    CLOUDINARY_API_SECRET: str = ""
+
     model_config = SettingsConfigDict(
         env_file=str(BASE_DIR / ".env"),
         env_file_encoding="utf-8",

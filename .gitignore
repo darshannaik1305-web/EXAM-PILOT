@@ -1,17 +1,24 @@
-# Credentials & private settings
+# ===============================
+# Credentials & Private Settings
+# ===============================
 .env
 .env.*
 *.env
+!.env.example
 credentials.json
 client_secret*.json
 
-# Python Virtual Environments (global)
+# ===============================
+# Python Virtual Environment
+# ===============================
 **/venv/
 **/.venv/
 **/env/
 **/ENV/
 
-# Python compiled files / caching (global)
+# ===============================
+# Python Compiled Files / Cache
+# ===============================
 **/__pycache__/
 **/*.pyc
 **/*.pyo
@@ -19,10 +26,14 @@ client_secret*.json
 .pytest_cache/
 .ipynb_checkpoints/
 
-# System Log files
+# ===============================
+# System Log Files
+# ===============================
 **/*.log
 
-# IDE & Editor configurations
+# ===============================
+# IDE & Editor Configurations
+# ===============================
 .idea/
 .vscode/
 *.iml
@@ -33,7 +44,9 @@ client_secret*.json
 *.njsproj
 *.sln
 
-# Transient storage / output directories (global)
+# ===============================
+# Transient Storage / Output Directories
+# ===============================
 **/uploads/*
 !**/uploads/.gitkeep
 **/output/*
@@ -41,7 +54,9 @@ client_secret*.json
 **/archive/*
 !**/archive/.gitkeep
 
-# Java / Maven Build outputs
+# ===============================
+# Java / Maven Build Outputs
+# ===============================
 **/target/
 build/
 .mvn/wrapper/maven-wrapper.jar
@@ -53,7 +68,9 @@ build/
 .settings/
 .springBeans
 
-# Node/JavaScript & Vite Build outputs
+# ===============================
+# Node / JavaScript & Vite Build Outputs
+# ===============================
 **/node_modules/
 **/dist/
 **/dist-ssr/
@@ -64,11 +81,15 @@ build/
 **/pnpm-debug.log*
 **/.eslintcache
 
-# Operating System files
+# ===============================
+# Operating System Files
+# ===============================
 **/.DS_Store
 **/Thumbs.db
 **/desktop.ini
 
-# Local storage and diagram crops
+# ===============================
+# Local Diagram Crops (served via Cloudinary in production)
+# ===============================
 storage/diagrams/*
 !storage/diagrams/.gitkeep

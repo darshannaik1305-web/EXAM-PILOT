@@ -4,263 +4,369 @@
 [![FastAPI](https://img.shields.io/badge/FastAPI-0.111.0-blue.svg?logo=fastapi&logoColor=white)](https://fastapi.tiangolo.com/)
 [![Java](https://img.shields.io/badge/Java-17-orange.svg?logo=openjdk&logoColor=white)](https://www.oracle.com/java/)
 [![Python](https://img.shields.io/badge/Python-3.10%2B-blue.svg?logo=python&logoColor=white)](https://www.python.org/)
+[![React](https://img.shields.io/badge/React-19-61DAFB.svg?logo=react&logoColor=black)](https://react.dev/)
 [![Google Gemini](https://img.shields.io/badge/Gemini-2.5%20Flash-violet.svg?logo=google&logoColor=white)](https://deepmind.google/technologies/gemini/)
-[![MySQL](https://img.shields.io/badge/MySQL-8.0-blue.svg?logo=mysql&logoColor=white)](https://www.mysql.com/)
+[![PostgreSQL](https://img.shields.io/badge/PostgreSQL-Supabase-336791.svg?logo=postgresql&logoColor=white)](https://supabase.com/)
+[![Cloudinary](https://img.shields.io/badge/Cloudinary-Image%20Storage-3448C5.svg?logo=cloudinary&logoColor=white)](https://cloudinary.com/)
 [![JWT](https://img.shields.io/badge/Authentication-JWT-red.svg?logo=jsonwebtokens&logoColor=white)](https://jwt.io/)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
-An AI-powered competitive exam practice test platform. ExamPilot enables students to upload standard competitive exam PDFs, automatically parses the question-answer structure using Google's state-of-the-art Gemini LLM, and transforms them into interactive online mock test sessions.
+An AI-powered competitive exam practice platform. ExamPilot lets students upload standard exam PDFs (JEE, NEET, KCET, etc.), automatically extracts questions and diagrams using Google Gemini 2.5 Flash, and transforms them into interactive timed mock test sessions with full analytics and review.
 
 ---
 
 ## 🌌 Project Vision
-The vision of ExamPilot is to bridge the gap between static PDF question banks (like past JEE, NEET, or SAT papers) and interactive, metrics-driven learning. By automating structural extraction via LLMs, the platform immediately generates high-fidelity, interactive practice screens, tracks detailed user sessions, and lays the groundwork for adaptive AI tutoring.
+
+ExamPilot bridges the gap between static PDF question banks and interactive, metrics-driven learning. By automating structural extraction via LLMs, the platform instantly generates high-fidelity practice screens, tracks detailed session data, and lays the foundation for adaptive AI tutoring.
 
 ---
 
 ## 🛠️ Key Features
 
-### ✅ Current Features (Implemented)
-- **Interactive React Frontend**: Modern single-page web client for practicing tests, monitoring state machine processing, and uploading practice PDFs.
-- **Responsive Dark/Light/System Themes**: Dynamic theme modes persisted locally and applied across all views.
-- **Multipart Document Intake**: Handles multipart uploads of exam PDFs with custom titles and practice configurations.
-- **State-Machine Lifecycle Tracking**: Practice sessions undergo atomic state progressions: `UPLOADING` ➔ `EXTRACTING` ➔ `READY` (or `FAILED` upon errors).
-- **Synchronous Microservice Client**: Spring Boot bridges to the FastAPI microservice via a synchronous HTTP `RestClient` configured with strict timeouts.
-- **LLM Question Extraction**: FastAPI uses Google Gemini 2.5 Flash to structurally dissect PDF pages into clean JSON question blocks (questions, option arrays, correct answers, and explanations).
-- **Visual Diagram Extraction**: Crops and saves inline charts, diagrams, and figures from exam PDFs using PyMuPDF and Google Gemini, served via Spring Boot routing (`/uploads/diagrams/**`).
-- **Asynchronous Asset Sync & Cleanup**: Deep backend housekeeping via startup orphaned-asset sync and delete-session cleanup routines.
-- **Account & Preference Management**: Settings dashboard to update profile configurations, change password, and delete accounts (purging all associated resources).
-- **Unified Security Filter**: Validates stateless requests via a custom JWT-based authentication filter.
-- **Mock Test Simulation Engine**: Real-time timer-based interface for taking simulated exams, saving progress, and managing attempts lifecycle (`NOT_STARTED` ➔ `ACTIVE` ➔ `COMPLETED`).
-- **Interactive Review & Grading**: side-by-side performance review showing scores, correct/incorrect badges, time taken, and step-by-step LaTeX math notation answers.
-- **Subject-wise Analytics**: Dynamic analytics tracker calculating overall test accuracy, streak timelines, and subject-level mastery without hardcoded exam parameters.
-- **AI Guidance Mentor**: Contextual chatbot that analyzes student learning metrics and detailed subject accuracy to deliver structured study planning.
-
-### 🔮 Future Roadmap
-- **Adaptive AI Prep**: Recommends personalized mini-tests based on diagnosed weaknesses.
+- **AI-Powered PDF Extraction** — Upload any competitive exam PDF; Gemini 2.5 Flash parses questions, options, answers, and explanations automatically.
+- **Visual Diagram Extraction** — Inline diagrams and figures are cropped from PDFs using PyMuPDF and uploaded to Cloudinary for persistent cloud storage.
+- **Interactive Mock Test Engine** — Real-time timer-based exam interface with flag/skip/navigate controls and lifecycle tracking (`NOT_STARTED → ACTIVE → COMPLETED`).
+- **Full Review & Grading** — Side-by-side review showing score, correct/incorrect badges, time taken, and LaTeX math notation answers.
+- **Subject-wise Analytics** — Dynamic dashboard tracking accuracy, attempt streaks, and subject mastery.
+- **AI Guidance Mentor** — Contextual chatbot that analyzes your performance metrics and delivers structured study plans.
+- **State Machine Session Tracking** — Sessions move atomically through `UPLOADING → EXTRACTING → READY` (or `FAILED`).
+- **JWT Authentication** — Stateless security with full account management (profile, password change, account deletion).
+- **User Preferences** — Persistent theme (Dark/Light/System) and study goal settings.
+- **Supabase PostgreSQL** — Cloud-hosted database (Mumbai region) with Flyway schema migrations.
 
 ---
 
 ## 💻 Technology Stack
 
-### Frontend (User Interface)
-- **Language**: JavaScript (ES6+)
-- **Framework**: React 19 + Vite 8
-- **Styling**: Tailwind CSS v4
-- **Routing**: React Router v7
-- **HTTP Client**: Axios
-- **Icons**: Lucide React
-- **Notifications**: React Hot Toast
+### Frontend
+| Technology | Version | Purpose |
+|---|---|---|
+| React | 19 | UI Framework |
+| Vite | 8 | Build Tool & Dev Server |
+| Tailwind CSS | v4 | Utility-first Styling |
+| React Router | v7 | Client-side Routing |
+| Axios | latest | HTTP Client |
+| Lucide React | latest | Icon Library |
+| React Hot Toast | latest | Notifications |
 
-### Backend (Core Logic & Security)
-- **Language**: Java 17
-- **Framework**: Spring Boot 3.2.5 (Starter Web, Starter Security, Starter Data JPA)
-- **Database Access**: Hibernate ORM
-- **HTTP Client**: `RestClient` with customized `SimpleClientHttpRequestFactory` for timeout controls
-- **Build Tool**: Maven
+### Backend
+| Technology | Version | Purpose |
+|---|---|---|
+| Java | 17 | Language |
+| Spring Boot | 3.2.5 | Core Framework |
+| Spring Security | 6.x | JWT-based Auth |
+| Hibernate / JPA | 6.x | ORM & Data Access |
+| Flyway | latest | DB Schema Migrations |
+| Maven | 3.x | Build Tool |
+| PostgreSQL Driver | latest | DB Connector |
 
-### AI Service (PDF & LLM Processing)
-- **Language**: Python 3.10+
-- **Framework**: FastAPI (ASGI server)
-- **AI Integration**: Google GenAI SDK (Gemini 2.5 Flash model)
-- **Validation**: Pydantic v2 schemas
-- **PDF Handling**: PyMuPDF / PDF processing utilities
+### AI Service
+| Technology | Version | Purpose |
+|---|---|---|
+| Python | 3.10+ | Language |
+| FastAPI | ≥0.100 | ASGI Web Framework |
+| Uvicorn | ≥0.22 | ASGI Server |
+| Google GenAI SDK | latest | Gemini 2.5 Flash Integration |
+| PyMuPDF | ≥1.22 | PDF Rendering & Diagram Cropping |
+| Cloudinary SDK | ≥1.34 | Cloud Image Upload |
+| Pydantic v2 | ≥2.0 | Settings & Validation |
+| Pillow | ≥10.0 | Image Processing |
 
-### Database
-- **Engine**: MySQL 8.0 (Schema `MOCK_TESTER`)
-
-### Authentication
-- **Mechanism**: JSON Web Token (JWT) stateless authorization header / local storage storage
+### Cloud Infrastructure
+| Service | Provider | Purpose |
+|---|---|---|
+| Database | Supabase (PostgreSQL, Mumbai) | Persistent Data Storage |
+| Diagram Images | Cloudinary | Cloud Image CDN |
 
 ---
 
 ## 🏗️ Architecture Overview
 
 ```mermaid
-sequenceDiagram
-    actor Student as Student
-    participant FE as React Frontend
-    participant SB as Spring Boot Backend
-    participant FA as FastAPI AI Service
-    participant Gemini as Google Gemini API
-    participant DB as MySQL Database
+graph TD
+    Student["👤 Student"]
+    FE["⚛️ React Frontend\n(Vite, Tailwind, React Router)"]
+    SB["☕ Spring Boot Backend\n(Port 4040, JWT Auth, JPA)"]
+    FA["🐍 FastAPI AI Service\n(Port 8000, Uvicorn)"]
+    Gemini["✨ Google Gemini 2.5 Flash\n(PDF Extraction)"]
+    DB["🗄️ Supabase PostgreSQL\n(Mumbai, ap-south-1)"]
+    CLD["☁️ Cloudinary\n(Diagram Image CDN)"]
 
-    Student->>FE: Interacts with UI & Uploads PDF
-    FE->>SB: POST /api/practice/sessions (PDF + Auth Header)
-    Note over SB: Validate JWT & User context
-    SB->>DB: INSERT PracticeSession (Status: UPLOADING)
-    SB->>DB: UPDATE PracticeSession (Status: EXTRACTING)
-    
-    SB->>FA: POST /upload (File Part, X-Processing-Job-Id)
-    Note over FA: Save PDF, extract content
-    FA->>Gemini: Parse text/images from PDF
-    Gemini-->>FA: Extracted JSON structure
-    FA-->>SB: JSON: Success, processing duration, questions list
-    
-    Note over SB: Parse questions & save
-    SB->>DB: UPDATE PracticeSession (Status: READY, questions count)
-    SB-->>FE: 200 OK (PracticeSessionCreateResponse)
-    FE-->>Student: Renders Interactive Practice Dashboard & Questions
+    Student -->|"Interacts with UI"| FE
+    FE -->|"REST API + JWT Bearer"| SB
+    SB -->|"Reads / Writes"| DB
+    SB -->|"POST /upload (PDF)"| FA
+    FA -->|"Sends PDF for parsing"| Gemini
+    Gemini -->|"Structured JSON (Q&A)"| FA
+    FA -->|"Uploads cropped diagrams"| CLD
+    FA -->|"Returns questions JSON"| SB
+    SB -->|"Saves questions + Cloudinary URLs"| DB
+    CLD -->|"Serves diagram images via CDN"| FE
 ```
 
-For a detailed review of the microservices design, check out [MICROSERVICE_ARCHITECTURE.md](file:///e:/ExamPilot/docs/MICROSERVICE_ARCHITECTURE.md).
+### Request Flow: PDF Upload
+```mermaid
+sequenceDiagram
+    actor Student
+    participant FE as React Frontend
+    participant SB as Spring Boot (4040)
+    participant FA as FastAPI (8000)
+    participant Gemini as Google Gemini API
+    participant DB as Supabase PostgreSQL
+    participant CLD as Cloudinary
+
+    Student->>FE: Uploads PDF + Config
+    FE->>SB: POST /api/practice/sessions (multipart + JWT)
+    SB->>DB: INSERT PracticeSession (UPLOADING)
+    SB->>DB: UPDATE PracticeSession (EXTRACTING)
+    SB->>FA: POST /upload (PDF file + Job ID header)
+    FA->>Gemini: Send PDF pages for Q&A extraction
+    Gemini-->>FA: Structured JSON (questions, options, answers)
+    FA->>FA: Crop diagrams using PyMuPDF
+    FA->>CLD: Upload cropped diagram images
+    CLD-->>FA: Secure Cloudinary URLs
+    FA-->>SB: JSON (questions + diagram URLs + duration)
+    SB->>DB: Save Questions + UPDATE Session (READY)
+    SB-->>FE: 200 OK (Session Response)
+    FE-->>Student: Interactive Practice Dashboard
+```
 
 ---
 
 ## 📂 Repository Structure
+
 ```text
 ExamPilot/
 │
-├── FRONTEND/            # React + Vite Production Frontend Client
-├── BACKEND/             # Spring Boot Production Backend (REST API, JWT, DB layer)
-├── AI SERVICE/          # FastAPI Production AI Microservice (Gemini wrapper)
-├── research/            # Research prototypes & historical experiments
-│   └── pdf-extraction/  # Prototype OCR scripts & past PDF text extraction codes
-├── docs/                # Architectural & project documentation files
-│   ├── ROADMAP.md
-│   ├── TECH_STACK.md
+├── FRONTEND/                        # React + Vite SPA
+│   ├── src/
+│   │   ├── components/              # Reusable UI components
+│   │   │   ├── landing/             # Landing page sections
+│   │   │   ├── layout/              # Header, Footer, Sidebar
+│   │   │   └── ui/                  # Generic UI primitives
+│   │   ├── pages/                   # Route-level page components
+│   │   ├── context/                 # React Context providers (Auth, Theme)
+│   │   ├── hooks/                   # Custom React hooks
+│   │   ├── services/                # Axios API service modules
+│   │   ├── utils/                   # Formatting helpers & utilities
+│   │   └── config/                  # App-level constants & configs
+│   ├── public/
+│   └── package.json
+│
+├── BACKEND/                         # Spring Boot REST API
+│   ├── src/main/java/com/AI_BASED/BACKEND/
+│   │   ├── CONFIG/                  # CORS, Security, Bean configs
+│   │   ├── CONTROLLER/              # REST endpoint controllers
+│   │   ├── DTO/                     # Request / Response DTOs
+│   │   ├── ENTITY/                  # JPA entities (DB models)
+│   │   ├── EXCEPTION/               # Global exception handling
+│   │   ├── INTEGRATION/             # FastAPI microservice client
+│   │   ├── JWT/                     # JWT filter & utilities
+│   │   ├── REPOSITORY/              # Spring Data JPA repositories
+│   │   ├── SERVICE/                 # Business logic services
+│   │   └── UTIL/                    # Shared utility classes
+│   ├── src/main/resources/
+│   │   ├── application.properties   # App configuration (env-driven)
+│   │   └── db/migration/            # Flyway SQL migration scripts
+│   ├── .env.example                 # Environment variable template
+│   └── pom.xml
+│
+├── AI SERVICE/                      # FastAPI AI Microservice
+│   ├── app/
+│   │   ├── api/                     # FastAPI route handlers
+│   │   ├── services/                # Extractor & Cloudinary uploader
+│   │   ├── utils/                   # Config loader & helpers
+│   │   └── core/                    # Exception types
+│   ├── uploads/                     # Temp PDF storage (gitignored)
+│   ├── output/                      # Temp JSON output (gitignored)
+│   ├── archive/                     # Processed file archive (gitignored)
+│   ├── .env.example                 # Environment variable template
+│   └── requirements.txt
+│
+├── storage/
+│   └── diagrams/                    # Local fallback diagram storage (gitignored)
+│
+├── docs/                            # Architecture & developer documentation
 │   ├── MICROSERVICE_ARCHITECTURE.md
 │   ├── API_OVERVIEW.md
-│   ├── FUTURE_FEATURES.md
-│   └── PROJECT_TIMELINE.md
-└── PROJECT_STRUCTURE.md # Repository organization blueprint
+│   ├── ROADMAP.md
+│   ├── TECH_STACK.md
+│   └── FUTURE_FEATURES.md
+│
+├── research/                        # Historical prototypes & experiments
+│   └── pdf-extraction/
+│
+├── .gitignore
+├── PROJECT_STRUCTURE.md
+└── README.md
 ```
 
 ---
 
-## 🚀 Installation & Running Guide
+## 🚀 Local Setup Guide
 
 ### 📋 Prerequisites
-- **Node.js**: Node 18+ and npm installed (for React Frontend).
-- **Java**: JDK 17 installed and mapped to `JAVA_HOME`.
-- **Python**: Python 3.10+ installed with `pip`.
-- **Database**: Running MySQL 8.0 instance with a database named `MOCK_TESTER`.
-- **API Keys**: Active Google Gemini API Key.
+| Requirement | Version |
+|---|---|
+| Node.js + npm | 18+ |
+| Java JDK | 17 |
+| Python | 3.10+ |
+| Maven | 3.8+ |
+| Supabase Account | — |
+| Cloudinary Account | — |
+| Google Gemini API Key | — |
 
 ---
 
-### How to Run React Frontend
+### 1️⃣ React Frontend
 
-1. Navigate to the `FRONTEND` directory:
-   ```bash
-   cd FRONTEND
-   ```
-2. Install dependencies:
-   ```bash
-   npm install
-   ```
-3. Start the Vite development server:
-   ```bash
-   npm run dev
-   ```
-   *The frontend client will run on port `5173` (e.g., http://localhost:5173).*
+```bash
+cd FRONTEND
+npm install
+npm run dev
+```
+> Runs on **http://localhost:5173**
 
 ---
 
-### How to Run Spring Boot Backend
+### 2️⃣ Spring Boot Backend
 
-1. Navigate to the `BACKEND` directory:
+1. Copy the environment template and fill in your credentials:
+   ```bash
+   cp BACKEND/.env.example BACKEND/.env
+   ```
+2. Edit `BACKEND/.env`:
+   ```env
+   SPRING_DATASOURCE_URL=jdbc:postgresql://your-supabase-host:5432/postgres
+   SPRING_DATASOURCE_USERNAME=postgres.your_project_ref
+   SPRING_DATASOURCE_PASSWORD=your_password
+   ```
+3. Run the backend:
    ```bash
    cd BACKEND
-   ```
-2. Configure your local `application.properties`:
-   Ensure your database connection details are updated in `src/main/resources/application.properties`.
-3. Start the application:
-   ```bash
    ./mvnw spring-boot:run
    ```
-   *The backend will boot up on port `4040`.*
+> Runs on **http://localhost:4040**
 
 ---
 
-### How to Run FastAPI AI Service
+### 3️⃣ FastAPI AI Service
 
-1. Navigate to the `AI SERVICE` directory:
+1. Copy the environment template and fill in your credentials:
+   ```bash
+   cp "AI SERVICE/.env.example" "AI SERVICE/.env"
+   ```
+2. Edit `AI SERVICE/.env`:
+   ```env
+   GEMINI_API_KEY=your_gemini_api_key
+   CLOUDINARY_CLOUD_NAME=your_cloud_name
+   CLOUDINARY_API_KEY=your_api_key
+   CLOUDINARY_API_SECRET=your_api_secret
+   ```
+3. Create the virtual environment and install dependencies:
    ```bash
    cd "AI SERVICE"
-   ```
-2. Create and activate a Python virtual environment:
-   ```bash
    python -m venv venv
-   # On Windows:
-   .\venv\Scripts\Activate.ps1
-   # On macOS/Linux:
+
+   # Windows
+   venv\Scripts\activate
+   # macOS / Linux
    source venv/bin/activate
-   ```
-3. Install dependencies:
-   ```bash
+
    pip install -r requirements.txt
    ```
-4. Create a `.env` file in the `AI SERVICE` directory:
-   ```env
-   GEMINI_API_KEY=your_gemini_api_key_here
-   PORT=8000
-   ```
-5. Launch the FastAPI server:
+4. Start the server:
    ```bash
-   uvicorn app.main:app --reload --port 8000
+   python -m uvicorn app.main:app --reload
    ```
-   *The service will start on port `8000`.*
+> Runs on **http://localhost:8000**
 
 ---
 
-## 🔑 Environment Variables
+## 🔑 Environment Variables Reference
 
-| Variable Name | Location | Description |
-| :--- | :--- | :--- |
-| `GEMINI_API_KEY` | `AI SERVICE/.env` | Access credential key for Google Gemini model |
-| `PORT` | `AI SERVICE/.env` | Network port for the FastAPI web server |
+### AI Service (`AI SERVICE/.env`)
+| Variable | Required | Description |
+|---|---|---|
+| `GEMINI_API_KEY` | ✅ | Google Gemini API access key |
+| `CLOUDINARY_CLOUD_NAME` | ✅ | Your Cloudinary cloud name |
+| `CLOUDINARY_API_KEY` | ✅ | Cloudinary API key |
+| `CLOUDINARY_API_SECRET` | ✅ | Cloudinary API secret |
+| `HOST` | ❌ | Server host (default: `127.0.0.1`) |
+| `PORT` | ❌ | Server port (default: `8000`) |
+| `ENV` | ❌ | Environment name (default: `development`) |
+
+### Backend (`BACKEND/.env`)
+| Variable | Required | Description |
+|---|---|---|
+| `SPRING_DATASOURCE_URL` | ✅ | PostgreSQL JDBC connection URL |
+| `SPRING_DATASOURCE_USERNAME` | ✅ | Database username |
+| `SPRING_DATASOURCE_PASSWORD` | ✅ | Database password |
 
 ---
 
-## 🔗 API Overview
+## 🔗 API Reference
 
-| Service | Method | Endpoint | Description | Auth Required |
-| :--- | :--- | :--- | :--- | :--- |
-| **Spring Boot** | `POST` | `/api/auth/register` | Register a new user | No |
-| **Spring Boot** | `POST` | `/api/auth/login` | Login and obtain JWT token | No |
-| **Spring Boot** | `POST` | `/api/practice/sessions` | Create practice session & upload PDF | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/practice/sessions` | List user's practice sessions (paginated) | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/practice/sessions/{id}` | Get specific practice session details | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/practice/sessions/{id}/questions` | Get questions for a session | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/practice/sessions/{id}/summary` | Get session extraction summary | Yes (Bearer JWT) |
-| **Spring Boot** | `POST` | `/api/practice/{sessionId}/test/start` | Start or resume a mock test attempt | Yes (Bearer JWT) |
-| **Spring Boot** | `POST` | `/api/practice/test-sessions/{testSessionId}/submit` | Submit mock test responses for grading | Yes (Bearer JWT) |
-| **Spring Boot** | `POST` | `/api/practice/{sessionId}/test/retake` | Create a new mock test attempt | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/practice/test-sessions/{testSessionId}/review` | Fetch questions and graded answers for review | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/dashboard/stats` | Retrieve generalized study statistics | Yes (Bearer JWT) |
-| **Spring Boot** | `POST` | `/api/mentor/chat` | Chat with the dynamic AI Guidance Mentor | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/users/profile` | Retrieve user profile settings and preferences | Yes (Bearer JWT) |
-| **Spring Boot** | `PUT` | `/api/users/profile` | Update profile settings and theme preference | Yes (Bearer JWT) |
-| **Spring Boot** | `GET` | `/api/users/profile/stats` | Retrieve comprehensive user stats | Yes (Bearer JWT) |
-| **Spring Boot** | `PUT` | `/api/users/password` | Update current user account password | Yes (Bearer JWT) |
-| **Spring Boot** | `POST` | `/api/users/me/delete` | Delete account and all user data/attempts | Yes (Bearer JWT) |
-| **FastAPI** | `GET` | `/health` | Check microservice health status | No |
-| **FastAPI** | `POST` | `/upload` | Extract questions directly from PDF | No (Internal) |
-| **FastAPI** | `POST` | `/answer-key` | Extract answer mappings from an answer key PDF | No (Internal) |
-| **FastAPI** | `DELETE` | `/cleanup` | Clean up deleted session PDF, crops, and output files | No (Internal) |
-| **FastAPI** | `POST` | `/cleanup/sync-active` | Clean up orphaned files not referenced by active sessions | No (Internal) |
+### Spring Boot Backend (Port 4040)
 
-For complete payloads, request headers, and responses, view [API_OVERVIEW.md](file:///e:/ExamPilot/docs/API_OVERVIEW.md).
+| Method | Endpoint | Description | Auth |
+|---|---|---|---|
+| `POST` | `/api/auth/register` | Register new user | No |
+| `POST` | `/api/auth/login` | Login & get JWT token | No |
+| `POST` | `/api/practice/sessions` | Create session & upload PDF | JWT |
+| `GET` | `/api/practice/sessions` | List user's sessions (paginated) | JWT |
+| `GET` | `/api/practice/sessions/{id}` | Get session details | JWT |
+| `GET` | `/api/practice/sessions/{id}/questions` | Get session questions | JWT |
+| `GET` | `/api/practice/sessions/{id}/summary` | Get extraction summary | JWT |
+| `POST` | `/api/practice/{sessionId}/test/start` | Start or resume mock test | JWT |
+| `POST` | `/api/practice/test-sessions/{id}/submit` | Submit answers for grading | JWT |
+| `POST` | `/api/practice/{sessionId}/test/retake` | Create new test attempt | JWT |
+| `GET` | `/api/practice/test-sessions/{id}/review` | Get graded review | JWT |
+| `GET` | `/api/dashboard/stats` | Retrieve study statistics | JWT |
+| `POST` | `/api/mentor/chat` | Chat with AI mentor | JWT |
+| `GET` | `/api/users/profile` | Get user profile & preferences | JWT |
+| `PUT` | `/api/users/profile` | Update profile & theme | JWT |
+| `GET` | `/api/users/profile/stats` | Get comprehensive user stats | JWT |
+| `PUT` | `/api/users/password` | Change account password | JWT |
+| `POST` | `/api/users/me/delete` | Delete account & all data | JWT |
+
+### FastAPI AI Service (Port 8000)
+
+| Method | Endpoint | Description |
+|---|---|---|
+| `GET` | `/health` | Service health check |
+| `POST` | `/upload` | Extract questions from PDF (internal) |
+| `POST` | `/answer-key` | Extract answer key from PDF (internal) |
+| `DELETE` | `/cleanup` | Remove session files from disk (internal) |
+| `POST` | `/cleanup/sync-active` | Remove orphaned files (internal) |
 
 ---
 
 ## 🔮 Future Roadmap
-Check out our extensive [ROADMAP.md](file:///e:/ExamPilot/docs/ROADMAP.md) detailing past achievements and plans for future sprints.
+- **Adaptive AI Prep** — Personalized mini-tests based on diagnosed weaknesses
+- **Multi-subject Support** — Cross-subject performance correlation
+- **Mobile App** — React Native companion app
+- **Collaborative Study** — Group practice sessions
+
+See [ROADMAP.md](docs/ROADMAP.md) for full details.
 
 ---
 
 ## 🤝 Contribution Guidelines
-1. Do not modify production configurations or API schemas without consulting the design documents under `docs/`.
-2. Ensure that any backend REST changes match the structure mappings inside [PROJECT_STRUCTURE.md](file:///e:/ExamPilot/PROJECT_STRUCTURE.md).
-3. Test locally using Postman with valid JWTs before pushing.
+
+1. Never commit `.env` files — use `.env.example` as a template.
+2. Do not modify production configurations without consulting `docs/`.
+3. Test all backend changes locally with Postman before pushing.
+4. Run `npm run dev` and verify UI changes before opening a PR.
 
 ---
 
 ## 📄 License
-This project is licensed under the MIT License - see the LICENSE file for details.
+
+This project is licensed under the MIT License.
 
 ---
 
 ## 📧 Contact
-For questions or feedback, please contact the repository maintainers.
+
+For questions or feedback, please open an issue on GitHub.

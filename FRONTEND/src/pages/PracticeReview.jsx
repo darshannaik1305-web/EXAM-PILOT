@@ -318,7 +318,7 @@ function PracticeReview() {
               {currentQ?.diagramUrl && (
                 <div className="my-5 flex justify-center bg-slate-950/40 p-4 rounded-xl border border-border/10">
                   <img
-                    src={`${API_BASE_URL}${currentQ.diagramUrl}`}
+                    src={currentQ.diagramUrl.startsWith("http") ? currentQ.diagramUrl : `${API_BASE_URL}${currentQ.diagramUrl}`}
                     alt={`Question ${currentQ.questionNumber} Diagram`}
                     style={{
                       maxWidth: currentQ.diagramWidth ? `${currentQ.diagramWidth / 3}px` : "100%",

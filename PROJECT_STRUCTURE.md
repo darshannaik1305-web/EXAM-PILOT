@@ -1,47 +1,120 @@
-# ExamPilot Project Structure
+# ExamPilot — Project Structure
 
-This document outlines the directory structure and architectural layout of the **ExamPilot** repository.
+This document outlines the full directory structure and component responsibilities of the **ExamPilot** repository.
+
+---
 
 ## Repository Layout
 
 ```text
 ExamPilot/
 │
-├── FRONTEND/         -> React + Vite Single-Page Application
-├── BACKEND/          -> Spring Boot Production Backend
-├── AI SERVICE/       -> FastAPI Production AI Microservice
-├── research/         -> Research and Experiments
-│   └── pdf-extraction/ -> Historical PDF parsing and OCR experiments
+├── FRONTEND/                        # React + Vite Single-Page Application
+│   ├── src/
+│   │   ├── components/              # Reusable UI components
+│   │   │   ├── landing/             # Landing page section components
+│   │   │   ├── layout/              # Header, Footer, Sidebar wrappers
+│   │   │   └── ui/                  # Generic primitives (Button, Card, Modal)
+│   │   ├── pages/                   # Top-level route page components
+│   │   ├── context/                 # React Context providers (Auth, Theme)
+│   │   ├── hooks/                   # Custom React hooks
+│   │   ├── services/                # Axios API service layer modules
+│   │   ├── utils/                   # Formatting helpers & shared utilities
+│   │   └── config/                  # App-level constants & API config
+│   ├── public/                      # Static assets
+│   └── package.json
 │
-├── docs/             -> Documentation (future expansion)
+├── BACKEND/                         # Spring Boot REST API (Java 17)
+│   ├── src/main/java/com/AI_BASED/BACKEND/
+│   │   ├── CONFIG/                  # CORS, Security, Bean configurations
+│   │   ├── CONTROLLER/              # REST endpoint controllers
+│   │   ├── DTO/                     # Request / Response Data Transfer Objects
+│   │   ├── ENTITY/                  # JPA entity models (DB tables)
+│   │   ├── EXCEPTION/               # Global exception handler & custom exceptions
+│   │   ├── INTEGRATION/             # FastAPI microservice HTTP client (RestClient)
+│   │   ├── JWT/                     # JWT filter, provider & utilities
+│   │   ├── REPOSITORY/              # Spring Data JPA repository interfaces
+│   │   ├── SERVICE/                 # Business logic service layer
+│   │   └── UTIL/                    # Shared internal utility classes
+│   ├── src/main/resources/
+│   │   ├── application.properties   # Spring Boot config (env-variable driven)
+│   │   └── db/migration/            # Flyway versioned SQL migration scripts (V1–V5+)
+│   ├── .env.example                 # ← Copy to .env & fill credentials
+│   └── pom.xml                      # Maven build descriptor
 │
-├── .gitignore        -> Root git configuration
-├── PROJECT_STRUCTURE.md -> This architecture blueprint
-└── README.md         -> General repository introduction
+├── AI SERVICE/                      # FastAPI AI Microservice (Python 3.10+)
+│   ├── app/
+│   │   ├── api/                     # FastAPI route handlers (upload, cleanup, health)
+│   │   ├── services/                # Extractor service (Gemini) & Cloudinary uploader
+│   │   ├── utils/                   # Config loader (Pydantic settings) & helpers
+│   │   └── core/                    # Custom exception types
+│   ├── uploads/                     # Temp PDF storage during extraction (gitignored)
+│   ├── output/                      # Temp JSON output files (gitignored)
+│   ├── archive/                     # Archive of processed PDFs (gitignored)
+│   ├── .env.example                 # ← Copy to .env & fill credentials
+│   └── requirements.txt             # Python dependencies
+│
+├── storage/
+│   └── diagrams/                    # Local fallback diagram crops (gitignored in prod)
+│
+├── docs/                            # Architecture & developer documentation
+│   ├── MICROSERVICE_ARCHITECTURE.md # Deep-dive into the microservice design
+│   ├── API_OVERVIEW.md              # Full API request/response reference
+│   ├── ROADMAP.md                   # Sprint history & future feature plans
+│   ├── TECH_STACK.md                # Detailed tech stack justifications
+│   ├── FUTURE_FEATURES.md           # Planned adaptive AI features
+│   └── PROJECT_TIMELINE.md         # Development timeline
+│
+├── research/                        # Historical prototypes & experiments
+│   └── pdf-extraction/              # Early OCR scripts & PDF parsing experiments
+│
+├── .gitignore                       # Root git ignore rules
+├── PROJECT_STRUCTURE.md             # This file
+└── README.md                        # Project overview & setup guide
 ```
 
 ---
 
-## Modules & Component Responsibilities
+## Component Responsibilities
 
-### 1. [FRONTEND](file:///e:/ExamPilot/FRONTEND)
-- **Technology Stack**: React 19, Vite 8, Tailwind CSS v4, Axios, React Router, Lucide React, React Hot Toast.
-- **Responsibility**: Serves as the interactive single-page application client. It handles user authentication workflows (login, registration), file uploads for PDF parsing, interactive exam and session management dashboards, responsive mock test execution screens, and real-time state visualization of practice session extractions.
+### 1. [FRONTEND](FRONTEND/)
 
-### 2. [BACKEND](file:///e:/ExamPilot/BACKEND)
-- **Technology Stack**: Java 17, Spring Boot 3.2.5, JPA / Hibernate, MySQL, Spring Security (JWT-based).
-- **Responsibility**: Serves as the core production REST API backend. It manages the application database, handles user authentication, tracks practice session states, coordinates uploads, serves REST resources, and performs transaction management.
-- **AI Service Integration**: Uses Spring Boot's new `RestClient` (configured with connect and read timeouts) to integrate synchronously with the FastAPI AI service.
+- **Stack**: React 19, Vite 8, Tailwind CSS v4, React Router v7, Axios, Lucide React.
+- **Role**: Serves as the interactive single-page application. Handles authentication, PDF uploads, exam session management, real-time test interface, post-test review, subject analytics dashboard, and AI mentor chat.
+- **API Communication**: All calls go through `src/services/` using Axios with a JWT Bearer token automatically attached via an Axios interceptor.
 
-### 3. [AI SERVICE](file:///e:/ExamPilot/AI%20SERVICE)
-- **Technology Stack**: Python 3.8+, FastAPI, Google GenAI SDK (Gemini 2.5 Flash), Pydantic v2.
-- **Responsibility**: Performs production-grade AI microservice tasks. It acts as the AI processing microservice, receiving uploaded competitive exam PDFs, orchestrating Gemini content generation calls to parse questions, and returning structured questions JSON directly in HTTP responses.
-- **Observability**: Implements tracing support via logging of the request correlation header `X-Processing-Job-Id`.
+---
 
-### 4. [research](file:///e:/ExamPilot/research)
-- **Responsibility**: Holds historical code, scripts, prototypes, and experiments.
-- **Content**: 
-  - `pdf-extraction/python-ocr/`: Contains earlier prototypes of PDF extraction, raw text classifiers, local OCR processing, and historical test PDFs used during initial development. Kept for research reference only.
+### 2. [BACKEND](BACKEND/)
 
-### 5. `docs/`
-- **Responsibility**: Reserved for architectural documentation, design specifications, and developer setup instructions.
+- **Stack**: Java 17, Spring Boot 3.2.5, Spring Security 6, JPA/Hibernate, Flyway, PostgreSQL (via Supabase).
+- **Role**: The core production REST API. Manages user authentication (JWT), practice session state machine, question persistence, mock test lifecycle, analytics aggregation, AI mentor proxy, and account management.
+- **AI Integration**: Uses Spring Boot `RestClient` with configurable connect/read timeouts to call the FastAPI AI Service synchronously.
+- **Database**: Supabase-hosted PostgreSQL (Mumbai, `ap-south-1`). Schema managed via Flyway migrations (`V1__` to `V5__+`).
+
+---
+
+### 3. [AI SERVICE](AI%20SERVICE/)
+
+- **Stack**: Python 3.10+, FastAPI, Uvicorn, Google GenAI SDK (Gemini 2.5 Flash), PyMuPDF, Cloudinary SDK, Pydantic v2.
+- **Role**: Stateless AI microservice. Receives exam PDFs from the Spring Boot backend, sends pages to Gemini 2.5 Flash for structured Q&A extraction, crops embedded diagrams using PyMuPDF, uploads diagram images to Cloudinary, and returns a complete questions JSON payload.
+- **Observability**: All requests are correlated via the `X-Processing-Job-Id` header for end-to-end tracing.
+- **Fallback**: If Cloudinary is unavailable, diagrams are saved locally to `storage/diagrams/` as a fallback.
+
+---
+
+### 4. [storage/diagrams/](storage/diagrams/)
+
+- **Role**: Local fallback storage for cropped exam diagram images when Cloudinary upload fails. In production, all images are stored on Cloudinary CDN and this directory should remain empty.
+
+---
+
+### 5. [docs/](docs/)
+
+- **Role**: Holds all architectural documentation, API references, roadmaps, and design decisions.
+
+---
+
+### 6. [research/](research/)
+
+- **Role**: Historical research code, OCR experiments, and early PDF parsing prototypes. Kept for reference only; not used in production.

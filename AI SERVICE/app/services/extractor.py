@@ -254,14 +254,46 @@ Rules:
                             
                         # 5. Crop & WebP Save
                         cropped = img.crop((left, top, right, bottom))
-                        filename = f"{session_id}_q{q_num}.webp"
-                        output_path = settings.shared_diagrams_storage_path / filename
                         
-                        cropped.save(output_path, "WEBP", quality=settings.WEBP_QUALITY)
-                        logger.info(f"Successfully cropped diagram for Q{q_num} saved to {output_path}")
+                        diagram_url = None
+                        if settings.CLOUDINARY_CLOUD_NAME and settings.CLOUDINARY_API_KEY and settings.CLOUDINARY_API_SECRET:
+                            try:
+                                import io
+                                import cloudinary
+                                import cloudinary.uploader
+                                
+                                cloudinary.config(
+                                    cloud_name=settings.CLOUDINARY_CLOUD_NAME,
+                                    api_key=settings.CLOUDINARY_API_KEY,
+                                    api_secret=settings.CLOUDINARY_API_SECRET,
+                                    secure=True
+                                )
+                                
+                                buffer = io.BytesIO()
+                                cropped.save(buffer, format="WEBP", quality=settings.WEBP_QUALITY)
+                                buffer.seek(0)
+                                
+                                logger.info(f"Uploading cropped diagram for Q{q_num} to Cloudinary...")
+                                upload_result = cloudinary.uploader.upload(
+                                    buffer,
+                                    public_id=f"exampilot/{session_id}_q{q_num}",
+                                    format="webp",
+                                    resource_type="image"
+                                )
+                                diagram_url = upload_result.get("secure_url")
+                                logger.info(f"Cloudinary upload successful: {diagram_url}")
+                            except Exception as cloud_ex:
+                                logger.error(f"Failed to upload to Cloudinary, falling back to local storage: {str(cloud_ex)}")
+                                
+                        if not diagram_url:
+                            filename = f"{session_id}_q{q_num}.webp"
+                            output_path = settings.shared_diagrams_storage_path / filename
+                            cropped.save(output_path, "WEBP", quality=settings.WEBP_QUALITY)
+                            logger.info(f"Successfully cropped diagram for Q{q_num} saved locally to {output_path}")
+                            diagram_url = f"/uploads/diagrams/{filename}"
                         
                         # Set output fields
-                        q["diagramUrl"] = f"/uploads/diagrams/{filename}"
+                        q["diagramUrl"] = diagram_url
                         q["diagramWidth"] = crop_w
                         q["diagramHeight"] = crop_h
                         
