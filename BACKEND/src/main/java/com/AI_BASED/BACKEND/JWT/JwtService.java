@@ -5,6 +5,7 @@ import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.security.Keys;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 
 import javax.crypto.SecretKey;
@@ -15,9 +16,8 @@ import java.util.function.Function;
 @Service
 public class JwtService {
 
-    // Secret Key (Keep this secret)
-    private static final String SECRET =
-            "ThisIsMyVerySecretKeyForMockTesterProject2026SpringBootJWT123456";
+    @Value("${JWT_SECRET:ThisIsMyVerySecretKeyForMockTesterProject2026SpringBootJWT123456}")
+    private String secret;
 
     // Token Validity = 1 Hour
     private static final long JWT_EXPIRATION = 1000 * 60 * 60;
@@ -36,7 +36,7 @@ public class JwtService {
     // Get Secret Key
     private SecretKey getSignInKey() {
         return Keys.hmacShaKeyFor(
-                SECRET.getBytes(StandardCharsets.UTF_8)
+                secret.getBytes(StandardCharsets.UTF_8)
         );
     }
 
