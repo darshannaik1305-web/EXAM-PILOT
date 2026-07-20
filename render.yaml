@@ -1,0 +1,48 @@
+services:
+  - type: web
+    name: exampilot-backend
+    env: docker
+    rootDir: BACKEND
+    buildCommand: ""
+    startCommand: ""
+    envVars:
+      - key: SPRING_DATASOURCE_URL
+        scope: build,run
+      - key: SPRING_DATASOURCE_USERNAME
+        scope: build,run
+      - key: SPRING_DATASOURCE_PASSWORD
+        scope: build,run
+        isPrivate: true
+      - key: JWT_SECRET
+        scope: build,run
+        isPrivate: true
+      - key: ALLOWED_ORIGINS
+        scope: build,run
+      - key: FASTAPI_URL
+        value: https://exam-pilot-ai-service.onrender.com
+        scope: build,run
+      - key: JAVA_TOOL_OPTIONS
+        value: -Xmx400m
+        scope: build,run
+
+  - type: web
+    name: exampilot-ai-service
+    env: python-3
+    rootDir: AI SERVICE
+    buildCommand: pip install -r requirements.txt
+    startCommand: python -m uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: GEMINI_API_KEY
+        scope: build,run
+        isPrivate: true
+      - key: CLOUDINARY_CLOUD_NAME
+        scope: build,run
+      - key: CLOUDINARY_API_KEY
+        scope: build,run
+        isPrivate: true
+      - key: CLOUDINARY_API_SECRET
+        scope: build,run
+        isPrivate: true
+      - key: ENV
+        value: production
+        scope: build,run
