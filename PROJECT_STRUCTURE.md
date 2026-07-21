@@ -60,10 +60,11 @@ ExamPilot/
 ├── docs/                            # Architecture & developer documentation
 │   ├── MICROSERVICE_ARCHITECTURE.md # Deep-dive into the microservice design
 │   ├── API_OVERVIEW.md              # Full API request/response reference
+│   ├── DEPLOYMENT.md                # Complete production deployment guide
 │   ├── ROADMAP.md                   # Sprint history & future feature plans
 │   ├── TECH_STACK.md                # Detailed tech stack justifications
 │   ├── FUTURE_FEATURES.md           # Planned adaptive AI features
-│   └── PROJECT_TIMELINE.md         # Development timeline
+│   └── PROJECT_TIMELINE.md          # Development timeline
 │
 ├── research/                        # Historical prototypes & experiments
 │   └── pdf-extraction/              # Early OCR scripts & PDF parsing experiments

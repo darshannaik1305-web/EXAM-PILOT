@@ -189,6 +189,7 @@ ExamPilot/
 ├── docs/                            # Architecture & developer documentation
 │   ├── MICROSERVICE_ARCHITECTURE.md
 │   ├── API_OVERVIEW.md
+│   ├── DEPLOYMENT.md
 │   ├── ROADMAP.md
 │   ├── TECH_STACK.md
 │   └── FUTURE_FEATURES.md
@@ -302,6 +303,16 @@ npm run dev
 | `SPRING_DATASOURCE_URL` | ✅ | PostgreSQL JDBC connection URL |
 | `SPRING_DATASOURCE_USERNAME` | ✅ | Database username |
 | `SPRING_DATASOURCE_PASSWORD` | ✅ | Database password |
+
+---
+
+## 🌐 Production Deployment
+
+ExamPilot is designed to be cloud-native and can be deployed entirely on free-tier cloud platforms.
+
+For a detailed step-by-step walkthrough on how to deploy this three-tier architecture, configure environment variables, setup CORS for production, and connect Supabase and Cloudinary:
+
+👉 **Read the [Complete Production Deployment Guide](docs/DEPLOYMENT.md)**
 
 ---
 
