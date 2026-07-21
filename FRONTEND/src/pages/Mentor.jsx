@@ -105,13 +105,13 @@ function Mentor() {
   }
 
   return (
-    <div className="flex h-[calc(100vh-10rem)] bg-background text-text overflow-hidden rounded-2xl border border-border select-none">
+    <div className="flex h-[calc(100vh-7rem)] md:h-[calc(100vh-10rem)] bg-background text-text overflow-hidden rounded-2xl border border-border select-none">
       
       {/* Left Pane: Chat Window */}
       <div className="flex-1 flex flex-col justify-between bg-slate-900/10">
         
         {/* Chat Title bar */}
-        <div className="px-6 py-4 border-b border-border bg-slate-900/60 flex items-center justify-between">
+        <div className="px-4 md:px-6 py-3 md:py-4 border-b border-border bg-slate-900/60 flex items-center justify-between">
           <div className="flex items-center space-x-3">
             <div className="p-2 bg-primary/10 text-primary rounded-xl">
               <Bot size={20} className="animate-pulse" />
@@ -127,27 +127,27 @@ function Mentor() {
         </div>
 
         {/* Messages Container Area */}
-        <div className="flex-1 overflow-y-auto p-6 space-y-4 select-text">
+        <div className="flex-1 overflow-y-auto p-4 md:p-6 space-y-4 select-text">
           {messages.map((msg, idx) => {
             const isModel = msg.role === "model";
             return (
               <div
                 key={idx}
-                className={`flex items-start space-x-3.5 max-w-2xl ${
+                className={`flex items-start space-x-2 md:space-x-3.5 max-w-[85%] md:max-w-2xl ${
                   isModel ? "" : "ml-auto flex-row-reverse space-x-reverse"
                 }`}
               >
                 {/* Avatar Icon Box */}
-                <div className={`w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
+                <div className={`w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center flex-shrink-0 ${
                   isModel
                     ? "bg-primary/20 text-primary border border-primary/20"
                     : "bg-cyan-500/20 text-secondary border border-cyan-500/20"
                 }`}>
-                  {isModel ? <Bot size={16} /> : <User size={16} />}
+                  {isModel ? <Bot size={14} /> : <User size={14} />}
                 </div>
 
                 {/* Message Bubble */}
-                <div className={`p-4 rounded-2xl text-sm leading-relaxed border ${
+                <div className={`p-3 md:p-4 rounded-2xl text-sm leading-relaxed border ${
                   isModel
                     ? "bg-card/65 border-border/80 text-slate-100"
                     : "bg-primary/10 border-primary/20 text-slate-100 shadow-lg shadow-primary/5"
@@ -164,11 +164,11 @@ function Mentor() {
 
           {/* Typing Loading State */}
           {sending && (
-            <div className="flex items-start space-x-3.5 max-w-2xl">
-              <div className="w-8 h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary/20 text-primary border border-primary/20">
-                <Bot size={16} />
+            <div className="flex items-start space-x-2 md:space-x-3.5 max-w-[85%] md:max-w-2xl">
+              <div className="w-7 h-7 md:w-8 md:h-8 rounded-lg flex items-center justify-center flex-shrink-0 bg-primary/20 text-primary border border-primary/20">
+                <Bot size={14} />
               </div>
-              <div className="px-4 py-3 rounded-2xl bg-card border border-border flex items-center space-x-1.5">
+              <div className="px-4 py-2.5 rounded-2xl bg-card border border-border flex items-center space-x-1.5">
                 <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce"></span>
                 <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce [animation-delay:0.2s]"></span>
                 <span className="w-1.5 h-1.5 bg-muted rounded-full animate-bounce [animation-delay:0.4s]"></span>
@@ -180,7 +180,7 @@ function Mentor() {
         </div>
 
         {/* Message Input Footer Form */}
-        <form onSubmit={handleSendMessage} className="p-4 border-t border-border bg-slate-900/60 flex items-center space-x-3">
+        <form onSubmit={handleSendMessage} className="p-3 md:p-4 border-t border-border bg-slate-900/60 flex items-center space-x-2 md:space-x-3">
           <input
             type="text"
             disabled={sending}

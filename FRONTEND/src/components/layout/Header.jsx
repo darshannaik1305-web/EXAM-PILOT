@@ -202,7 +202,7 @@ function Header({ setIsMobileOpen }) {
 
         {/* Dropdown Panel */}
         {isDropdownOpen && (
-          <div className="absolute top-14 right-12 w-80 bg-slate-900/95 border border-slate-700/80 shadow-2xl rounded-2xl p-4 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200 select-none">
+          <div className="absolute top-14 right-0 md:right-4 w-80 max-w-[calc(100vw-2rem)] bg-slate-900/95 border border-slate-700/80 shadow-2xl rounded-2xl p-4 z-50 backdrop-blur-xl animate-in fade-in slide-in-from-top-3 duration-200 select-none">
             {/* Header controls */}
             <div className="flex items-center justify-between pb-3 border-b border-slate-800 mb-2.5">
               <span className="text-xs font-bold text-slate-200">Notifications</span>

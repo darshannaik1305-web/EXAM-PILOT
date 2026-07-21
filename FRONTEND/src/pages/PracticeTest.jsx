@@ -17,7 +17,9 @@ import {
   HelpCircle,
   Flag,
   ArrowLeft,
-  AlertCircle
+  AlertCircle,
+  LayoutGrid,
+  X
 } from "lucide-react";
 import Button from "../components/ui/Button";
 import Card from "../components/ui/Card";
@@ -50,6 +52,7 @@ function PracticeTest() {
   // Confirmation Modals
   const [showSubmitModal, setShowSubmitModal] = useState(false);
   const [showExitModal, setShowExitModal] = useState(false);
+  const [showMobilePalette, setShowMobilePalette] = useState(false);
 
   // 1. Initial Start or Resume
   useEffect(() => {
@@ -298,21 +301,32 @@ function PracticeTest() {
           <h1 className="text-base font-bold truncate max-w-md">{session?.practiceSessionTitle}</h1>
         </div>
 
-        {/* Timer Box */}
-        <div className="flex items-center space-x-3 bg-card border border-border px-4 py-1.5 rounded-full shadow-inner">
-          <Timer size={16} className={timeLeft < 180 ? "text-danger animate-pulse" : "text-primary"} />
-          <span className={`font-mono font-bold text-lg tracking-wider ${timeLeft < 180 ? "text-danger" : "text-text"}`}>
-            {formatTime(timeLeft)}
-          </span>
+        {/* Timer Box & Mobile Palette Toggle */}
+        <div className="flex items-center space-x-2">
+          {/* Mobile Palette Toggle Button */}
+          <button
+            onClick={() => setShowMobilePalette(true)}
+            className="lg:hidden p-2 rounded-xl text-muted hover:text-text hover:bg-slate-800/40 transition-all border border-border/80 bg-slate-900/60 cursor-pointer"
+            title="Open Question Palette"
+          >
+            <LayoutGrid size={16} />
+          </button>
+
+          <div className="flex items-center space-x-3 bg-card border border-border px-4 py-1.5 rounded-full shadow-inner">
+            <Timer size={16} className={timeLeft < 180 ? "text-danger animate-pulse" : "text-primary"} />
+            <span className={`font-mono font-bold text-lg tracking-wider ${timeLeft < 180 ? "text-danger" : "text-text"}`}>
+              {formatTime(timeLeft)}
+            </span>
+          </div>
         </div>
       </header>
 
       {/* Main Grid View */}
       <div className="flex-1 flex overflow-hidden">
         {/* Left Side: Question Pane */}
-        <main className="flex-1 overflow-y-auto p-8 flex flex-col justify-between">
+        <main className="flex-1 overflow-y-auto p-4 md:p-8 flex flex-col justify-between">
           <div className="max-w-3xl mx-auto w-full space-y-6">
-            <Card className="p-6 border border-border relative overflow-hidden bg-card/40">
+            <Card className="p-4 md:p-6 border border-border relative overflow-hidden bg-card/40">
               {/* Question Index Label */}
               <div className="flex items-center justify-between mb-4">
                 <span className="text-xs font-mono font-bold bg-primary/20 text-primary border border-primary/25 px-2.5 py-1 rounded-md">
@@ -385,8 +399,8 @@ function PracticeTest() {
           </div>
 
           {/* Question Controls Footer */}
-          <div className="max-w-3xl mx-auto w-full border-t border-border pt-6 flex items-center justify-between">
-            <div className="flex items-center space-x-3">
+          <div className="max-w-3xl mx-auto w-full border-t border-border pt-4 md:pt-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-start">
               <Button
                 variant="outline"
                 disabled={currentQuestion?.questionNumber === 1 || saving}
@@ -407,7 +421,7 @@ function PracticeTest() {
               </Button>
             </div>
 
-            <div className="flex items-center space-x-3">
+            <div className="flex items-center space-x-2.5 sm:space-x-3 w-full sm:w-auto justify-between sm:justify-end">
               <Button
                 variant="outline"
                 disabled={saving}
@@ -432,7 +446,7 @@ function PracticeTest() {
         </main>
 
         {/* Right Side: Palette Sidebar */}
-        <aside className="w-80 border-l border-border bg-slate-900/40 p-6 flex flex-col justify-between overflow-y-auto">
+        <aside className="w-80 border-l border-border bg-slate-900/40 p-6 flex flex-col justify-between overflow-y-auto hidden lg:flex">
           <div>
             <h2 className="text-sm font-bold uppercase tracking-wider text-muted mb-4">Question Palette</h2>
             
@@ -562,6 +576,92 @@ function PracticeTest() {
                 }}
               >
                 Exit Test
+              </Button>
+            </div>
+          </div>
+        </div>
+      )}
+
+      {/* Sliding Mobile Palette Drawer */}
+      {showMobilePalette && (
+        <div className="fixed inset-0 z-50 flex justify-end lg:hidden bg-slate-950/70 backdrop-blur-sm animate-in fade-in duration-200">
+          <div className="w-80 h-full bg-slate-900 border-l border-border p-6 flex flex-col justify-between animate-in slide-in-from-right duration-300">
+            <div>
+              <div className="flex items-center justify-between mb-6">
+                <h2 className="text-sm font-bold uppercase tracking-wider text-muted">Question Palette</h2>
+                <button
+                  onClick={() => setShowMobilePalette(false)}
+                  className="p-1.5 rounded-lg text-muted hover:text-text hover:bg-slate-800 transition-colors cursor-pointer"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+
+              {/* Status Legend Panel */}
+              <div className="grid grid-cols-2 gap-3 mb-6 bg-card/30 p-4 border border-border/50 rounded-xl text-xs text-muted">
+                <div className="flex items-center space-x-2">
+                  <span className="w-3.5 h-3.5 bg-success rounded-md border border-success/30"></span>
+                  <span>Answered</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3.5 h-3.5 bg-warning rounded-md border border-warning/30"></span>
+                  <span>Marked</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3.5 h-3.5 bg-rose-500 rounded-md border border-rose-500/30"></span>
+                  <span>Skipped</span>
+                </div>
+                <div className="flex items-center space-x-2">
+                  <span className="w-3.5 h-3.5 bg-slate-800 rounded-md border border-border"></span>
+                  <span>Unvisited</span>
+                </div>
+              </div>
+
+              {/* Grid Palette List */}
+              <div className="grid grid-cols-5 gap-2.5 max-h-[calc(100vh-250px)] overflow-y-auto pr-1">
+                {palette.map((item) => {
+                  let colorClass = "bg-slate-800 border border-border text-muted hover:border-muted";
+                  if (item.status === "ANSWERED") {
+                    colorClass = "bg-success text-white border border-success/30";
+                  } else if (item.status === "REVIEW") {
+                    colorClass = "bg-warning text-white border border-warning/30";
+                  } else if (item.status === "SKIPPED") {
+                    colorClass = "bg-rose-500 text-white border border-rose-500/30";
+                  }
+
+                  const isCurrent = currentQuestion?.questionNumber === item.questionNumber;
+
+                  return (
+                    <button
+                      key={item.questionNumber}
+                      disabled={saving}
+                      onClick={async () => {
+                        await navigateToQuestion(item.questionNumber);
+                        setShowMobilePalette(false);
+                      }}
+                      className={`w-full aspect-square flex items-center justify-center font-bold font-mono text-sm rounded-xl transition-all cursor-pointer ${colorClass} ${
+                        isCurrent ? "ring-2 ring-primary ring-offset-2 ring-offset-background scale-105" : ""
+                      }`}
+                    >
+                      {item.questionNumber}
+                    </button>
+                  );
+                })}
+              </div>
+            </div>
+
+            {/* Submit Action Box */}
+            <div className="mt-8 border-t border-border pt-6">
+              <Button
+                variant="outline"
+                onClick={() => {
+                  setShowMobilePalette(false);
+                  setShowSubmitModal(true);
+                }}
+                className="w-full bg-slate-800 hover:bg-slate-700 hover:text-white border-border py-3 rounded-xl flex items-center justify-center gap-2 cursor-pointer"
+              >
+                <CheckCircle size={16} />
+                <span>Submit Session</span>
               </Button>
             </div>
           </div>
