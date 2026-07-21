@@ -52,7 +52,9 @@ public class MockTestService {
                 .findFirstByUserAndPracticeSessionAndStatus(user, practiceSession, MockTestStatus.ACTIVE);
 
         if (activeSameSession.isPresent()) {
-            return convertToResponse(activeSameSession.get());
+            MockTestSession activeSession = activeSameSession.get();
+            checkAndAutoSubmitIfExpired(activeSession);
+            return convertToResponse(activeSession);
         }
 
         // 2. Create new session (no termination of other sessions)
@@ -100,6 +102,8 @@ public class MockTestService {
             throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this test session");
         }
 
+        checkAndAutoSubmitIfExpired(session);
+
         return convertToResponse(session);
     }
 
@@ -110,6 +114,8 @@ public class MockTestService {
         if (!session.getUser().getId().equals(user.getId())) {
             throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this test session");
         }
+
+        checkAndAutoSubmitIfExpired(session);
 
         PracticeQuestion question = practiceQuestionRepository.findByPracticeSessionAndQuestionNumber(session.getPracticeSession(), questionNumber)
                 .orElseThrow(() -> new ExtractionException("Question not found with number: " + questionNumber));
@@ -145,6 +151,8 @@ public class MockTestService {
         if (!session.getUser().getId().equals(user.getId())) {
             throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this test session");
         }
+
+        checkAndAutoSubmitIfExpired(session);
 
         if (session.getStatus() != MockTestStatus.ACTIVE) {
             throw new ExtractionException("Cannot save answer: Test session is " + session.getStatus());
@@ -195,6 +203,8 @@ public class MockTestService {
             throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this test session");
         }
 
+        checkAndAutoSubmitIfExpired(session);
+
         List<MockTestAnswer> answers = answerRepository.findByMockTestSession(session);
 
         return answers.stream().map(ans -> {
@@ -219,6 +229,10 @@ public class MockTestService {
             throw new com.AI_BASED.BACKEND.EXCEPTION.AccessDeniedException("Access denied: You do not own this test session");
         }
 
+        if (session.getStatus() == MockTestStatus.COMPLETED) {
+            return convertToResponse(session);
+        }
+
         if (session.getStatus() != MockTestStatus.ACTIVE) {
             throw new ExtractionException("Cannot submit: Session is " + session.getStatus());
         }
@@ -231,6 +245,19 @@ public class MockTestService {
         resultEngineService.calculateAndSaveResults(session);
 
         return convertToResponse(session);
+    }
+
+    @Transactional
+    public void checkAndAutoSubmitIfExpired(MockTestSession session) {
+        if (session.getStatus() == MockTestStatus.ACTIVE && session.getStartedAt() != null) {
+            long elapsed = java.time.Duration.between(session.getStartedAt(), LocalDateTime.now()).getSeconds();
+            if (elapsed >= session.getDurationSeconds()) {
+                session.setStatus(MockTestStatus.COMPLETED);
+                session.setCompletedAt(LocalDateTime.now());
+                sessionRepository.save(session);
+                resultEngineService.calculateAndSaveResults(session);
+            }
+        }
     }
 
     private MockTestSessionResponse convertToResponse(MockTestSession session) {

@@ -5,6 +5,7 @@ import {
   getTestQuestion,
   saveTestAnswer,
   getTestPalette,
+  submitTest,
 } from "../services/practiceService";
 import { API_BASE_URL } from "../services/api";
 import {
@@ -59,6 +60,14 @@ function PracticeTest() {
       try {
         setLoading(true);
         const testSession = await startOrResumeTest(id);
+        
+        // If the session has already completed (e.g. time expired), redirect to results/review immediately
+        if (testSession.status === "COMPLETED") {
+          toast.success("This test session has already been completed.");
+          navigate(`/student/practice/${id}/review?testSessionId=${testSession.id}`);
+          return;
+        }
+
         setSession(testSession);
 
         // Calculate time remaining

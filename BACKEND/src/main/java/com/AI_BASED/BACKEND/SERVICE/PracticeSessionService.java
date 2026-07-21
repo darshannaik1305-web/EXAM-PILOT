@@ -61,6 +61,9 @@ public class PracticeSessionService {
     @Autowired
     private MockTestDifficultyResultRepository mockTestDifficultyResultRepository;
 
+    @Autowired
+    private ResultEngineService resultEngineService;
+
     public PracticeSessionCreatedResponse createAndProcessSession(
             String title, UploadType uploadType, MultipartFile file, User user,
             Integer examDurationSeconds, Double positiveMarks, Double negativeMarks,
@@ -141,6 +144,8 @@ public class PracticeSessionService {
                 ? sessionRepository.findByPracticeSessionAndUserOrderByStartedAtDesc(session, currentUser)
                 : java.util.Collections.emptyList();
 
+        checkAndAutoSubmitExpiredAttempts(attempts);
+
         return convertToResponse(session, attempts);
     }
 
@@ -154,11 +159,27 @@ public class PracticeSessionService {
                 ? java.util.Collections.emptyList()
                 : sessionRepository.findByUserAndPracticeSessionInOrderByStartedAtDesc(user, sessions);
 
+        checkAndAutoSubmitExpiredAttempts(attempts);
+
         // Group attempts by practice session ID
         java.util.Map<Long, List<MockTestSession>> attemptsMap = attempts.stream()
                 .collect(java.util.stream.Collectors.groupingBy(a -> a.getPracticeSession().getId()));
 
         return sessionsPage.map(s -> convertToResponse(s, attemptsMap.getOrDefault(s.getId(), java.util.Collections.emptyList())));
+    }
+
+    private void checkAndAutoSubmitExpiredAttempts(List<MockTestSession> attempts) {
+        for (MockTestSession s : attempts) {
+            if (s.getStatus() == MockTestStatus.ACTIVE && s.getStartedAt() != null) {
+                long elapsed = java.time.Duration.between(s.getStartedAt(), java.time.LocalDateTime.now()).getSeconds();
+                if (elapsed >= s.getDurationSeconds()) {
+                    s.setStatus(MockTestStatus.COMPLETED);
+                    s.setCompletedAt(java.time.LocalDateTime.now());
+                    sessionRepository.save(s);
+                    resultEngineService.calculateAndSaveResults(s);
+                }
+            }
+        }
     }
 
     public List<PracticeQuestionResponse> getQuestionsBySessionId(Long sessionId) {
